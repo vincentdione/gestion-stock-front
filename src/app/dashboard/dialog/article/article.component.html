@@ -1,0 +1,72 @@
+
+
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span class="title-center">{{dialogData.action}} Article </span>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content>
+<form [formGroup]="articleForm" >
+  <div fxFlex fxLayout="column">
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Code </mat-label>
+      <input matInput formControlName="codeArticle" required>
+      <mat-error *ngIf="articleForm.controls.codeArticle.touched && articleForm.controls.codeArticle.invalid">
+        <span *ngIf="articleForm.controls.codeArticle.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Désignation</mat-label>
+      <input matInput formControlName="designation" required>
+      <mat-error *ngIf="articleForm.controls.designation.touched && articleForm.controls.designation.invalid">
+        <span *ngIf="articleForm.controls.designation.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Sous catégorie</mat-label>
+      <mat-select formControlName="sous_Category">
+        <mat-option *ngFor="let s of listeSousCategories" [value]="s"> {{s.code}}</mat-option>
+    </mat-select>
+    </mat-form-field>
+
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Prix Unitaire Hors Taxe</mat-label>
+      <input matInput formControlName="prixUnitaireHt" (input)="calculerTTC()" required>
+      <mat-error *ngIf="articleForm.controls.prixUnitaireHt.touched && articleForm.controls.prixUnitaireHt.invalid">
+        <span *ngIf="articleForm.controls.prixUnitaireHt.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Taux</mat-label>
+      <input matInput formControlName="tauxTval" (input)="calculerTTC()" required>
+      <mat-error *ngIf="articleForm.controls.tauxTval.touched && articleForm.controls.tauxTval.invalid">
+        <span *ngIf="articleForm.controls.tauxTval.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Prix Unitaire</mat-label>
+      <input matInput formControlName="prixUnitaireTtc">
+      <!-- <mat-error *ngIf="articleForm.controls.prixUnitaireTtc.touched && articleForm.controls.prixUnitaireTtc.invalid">
+        <span *ngIf="articleForm.controls.prixUnitaireTtc.errors.required" >This field is mandatory</span>
+      </mat-error> -->
+    </mat-form-field>
+
+
+
+  </div>
+</form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+<button mat-raised-button color="primary" type="submit"
+(click)="handleCategorySubmit()" [disabled]="!(articleForm.dirty && articleForm.valid)" >{{action}}</button>
+<button mat-raised-button color="accent" mat-dialog-close>Fermer</button>
+</mat-dialog-actions>
+

@@ -1,0 +1,74 @@
+<!-- <mat-nav-list  appAccordion>
+  <mat-list-item appAccordionLink *ngFor="let menuitem of menuItems.getMenuItems()"  routerLinkActive="selected" #rla="routerLinkActive" >
+     <a [ngStyle]="{'background':rla.isActive ? '#004d40' : '','height':'45px','alignItems':'center','justifyContent':'center','color':rla.isActive ? 'white' : '#455A64'}" appAccordionToggle [routerLink]="['/workspace/dashboard',menuitem.state]"  >
+       <mat-icon [ngStyle]="{'color':rla.isActive ? '': 'primary'}" >{{menuitem.icon}}</mat-icon>
+       <span [ngStyle]="{'color':rla.isActive ? '': 'primary'}" >{{menuitem.name}}</span>
+       <span fxFlex></span>
+     </a>
+  </mat-list-item>
+</mat-nav-list> -->
+
+<mat-nav-list>
+  <ng-container *ngFor="let menuItem of menus">
+    <ng-container *ngIf="!menuItem.subMenuItems">
+      <!-- <mat-list-item>
+        <mat-icon mat-list-icon>{{ menuItem.icon }}</mat-icon>
+        <h3 matLine>{{ menuItem.label }}</h3>
+      </mat-list-item> -->
+      <mat-list-item appAccordionLink   routerLinkActive="selected" #rla="routerLinkActive" >
+        <a [ngStyle]="{'background':rla.isActive ? '#004d40' : '','height':'45px','alignItems':'center','justifyContent':'center','color':rla.isActive ? 'white' : '#455A64'}"
+         appAccordionToggle [routerLink]="['/workspace/dashboard',menuItem.link]"  >
+          <mat-icon [ngStyle]="{'color':rla.isActive ? '': 'primary'}" >{{menuItem.icon}}</mat-icon>
+          <span [ngStyle]="{'color':rla.isActive ? '': 'primary'}" >{{menuItem.label}}</span>
+          <span fxFlex></span>
+        </a>
+     </mat-list-item>
+    </ng-container>
+    <ng-container *ngIf="menuItem.subMenuItems">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-icon>{{ menuItem.icon }}</mat-icon>
+          <mat-panel-title>{{ menuItem.label }}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <!-- <mat-nav-list>
+          <mat-list-item *ngFor="let subMenuItem of menuItem.subMenuItems">
+            <a matLine [routerLink]="subMenuItem.link">{{ subMenuItem.label }}</a>
+          </mat-list-item>
+        </mat-nav-list> -->
+
+        <mat-list-item appAccordionLink *ngFor="let subMenuItem of menuItem.subMenuItems"  routerLinkActive="selected" #rla="routerLinkActive" >
+          <a [ngStyle]="{'background':rla.isActive ? '#004d40' : '','height':'45px','alignItems':'center','justifyContent':'center','color':rla.isActive ? 'white' : '#455A64'}" appAccordionToggle [routerLink]="['/workspace/dashboard',subMenuItem.link]"  >
+            <mat-icon [ngStyle]="{'color':rla.isActive ? '': 'primary'}" >{{subMenuItem.icon}}</mat-icon>
+            <span [ngStyle]="{'color':rla.isActive ? '': 'primary'}" >{{subMenuItem.label}}</span>
+            <span fxFlex></span>
+          </a>
+       </mat-list-item>
+
+      </mat-expansion-panel>
+    </ng-container>
+  </ng-container>
+</mat-nav-list>
+
+
+
+<!-- <mat-sidenav-container>
+  <mat-sidenav #drawer>
+    <mat-toolbar color="primary">Sidebar</mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item *ngFor="let menuitem of menuItems.getMenuItems()" [routerLink]="['/workspace',menuitem.state]">{{ menuitem.name }}</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button mat-icon-button (click)="drawer.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>My App</span>
+    </mat-toolbar>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container> -->
+
+
+<!-- group="{{menuitem.state}}" -->
+<!-- *ngIf="(menuitem.role === ''||menuitem.role === tokenPayload.role[0])" -->

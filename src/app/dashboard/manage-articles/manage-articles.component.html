@@ -1,0 +1,70 @@
+
+<!-- //routerLink="/workspace/dashboard/addCategory" -->
+<mat-card>
+  <b> <span>Gestion des articles</span> </b>
+  <button mat-flat-button  color="primary" (click)="handleAddCat()" >Ajouter un article</button>
+</mat-card>
+<hr>
+<mat-card>
+  <mat-form-field appearance="fill" >
+    <mat-label>Filtrer</mat-label>
+    <input matInput (keyup)="applyFilter($event)" #input>
+  </mat-form-field>
+</mat-card>
+<hr>
+
+<div class="responsive_table">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="code">
+       <th mat-header-cell *matHeaderCellDef>Code</th>
+       <td mat-cell *matCellDef="let element">{{element.codeArticle}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="designation">
+        <th mat-header-cell *matHeaderCellDef>Désignation</th>
+        <td mat-cell *matCellDef="let element">{{element.designation}}</td>
+       </ng-container>
+       <!-- "souscategory","prixUnitaireHt","tauxTval","prixUnitaireTtc" -->
+
+       <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef>Catégorie</th>
+        <td mat-cell *matCellDef="let element">{{element.sousCategoryDto?.category?.code}}</td>
+       </ng-container>
+
+       <ng-container matColumnDef="souscategory">
+        <th mat-header-cell *matHeaderCellDef>Sous-catégorie</th>
+        <td mat-cell *matCellDef="let element">{{element.sousCategoryDto?.code}}</td>
+       </ng-container>
+
+       <ng-container matColumnDef="prixUnitaireHt">
+        <th mat-header-cell *matHeaderCellDef>Prix Unitaire Ht</th>
+        <td mat-cell *matCellDef="let element">{{element.prixUnitaireHt}}</td>
+       </ng-container>
+
+       <ng-container matColumnDef="tauxTval">
+        <th mat-header-cell *matHeaderCellDef>Taux</th>
+        <td mat-cell *matCellDef="let element">{{element.tauxTval}}</td>
+       </ng-container>
+
+       <ng-container matColumnDef="prixUnitaireTtc">
+        <th mat-header-cell *matHeaderCellDef>Prix Unitaire Ttc</th>
+        <td mat-cell *matCellDef="let element">{{element.prixUnitaireTtc}}</td>
+       </ng-container>
+
+      <ng-container matColumnDef="action">
+       <th mat-header-cell *matHeaderCellDef>Action</th>
+       <td mat-cell *matCellDef="let element" class="action-link" >
+         <button mat-icon-button color="primary" matTooltip="Modifier" (click)="handleEdit(element)" >
+           <mat-icon>edit</mat-icon>
+         </button>
+         <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
+           <mat-icon>delete</mat-icon>
+         </button>
+<!--          <mat-slide-toggle (change)="onChange($event.checked,element.id)" matTooltip="Activer ou desactiver" [checked]="element.status" ></mat-slide-toggle>
+ -->       </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
+      <tr mat-row *matRowDef="let row;columns:displayColumns"></tr>
+  </table>
+</div>
+

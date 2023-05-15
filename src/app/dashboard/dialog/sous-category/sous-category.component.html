@@ -1,0 +1,47 @@
+
+
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span class="title-center">{{dialogData.action}} Sous-Catégorie </span>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content>
+<form [formGroup]="sousCategoryForm" >
+  <div fxFlex fxLayout="column">
+
+    <mat-form-field appearance="fill"  fxFlex>
+      <mat-label>Categorie</mat-label>
+      <mat-select formControlName="category">
+          <mat-option *ngFor="let c of categories" [value]="c"> {{c.code}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Code </mat-label>
+      <input matInput formControlName="code" required>
+      <mat-error *ngIf="sousCategoryForm.controls.code.touched && sousCategoryForm.controls.code.invalid">
+        <span *ngIf="sousCategoryForm.controls.code.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Désignation</mat-label>
+      <input matInput formControlName="designation" required>
+      <mat-error *ngIf="sousCategoryForm.controls.designation.touched && sousCategoryForm.controls.designation.invalid">
+        <span *ngIf="sousCategoryForm.controls.designation.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+
+
+  </div>
+</form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+<button mat-raised-button color="primary" type="submit"
+(click)="handleCategorySubmit()" [disabled]="!(sousCategoryForm.dirty && sousCategoryForm.valid)" >{{action}}</button>
+<button mat-raised-button color="accent" mat-dialog-close>Fermer</button>
+</mat-dialog-actions>
+

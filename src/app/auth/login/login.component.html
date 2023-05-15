@@ -1,0 +1,61 @@
+<mat-toolbar color="primary">
+  <h3 class="page-title">Se connecter</h3>
+</mat-toolbar>
+
+<div class="login-container">
+  <mat-dialog-content class="form-container">
+    <!-- <img class="avatar" src="assets/images/avatar.png" alt="Avatar"> -->
+    <mat-icon class="mat-icon-48" color="primary">person</mat-icon>
+    <!-- <form [formGroup]="loginForm" >
+      <div fxFlex fxLayout="column">
+       <mat-form-field appearance="fill"  fxFlex >
+         <mat-label>Username</mat-label>
+         <input matInput formControlName="username" required>
+         <mat-error *ngIf="loginForm.controls.username.touched && loginForm.controls.username.invalid">
+           <span *ngIf="loginForm.controls.username.errors.required" >This field is mandatory</span>
+           <span *ngIf="loginForm.controls.username.errors.pattern" >This field is invalid</span>
+         </mat-error>
+       </mat-form-field>
+
+
+
+       <mat-form-field appearance="fill"  fxFlex >
+         <mat-label>Password </mat-label>
+         <input matInput formControlName="password" type="password" required>
+         <mat-error *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
+           <span *ngIf="loginForm.controls.password.errors.required" >This field is mandatory</span>
+           <span *ngIf="loginForm.controls.password.errors.pattern" >This field is invalid</span>
+         </mat-error>
+       </mat-form-field>
+
+       <div class="button-container">
+        <button mat-button routerLink="/register">S'inscrire</button>
+        <button mat-raised-button color="primary">Valider</button>
+      </div>
+
+      </div>
+
+   </form> -->
+
+    <form [formGroup]="loginForm">
+      <mat-form-field appearance="fill">
+        <input matInput formControlName="username" required>
+         <mat-error *ngIf="loginForm.controls.username.touched && loginForm.controls.username.invalid">
+           <span *ngIf="loginForm.controls.username.errors.required" >This field is mandatory</span>
+           <span *ngIf="loginForm.controls.username.errors.pattern" >This field is invalid</span>
+         </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <input matInput formControlName="password" type="password" required>
+        <mat-error *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
+          <span *ngIf="loginForm.controls.password.errors.required" >This field is mandatory</span>
+          <span *ngIf="loginForm.controls.password.errors.pattern" >This field is invalid</span>
+        </mat-error>
+      </mat-form-field>
+      <div class="button-container">
+        <button mat-raised-button color="warn" routerLink="/register">S'inscrire</button>
+        <button  mat-raised-button color="primary" type="submit" (click)="handleSubmit()" [disabled]="!(loginForm.valid && loginForm.dirty)">Valider</button>
+      </div>
+    </form>
+  </mat-dialog-content>
+</div>

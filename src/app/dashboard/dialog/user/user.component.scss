@@ -1,0 +1,32 @@
+
+.mat-toolbar {
+  margin : -24px;
+  width: auto;
+  margin-bottom: 10px;
+  background-color: var(--primary-color);
+
+}
+
+.title-center {
+   flex: 1 1 auto;
+   text-align: center;
+}
+
+/*
+
+::ng-deep {
+  .mat-form-field-appearance-fill .mat-focused .mat-form-field-fill .mat-form-field-label {
+     border-bottom: var(--primary-color);
+
+  }
+  mat-form-field {
+     .mat-hint, input, ::placeholder, .mat-form-field-label  {
+      border-bottom: var(--primary-color);
+     }
+  }
+} */
+
+.btn{
+  background-color : var(--primary-color);
+  color : var(--secondary-color);
+}
