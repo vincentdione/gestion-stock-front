@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import { VenteDto } from './venteDto';
+import { ArticleDto } from './articleDto';
 
 
 export interface LigneVenteDto { 
@@ -17,5 +18,6 @@ export interface LigneVenteDto {
     venteDto?: VenteDto;
     quantite?: number;
     prixUnitaire?: number;
+    article?: ArticleDto;
 }
 

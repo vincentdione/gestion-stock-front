@@ -1,3 +1,4 @@
+import { DetailsLignesCommandesComponent } from './../components/details-lignes-commandes/details-lignes-commandes.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -30,6 +31,8 @@ import { ClientsComponent } from './dialog/clients/clients.component';
 import { FournisseursComponent } from './dialog/fournisseurs/fournisseurs.component';
 import { CommandeClientsComponent } from './dialog/commande-clients/commande-clients.component';
 import { CommandeFournisseursComponent } from './dialog/commande-fournisseurs/commande-fournisseurs.component';
+import { AddCommandeClientComponent } from './pages/add-commande-client/add-commande-client.component';
+import { LigneCommandeComponent } from './dialog/ligne-commande/ligne-commande.component';
 
 
 @NgModule({
@@ -57,6 +60,9 @@ import { CommandeFournisseursComponent } from './dialog/commande-fournisseurs/co
     FournisseursComponent,
     CommandeClientsComponent,
     CommandeFournisseursComponent,
+    AddCommandeClientComponent,
+    DetailsLignesCommandesComponent,
+    LigneCommandeComponent
 
   ],
   imports: [
@@ -67,7 +73,8 @@ import { CommandeFournisseursComponent } from './dialog/commande-fournisseurs/co
     FormsModule,
     ReactiveFormsModule,
     FlexLayoutModule,
-    CdkTableModule
+    CdkTableModule,
+
   ],
 
 })

@@ -13,32 +13,55 @@ import { ManageCommandeFournisseursComponent } from './manage-commande-fournisse
 import { ManageVentesComponent } from './manage-ventes/manage-ventes.component';
 import { ManageMvtStkComponent } from './manage-mvt-stk/manage-mvt-stk.component';
 import { AddCategoryComponent } from './manage-category/add-category/add-category.component';
+import { AddCommandeClientComponent } from './pages/add-commande-client/add-commande-client.component';
 
 const routes: Routes = [
-
-  { path: '', component: DashboardComponent,
-   children : [
-    { path: '', component: DefaultDashboardComponent },
-    { path: 'dashboard', component: DefaultDashboardComponent },
-    { path: 'users', component: ManageUsersComponent },
-    { path: 'article', component: ManageArticlesComponent },
-    { path: 'category', component: ManageCategoryComponent },
-    { path: 'addCategory', component: AddCategoryComponent },
-    { path: 'sousCategory', component: ManageSousCategoryComponent },
-    { path: 'clients', component: ManageClientsComponent },
-    { path: 'fournisseurs', component: ManageFournisseursComponent },
-    { path: 'commandeClients', component: ManageCommandeClientsComponent },
-    { path: 'commandeFournisseurs', component: ManageCommandeFournisseursComponent },
-    { path: 'ventes', component: ManageVentesComponent },
-    { path: 'mouvements', component: ManageMvtStkComponent },
-   ]
-},
-
-
+  {
+    path: '',
+    component: DashboardComponent,
+    children: [
+      { path: '', component: DefaultDashboardComponent },
+      { path: 'dashboard', component: DefaultDashboardComponent },
+      { path: 'users', component: ManageUsersComponent },
+      { path: 'article', component: ManageArticlesComponent },
+      { path: 'category', component: ManageCategoryComponent },
+      { path: 'addCategory', component: AddCategoryComponent },
+      { path: 'sousCategory', component: ManageSousCategoryComponent },
+      { path: 'clients', component: ManageClientsComponent },
+      { path: 'fournisseurs', component: ManageFournisseursComponent },
+      { path: 'commandeClients',
+          component: ManageCommandeClientsComponent,
+          data: {
+            origin: 'client'
+          }
+    },
+      { path: 'addcommandeClient',
+      component: AddCommandeClientComponent,
+      data: {
+        origin: 'client'
+      }
+     },
+     { path: 'addcommandeFournisseur',
+      component: AddCommandeClientComponent,
+      data: {
+        origin: 'fournisseur'
+      }
+     },
+      {
+        path: 'commandeFournisseurs',
+        component: ManageCommandeClientsComponent,
+        data: {
+          origin: 'fournisseur'
+        }
+      },
+      { path: 'ventes', component: ManageVentesComponent },
+      { path: 'mouvements', component: ManageMvtStkComponent },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class DashboardRoutingModule { }
+export class DashboardRoutingModule {}

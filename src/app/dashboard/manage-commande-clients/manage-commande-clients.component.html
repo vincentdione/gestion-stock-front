@@ -1,1 +1,124 @@
-<p>manage-commande-clients works!</p>
+
+
+<mat-card class="top">
+  <b> <span>Gestions des Commandes {{origin}} </span> </b>
+  <button mat-flat-button  color="primary"  [routerLink]="'/workspace/dashboard/' + addCommande" >Ajouter une commande</button>
+</mat-card>
+<hr>
+
+
+<mat-card>
+  <mat-form-field appearance="fill" >
+    <mat-label>Filtrer</mat-label>
+    <input matInput (keyup)="applyFilter($event)" #input>
+  </mat-form-field>
+</mat-card>
+<hr>
+<!-- <mat-card> -->
+<!-- <div class="responsive_table">
+   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+       <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef>Code</th>
+        <td mat-cell *matCellDef="let element">{{element.code}}</td>
+       </ng-container>
+       <ng-container matColumnDef="dateCommande">
+        <th mat-header-cell *matHeaderCellDef>Date Commande</th>
+        <td mat-cell *matCellDef="let element">{{element.dateCommande | date: 'dd/MM/yyyy' }}</td>
+       </ng-container>
+
+       <ng-container matColumnDef="client">
+        <th mat-header-cell *matHeaderCellDef>Client</th>
+        <td mat-cell *matCellDef="let element">{{element.clientDto?.prenom}}-{{element.clientDto?.nom}}</td>
+       </ng-container>
+
+
+
+        <ng-container matColumnDef="etat">
+          <th mat-header-cell *matHeaderCellDef>Etat</th>
+          <td mat-cell  *matCellDef="let element"  [ngClass]="{
+            'is-red': element.etat == 'EN_PREPARATION',
+            'is-green': element.etat == 'VALIDEE',
+            'is-yellow': element.etat == 'LIVREE'
+          }"> {{element?.etat}} </td>
+         </ng-container>
+
+       <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <td mat-cell *matCellDef="let element" class="action-link" >
+                    <mat-icon>visibility</mat-icon>
+        </td>
+       </ng-container>
+       <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
+       <tr mat-row *matRowDef="let row;columns:displayColumns"></tr>
+   </table>
+   <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons
+                 aria-label="Select page of periodic elements">
+  </mat-paginator>
+</div> -->
+<!-- </mat-card>
+<hr> -->
+
+
+<mat-card >
+  <div fxFlex fxLayout="column">
+    <div  *ngIf="origin === 'client'">
+      <mat-accordion *ngFor="let element of comClients" >
+        <mat-expansion-panel hideToggle>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{element.code}}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{element.dateCommande | date: 'dd/MM/yyyy' }}
+            </mat-panel-description>
+            <mat-panel-description>
+              {{element.clientDto?.prenom}}-{{element.clientDto?.nom}}
+            </mat-panel-description>
+            <mat-panel-description>
+              <mat-chip-option *ngIf="element.etat == 'EN_PREPARATION'" color="accent" selected >{{element?.etat}}</mat-chip-option>
+              <mat-chip-option *ngIf="element.etat == 'VALIDEE'" color="primary" selected >{{element?.etat}}</mat-chip-option>
+              <mat-chip-option *ngIf="element.etat == 'LIVREE'" color="accent" selected >{{element?.etat}}</mat-chip-option>
+            </mat-panel-description>
+            <mat-panel-description>
+              <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+           <app-details-lignes-commandes [idCommande]="element?.id" [origin]="origin" ></app-details-lignes-commandes>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+
+    <div  *ngIf="origin === 'fournisseur'">
+ <mat-accordion  *ngFor="let element of comFournisseurs" >
+  <mat-expansion-panel hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{element.code}}
+      </mat-panel-title>
+      <mat-panel-description>
+        {{element.dateCommande | date: 'dd/MM/yyyy' }}
+      </mat-panel-description>
+      <mat-panel-description>
+        {{element.fournisseurDto?.prenom}}-{{element.fournisseurDto?.nom}}
+      </mat-panel-description>
+      <mat-panel-description>
+        <mat-chip-option *ngIf="element.etatCommande == 'EN_PREPARATION'" color="accent" selected >{{element?.etatCommande}}</mat-chip-option>
+        <mat-chip-option *ngIf="element.etatCommande == 'VALIDEE'" color="primary" selected >{{element?.etatCommande}}</mat-chip-option>
+        <mat-chip-option *ngIf="element.etatCommande == 'LIVREE'" color="accent" selected >{{element?.etatCommande}}</mat-chip-option>
+      </mat-panel-description>
+      <mat-panel-description>
+        <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+     <app-details-lignes-commandes [idCommande]="element?.id" [origin]="origin" ></app-details-lignes-commandes>
+  </mat-expansion-panel>
+</mat-accordion>
+</div>
+
+</div>
+</mat-card>

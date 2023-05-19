@@ -9,13 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { CommandeClientDto } from './commandeClientDto';
 import { ArticleDto } from './articleDto';
 
 
 export interface LigneCommandeClientDto { 
     id?: number;
-    articleDto?: ArticleDto;
-    commandeClientDto?: CommandeClientDto;
+    article?: ArticleDto;
+    quantite?: number;
+    prixUnitaire?: number;
+    idEntreprise?: number;
 }
 

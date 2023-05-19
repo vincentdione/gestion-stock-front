@@ -38,6 +38,13 @@ export class SidebarComponent implements OnDestroy {
      { label: 'Fournisseurs', link: 'fournisseurs',icon: 'person' },
      { label: 'Commandes', link: 'commandeFournisseurs',icon: 'assignment' },
   ]
+},
+{  label: 'Ventes',      icon: 'menu',
+  subMenuItems:
+  [
+     { label: 'Ventes', link: 'ventes',icon: 'shopping_cart' },
+    //  { label: 'Commandes', link: 'commandeFournisseurs',icon: 'assignment' },
+  ]
 }
      ];
 

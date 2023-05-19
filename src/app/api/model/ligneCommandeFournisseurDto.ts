@@ -15,7 +15,10 @@ import { ArticleDto } from './articleDto';
 
 export interface LigneCommandeFournisseurDto { 
     id?: number;
-    articleDto?: ArticleDto;
+    article?: ArticleDto;
     commandeFournisseurDto?: CommandeFournisseurDto;
+    quantite?: number;
+    prixUnitaire?: number;
+    idEntreprise?: number;
 }
 

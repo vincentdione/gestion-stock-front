@@ -493,18 +493,18 @@ export class CommandeClientsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateArticle(idCommande: number, idLigneCommande: number, idArticle: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<CommandeClientDto>;
-    public updateArticle(idCommande: number, idLigneCommande: number, idArticle: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<CommandeClientDto>>;
-    public updateArticle(idCommande: number, idLigneCommande: number, idArticle: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<CommandeClientDto>>;
-    public updateArticle(idCommande: number, idLigneCommande: number, idArticle: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateArticle1(idCommande: number, idLigneCommande: number, idArticle: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<CommandeClientDto>;
+    public updateArticle1(idCommande: number, idLigneCommande: number, idArticle: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<CommandeClientDto>>;
+    public updateArticle1(idCommande: number, idLigneCommande: number, idArticle: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<CommandeClientDto>>;
+    public updateArticle1(idCommande: number, idLigneCommande: number, idArticle: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (idCommande === null || idCommande === undefined) {
-            throw new Error('Required parameter idCommande was null or undefined when calling updateArticle.');
+            throw new Error('Required parameter idCommande was null or undefined when calling updateArticle1.');
         }
         if (idLigneCommande === null || idLigneCommande === undefined) {
-            throw new Error('Required parameter idLigneCommande was null or undefined when calling updateArticle.');
+            throw new Error('Required parameter idLigneCommande was null or undefined when calling updateArticle1.');
         }
         if (idArticle === null || idArticle === undefined) {
-            throw new Error('Required parameter idArticle was null or undefined when calling updateArticle.');
+            throw new Error('Required parameter idArticle was null or undefined when calling updateArticle1.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -632,15 +632,15 @@ export class CommandeClientsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateEtatCommande(idCommande: number, etatCommande: 'EN_PREPARATION' | 'VALIDEE' | 'LIVREE', observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<CommandeClientDto>;
-    public updateEtatCommande(idCommande: number, etatCommande: 'EN_PREPARATION' | 'VALIDEE' | 'LIVREE', observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<CommandeClientDto>>;
-    public updateEtatCommande(idCommande: number, etatCommande: 'EN_PREPARATION' | 'VALIDEE' | 'LIVREE', observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<CommandeClientDto>>;
-    public updateEtatCommande(idCommande: number, etatCommande: 'EN_PREPARATION' | 'VALIDEE' | 'LIVREE', observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateEtatCommande1(idCommande: number, etatCommande: 'EN_PREPARATION' | 'VALIDEE' | 'LIVREE', observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<CommandeClientDto>;
+    public updateEtatCommande1(idCommande: number, etatCommande: 'EN_PREPARATION' | 'VALIDEE' | 'LIVREE', observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<CommandeClientDto>>;
+    public updateEtatCommande1(idCommande: number, etatCommande: 'EN_PREPARATION' | 'VALIDEE' | 'LIVREE', observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<CommandeClientDto>>;
+    public updateEtatCommande1(idCommande: number, etatCommande: 'EN_PREPARATION' | 'VALIDEE' | 'LIVREE', observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (idCommande === null || idCommande === undefined) {
-            throw new Error('Required parameter idCommande was null or undefined when calling updateEtatCommande.');
+            throw new Error('Required parameter idCommande was null or undefined when calling updateEtatCommande1.');
         }
         if (etatCommande === null || etatCommande === undefined) {
-            throw new Error('Required parameter etatCommande was null or undefined when calling updateEtatCommande.');
+            throw new Error('Required parameter etatCommande was null or undefined when calling updateEtatCommande1.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -701,18 +701,18 @@ export class CommandeClientsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateQuantiteCommande(idCommande: number, idLigneCommande: number, quantite: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<CommandeClientDto>;
-    public updateQuantiteCommande(idCommande: number, idLigneCommande: number, quantite: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<CommandeClientDto>>;
-    public updateQuantiteCommande(idCommande: number, idLigneCommande: number, quantite: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<CommandeClientDto>>;
-    public updateQuantiteCommande(idCommande: number, idLigneCommande: number, quantite: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateQuantiteCommande1(idCommande: number, idLigneCommande: number, quantite: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<CommandeClientDto>;
+    public updateQuantiteCommande1(idCommande: number, idLigneCommande: number, quantite: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<CommandeClientDto>>;
+    public updateQuantiteCommande1(idCommande: number, idLigneCommande: number, quantite: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<CommandeClientDto>>;
+    public updateQuantiteCommande1(idCommande: number, idLigneCommande: number, quantite: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (idCommande === null || idCommande === undefined) {
-            throw new Error('Required parameter idCommande was null or undefined when calling updateQuantiteCommande.');
+            throw new Error('Required parameter idCommande was null or undefined when calling updateQuantiteCommande1.');
         }
         if (idLigneCommande === null || idLigneCommande === undefined) {
-            throw new Error('Required parameter idLigneCommande was null or undefined when calling updateQuantiteCommande.');
+            throw new Error('Required parameter idLigneCommande was null or undefined when calling updateQuantiteCommande1.');
         }
         if (quantite === null || quantite === undefined) {
-            throw new Error('Required parameter quantite was null or undefined when calling updateQuantiteCommande.');
+            throw new Error('Required parameter quantite was null or undefined when calling updateQuantiteCommande1.');
         }
 
         let localVarHeaders = this.defaultHeaders;

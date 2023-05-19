@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import { ClientDto } from './clientDto';
+import { LigneCommandeClientDto } from './ligneCommandeClientDto';
 
 
 export interface CommandeClientDto { 
@@ -18,6 +19,7 @@ export interface CommandeClientDto {
     dateCommande?: string;
     clientDto?: ClientDto;
     etat?: CommandeClientDto.EtatEnum;
+    ligneCommandeClients?: Array<LigneCommandeClientDto>;
     commandeLivree?: boolean;
 }
 export namespace CommandeClientDto {

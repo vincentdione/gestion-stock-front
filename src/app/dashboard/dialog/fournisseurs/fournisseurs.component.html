@@ -1,1 +1,108 @@
-<p>fournisseurs works!</p>
+
+
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span class="title-center">{{dialogData.action}} fournisseur </span>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content>
+<form [formGroup]="fournisseurForm" fxLayout="column" fxLayoutAlign="center center" style="width: 100%" >
+  <div fxFlex fxLayout="column"  fxLayoutGap="20px" style="width: 100%">
+
+    <div class="form-row">
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Nom </mat-label>
+      <input matInput formControlName="nom" required>
+      <mat-error *ngIf="fournisseurForm.controls.nom.touched && fournisseurForm.controls.nom.invalid">
+        <span *ngIf="fournisseurForm.controls.nom.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Prénom </mat-label>
+      <input matInput formControlName="prenom" required>
+      <mat-error *ngIf="fournisseurForm.controls.prenom.touched && fournisseurForm.controls.prenom.invalid">
+        <span *ngIf="fournisseurForm.controls.prenom.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div class="form-row">
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Email </mat-label>
+      <input matInput formControlName="email" required>
+      <mat-error *ngIf="fournisseurForm.controls.email.touched && fournisseurForm.controls.email.invalid">
+        <span *ngIf="fournisseurForm.controls.email.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Téléphone </mat-label>
+      <input matInput formControlName="numTel" required>
+      <mat-error *ngIf="fournisseurForm.controls.numTel.touched && fournisseurForm.controls.numTel.invalid">
+        <span *ngIf="fournisseurForm.controls.numTel.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+    <div formGroupName="adresseDto" fxFlex fxLayout="column">
+      <div class="form-row">
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Adresse 1 </mat-label>
+      <input matInput formControlName="adresse1" required>
+      <mat-error *ngIf="fournisseurForm.controls.adresseDto.controls.adresse1.touched && fournisseurForm.controls.adresseDto.controls.adresse1.invalid">
+        <span *ngIf="fournisseurForm.controls.adresseDto.controls.adresse1.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Adresse 2 </mat-label>
+      <input matInput formControlName="adresse2" required>
+      <mat-error *ngIf="fournisseurForm.controls.adresseDto.controls.adresse2.touched && fournisseurForm.controls.adresseDto.controls.adresse2.invalid">
+        <span *ngIf="fournisseurForm.controls.adresseDto.controls.adresse2.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="form-row">
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Ville</mat-label>
+      <input matInput formControlName="ville" required>
+      <mat-error *ngIf="fournisseurForm.controls.adresseDto.controls.ville.touched && fournisseurForm.controls.adresseDto.controls.ville.invalid">
+        <span *ngIf="fournisseurForm.controls.adresseDto.controls.ville.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Code Postal</mat-label>
+      <input matInput formControlName="codePostal" required>
+      <mat-error *ngIf="fournisseurForm.controls.adresseDto.controls.codePostal.touched && fournisseurForm.controls.adresseDto.controls.codePostal.invalid">
+        <span *ngIf="fournisseurForm.controls.adresseDto.controls.codePostal.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Pays</mat-label>
+      <input matInput formControlName="pays" required>
+      <mat-error *ngIf="fournisseurForm.controls.adresseDto.controls.pays.touched && fournisseurForm.controls.adresseDto.controls.pays.invalid">
+        <span *ngIf="fournisseurForm.controls.adresseDto.controls.pays.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+  </div>
+
+
+  </div>
+</form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+<button mat-raised-button color="primary" type="submit"
+(click)="handleCategorySubmit()"  >{{action}}</button>
+<button mat-raised-button color="accent" mat-dialog-close>Fermer</button>
+</mat-dialog-actions>
+

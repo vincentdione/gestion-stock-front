@@ -18,13 +18,12 @@ export class ClientsComponent {
   onAdd= new EventEmitter();
   onUpdate= new EventEmitter();
   clientForm:any = FormGroup;
-  adresseForm:any = FormGroup;
+  adresse:any = FormGroup;
   dialogAction : any = "Ajouter"
   action :any = "Ajouter";
   responseMessage:any;
 
   client: ClientDto = {}
-  adresse: AdresseDto = {}
 
   constructor(@Inject(MAT_DIALOG_DATA) public dialogData: any,
   private formBuilder : FormBuilder,
@@ -75,11 +74,11 @@ export class ClientsComponent {
     var formData = this.clientForm.value;
 
     var dataAdresse = {
-          adresse1 :formData.adresseForm.adresse1,
-          adresse2 :formData.adresseForm.adresse2,
-          ville :formData.adresseForm.ville,
-          codePostal :formData.adresseForm.codePostal,
-          pays :formData.adresseForm.pays,
+          adresse1 :formData.adresse.adresse1,
+          adresse2 :formData.adresse.adresse2,
+          ville :formData.adresse.ville,
+          codePostal :formData.adresse.codePostal,
+          pays :formData.adresse.pays,
     }
 
     this.client = {
@@ -117,11 +116,11 @@ export class ClientsComponent {
     console.log(this.clientForm.value)
 
     var dataAdresse = {
-      adresse1 :formData.adresseForm.adresse1,
-      adresse2 :formData.adresseForm.adresse2,
-      ville :formData.adresseForm.ville,
-      codePostal :formData.adresseForm.codePostal,
-      pays :formData.adresseForm.pays,
+      adresse1 :formData.adresse.adresse1,
+      adresse2 :formData.adresse.adresse2,
+      ville :formData.adresse.ville,
+      codePostal :formData.adresse.codePostal,
+      pays :formData.adresse.pays,
 }
 
     var data = {

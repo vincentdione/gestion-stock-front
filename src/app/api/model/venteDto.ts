@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { LigneVenteDto } from './ligneVenteDto';
 
 
 export interface VenteDto { 
@@ -16,5 +17,7 @@ export interface VenteDto {
     code?: string;
     dateVente?: string;
     commentaire?: string;
+    ligneVentes?: Array<LigneVenteDto>;
+    idEntreprise?: number;
 }
 

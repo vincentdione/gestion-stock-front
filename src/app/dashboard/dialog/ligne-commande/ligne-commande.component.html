@@ -1,0 +1,41 @@
+<mat-card>
+  <div fxFlex fxLayout="column">
+
+    <div fxLayout="column" [formGroup]="ligneCommandeClients"  >
+        <mat-form-field appearance="fill"  fxFlex >
+          <mat-label>Article</mat-label>
+        <mat-select formControlName="article" (selectionChange)="onChange($event.value)">
+          <mat-option *ngFor="let c of dataArticles" [value]="c.codeArticle"> {{c.codeArticle}} </mat-option>
+        </mat-select>
+        <mat-error *ngIf="ligneCommandeClients.controls.article.touched && ligneCommandeClients.controls.article.invalid">
+          <span *ngIf="ligneCommandeClients.controls.article.errors.required" >This field is mandatory</span>
+        </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill"  fxFlex >
+          <mat-label>Quantité</mat-label>
+          <input matInput formControlName="quantite" required>
+          <mat-error *ngIf="ligneCommandeClients.controls.quantite.touched && ligneCommandeClients.controls.quantite.invalid">
+            <span *ngIf="ligneCommandeClients.controls.quantite.errors.required" >This field is mandatory</span>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill"  fxFlex >
+          <mat-label>Prix Unitaire</mat-label>
+          <input matInput formControlName="prixUnitaire"  [value]="selectedArticle.prixUnitaireTtc">
+          <mat-error *ngIf="ligneCommandeClients.controls.prixUnitaire.touched && ligneCommandeClients.controls.prixUnitaire.invalid">
+            <span *ngIf="ligneCommandeClients.controls.prixUnitaire.errors.required" >This field is mandatory</span>
+          </mat-error>
+        </mat-form-field>
+
+        <div>
+          <button mat-raised-button color="primary" class="btnRond" (click)="handleEdit()"  mat-dialog-close>Modifier</button>
+        </div>
+
+
+    </div>
+  </div>
+
+
+
+</mat-card>
