@@ -17,9 +17,7 @@ import { ArticleComponent } from '../dialog/article/article.component';
 })
 export class ManageArticlesComponent {
 
-
-
-  displayColumns : string[] = ["code","designation","category","souscategory","prixUnitaireHt","tauxTval","prixUnitaireTtc","action"]
+  displayColumns : string[] = ["code","category","souscategory","prixUnitaireHt","tauxTval","prixUnitaireTtc","action"]
   dataSource : any;
   responseMessage : any;
 

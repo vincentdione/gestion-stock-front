@@ -1,0 +1,39 @@
+
+
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span class="title-center">{{dialogData.action}} Catégorie </span>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content>
+<form [formGroup]="modePayementForm" >
+  <div fxFlex fxLayout="column">
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Code </mat-label>
+      <input matInput formControlName="code" required>
+      <mat-error *ngIf="modePayementForm.controls.code.touched && modePayementForm.controls.code.invalid">
+        <span *ngIf="modePayementForm.controls.code.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Désignation</mat-label>
+      <input matInput formControlName="designation" required>
+      <mat-error *ngIf="modePayementForm.controls.designation.touched && modePayementForm.controls.designation.invalid">
+        <span *ngIf="modePayementForm.controls.designation.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+
+
+  </div>
+</form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+<button mat-raised-button color="primary" type="submit"
+(click)="handleSubmit()" [disabled]="!(modePayementForm.dirty && modePayementForm.valid)" >{{action}}</button>
+<button mat-raised-button color="accent" mat-dialog-close>Fermer</button>
+</mat-dialog-actions>
+

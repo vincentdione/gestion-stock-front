@@ -1,0 +1,39 @@
+
+
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span class="title-center">{{dialogData.action}} Catégorie </span>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content>
+<form [formGroup]="uniteForm" >
+  <div fxFlex fxLayout="column">
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Code </mat-label>
+      <input matInput formControlName="nom" required>
+      <mat-error *ngIf="uniteForm.controls.nom.touched && uniteForm.controls.nom.invalid">
+        <span *ngIf="uniteForm.controls.nom.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Désignation</mat-label>
+      <input matInput formControlName="designation" required>
+      <mat-error *ngIf="uniteForm.controls.designation.touched && uniteForm.controls.designation.invalid">
+        <span *ngIf="uniteForm.controls.designation.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+
+
+  </div>
+</form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+<button mat-raised-button color="primary" type="submit"
+(click)="handleSubmit()" [disabled]="!(uniteForm.dirty && uniteForm.valid)" >{{action}}</button>
+<button mat-raised-button color="accent" mat-dialog-close>Fermer</button>
+</mat-dialog-actions>
+

@@ -142,7 +142,7 @@ export class FournisseursService {
             }
         }
 
-        let localVarPath = `/api/v1/fournisseurs/delete/${this.configuration.encodeParam({name: "idFournisseur", value: idFournisseur, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
+        let localVarPath = `/api/v1/admin/fournisseurs/delete/${this.configuration.encodeParam({name: "idFournisseur", value: idFournisseur, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         return this.httpClient.request<string>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -202,7 +202,7 @@ export class FournisseursService {
             }
         }
 
-        let localVarPath = `/api/v1/fournisseurs/all`;
+        let localVarPath = `/api/v1/admin/fournisseurs/all`;
         return this.httpClient.request<Array<FournisseurDto>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -266,7 +266,7 @@ export class FournisseursService {
             }
         }
 
-        let localVarPath = `/api/v1/fournisseurs/${this.configuration.encodeParam({name: "idFournisseur", value: idFournisseur, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
+        let localVarPath = `/api/v1/admin/fournisseurs/${this.configuration.encodeParam({name: "idFournisseur", value: idFournisseur, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         return this.httpClient.request<FournisseurDto>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -339,7 +339,7 @@ export class FournisseursService {
             }
         }
 
-        let localVarPath = `/api/v1/fournisseurs`;
+        let localVarPath = `/api/v1/admin/fournisseurs`;
         return this.httpClient.request<FournisseurDto>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,

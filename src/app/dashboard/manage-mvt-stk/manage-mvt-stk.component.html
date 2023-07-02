@@ -1,1 +1,66 @@
-<p>manage-mvt-stk works!</p>
+
+<!-- //routerLink="/workspace/dashboard/addCategory" -->
+<mat-card>
+  <b> <span>Gestion des mouvements stocks</span> </b>
+  <!-- <button mat-flat-button  color="primary" (click)="handleAdd()" >Ajouter une unité</button> -->
+</mat-card>
+<hr>
+<mat-card>
+  <mat-form-field appearance="fill" >
+    <mat-label>Filtrer</mat-label>
+    <input matInput (keyup)="applyFilter($event)" #input>
+  </mat-form-field>
+</mat-card>
+<hr>
+
+<div class="responsive_table">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="article">
+       <th mat-header-cell *matHeaderCellDef>Article</th>
+       <td mat-cell *matCellDef="let element">{{element.article?.codeArticle}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="typeMvtStk">
+        <th mat-header-cell *matHeaderCellDef>Type Mvt</th>
+        <td mat-cell *matCellDef="let element">
+            <mat-chip color="primary" >{{element.typeMvtStk}}</mat-chip>
+         </td>
+       </ng-container>
+
+       <ng-container matColumnDef="sourceMvt">
+        <th mat-header-cell *matHeaderCellDef>Source Mvt</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-chip color="primary" >{{element.sourceMvt}}</mat-chip>
+        </td>
+
+
+       </ng-container>
+
+       <ng-container matColumnDef="quantite">
+        <th mat-header-cell *matHeaderCellDef>Quantité</th>
+        <td mat-cell *matCellDef="let element">{{element.quantite}}</td>
+       </ng-container>
+
+       <ng-container matColumnDef="dateMvt">
+        <th mat-header-cell *matHeaderCellDef>Date Mvt</th>
+        <td mat-cell *matCellDef="let element">{{element.dateMvt | date: 'dd/MM/yyyy' }}</td>
+       </ng-container>
+
+
+      <ng-container matColumnDef="action">
+       <th mat-header-cell *matHeaderCellDef>Action</th>
+       <td mat-cell *matCellDef="let element" class="action-link" >
+         <button mat-icon-button color="primary" matTooltip="Modifier" >
+           <mat-icon>edit</mat-icon>
+         </button>
+         <!-- <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
+           <mat-icon>delete</mat-icon>
+         </button> -->
+<!--          <mat-slide-toggle (change)="onChange($event.checked,element.id)" matTooltip="Activer ou desactiver" [checked]="element.status" ></mat-slide-toggle>
+ -->       </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
+      <tr mat-row *matRowDef="let row;columns:displayColumns"></tr>
+  </table>
+</div>
+

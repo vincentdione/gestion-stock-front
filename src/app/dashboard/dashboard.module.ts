@@ -33,6 +33,12 @@ import { CommandeClientsComponent } from './dialog/commande-clients/commande-cli
 import { CommandeFournisseursComponent } from './dialog/commande-fournisseurs/commande-fournisseurs.component';
 import { AddCommandeClientComponent } from './pages/add-commande-client/add-commande-client.component';
 import { LigneCommandeComponent } from './dialog/ligne-commande/ligne-commande.component';
+import { ManageUniteComponent } from './manage-unite/manage-unite.component';
+import { ManageModePayementComponent } from './manage-mode-payement/manage-mode-payement.component';
+import { UniteComponent } from './dialog/unite/unite.component';
+import { ModePayementComponent } from './dialog/mode-payement/mode-payement.component';
+import { ManageConditionComponent } from './manage-condition/manage-condition.component';
+import { ConditionComponent } from './dialog/condition/condition.component';
 
 
 @NgModule({
@@ -62,7 +68,13 @@ import { LigneCommandeComponent } from './dialog/ligne-commande/ligne-commande.c
     CommandeFournisseursComponent,
     AddCommandeClientComponent,
     DetailsLignesCommandesComponent,
-    LigneCommandeComponent
+    LigneCommandeComponent,
+    ManageUniteComponent,
+    ManageModePayementComponent,
+    UniteComponent,
+    ModePayementComponent,
+    ManageConditionComponent,
+    ConditionComponent
 
   ],
   imports: [

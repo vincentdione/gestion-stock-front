@@ -11,6 +11,7 @@
  */
 import { ClientDto } from './clientDto';
 import { LigneCommandeClientDto } from './ligneCommandeClientDto';
+import { ModePayementDto } from './modePayementDto';
 
 
 export interface CommandeClientDto { 
@@ -19,6 +20,7 @@ export interface CommandeClientDto {
     dateCommande?: string;
     clientDto?: ClientDto;
     etat?: CommandeClientDto.EtatEnum;
+    modePayement?: ModePayementDto;
     ligneCommandeClients?: Array<LigneCommandeClientDto>;
     commandeLivree?: boolean;
 }

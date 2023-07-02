@@ -14,6 +14,9 @@ import { ManageVentesComponent } from './manage-ventes/manage-ventes.component';
 import { ManageMvtStkComponent } from './manage-mvt-stk/manage-mvt-stk.component';
 import { AddCategoryComponent } from './manage-category/add-category/add-category.component';
 import { AddCommandeClientComponent } from './pages/add-commande-client/add-commande-client.component';
+import { ManageUniteComponent } from './manage-unite/manage-unite.component';
+import { ManageModePayementComponent } from './manage-mode-payement/manage-mode-payement.component';
+import { ManageConditionComponent } from './manage-condition/manage-condition.component';
 
 const routes: Routes = [
   {
@@ -25,6 +28,9 @@ const routes: Routes = [
       { path: 'users', component: ManageUsersComponent },
       { path: 'article', component: ManageArticlesComponent },
       { path: 'category', component: ManageCategoryComponent },
+      { path: 'unite', component: ManageUniteComponent },
+      { path: 'condition', component: ManageConditionComponent },
+      { path: 'modePayement', component: ManageModePayementComponent },
       { path: 'addCategory', component: AddCategoryComponent },
       { path: 'sousCategory', component: ManageSousCategoryComponent },
       { path: 'clients', component: ManageClientsComponent },

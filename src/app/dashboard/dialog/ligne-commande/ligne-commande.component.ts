@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ArticleDto, ArticlesService, ClientDto, ClientsService, CommandeClientsService, CommandeFournisseursService, FournisseurDto, FournisseursService } from 'src/app/api';
+import { ArticleDto, ArticlesService, ClientDto, ClientsService, CommandeClientsService, CommandeFournisseursService, FournisseurDto, FournisseursService, VentesService } from 'src/app/api';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { GlobalConstants } from 'src/app/shared/GlobalConstants';
 
@@ -37,6 +37,7 @@ export class LigneCommandeComponent {
   private dialogRef: MatDialogRef<LigneCommandeComponent>,
   private clientService:ClientsService,
   private fournisseurService:FournisseursService,
+  private venteService:VentesService,
   private articleService: ArticlesService,
   private snackbarService: SnackbarService) { }
 
@@ -252,6 +253,93 @@ export class LigneCommandeComponent {
 
 
   }
+
+  // editVente(){
+
+  //   var formData = this.ligneCommandeClients.value;
+  //   console.log(this.ligneCommandeClients.value)
+  //   var data = {
+  //     id : this.dialogData.data.id,
+  //     article: formData?.article,
+  //     quantite : formData?.quantite
+  //   }
+
+  //   const article = this.dataArticles.find((art)=> art.codeArticle == data.article)
+
+
+  //   if (data.article?.codeArticle !== this.selectedArticle){
+  //     this.venteService.upda(this.idCommande,data.id,article.id).subscribe((res:any)=>{
+  //       this.dialogRef.close()
+  //       this.onUpdate.emit();
+  //       this.responseMessage = res.message
+  //       this.snackbarService.openSnackbar("Commande modifiée avec success !"+data.article.codeArticle,"success")
+  //    },(error:any)=>{
+  //      this.dialogRef.close();
+  //      if(error.error?.message){
+  //          this.responseMessage = error.error?.message
+  //      }
+  //      else {
+  //        this.responseMessage = GlobalConstants.genericErrorMessage
+  //      }
+  //      this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
+  //    })
+  //   }
+
+
+  //   if (data?.quantite !== this.dialogData.data.quantite){
+  //     this.commandeFournisseurService.updateQuantiteCommande(this.idCommande,data.id,data.quantite).subscribe((res:any)=>{
+  //       this.dialogRef.close()
+  //       this.onUpdate.emit();
+  //       this.responseMessage = res.message
+  //       this.snackbarService.openSnackbar("Commande modifiée avec success !"+data.article.codeArticle,"success")
+  //    },(error:any)=>{
+  //      this.dialogRef.close();
+  //      if(error.error?.message){
+  //          this.responseMessage = error.error?.message
+  //      }
+  //      else {
+  //        this.responseMessage = GlobalConstants.genericErrorMessage
+  //      }
+  //      this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
+  //    })
+  //   }
+
+  //   if (data.article?.codeArticle !== this.selectedArticle && data?.quantite !== this.dialogData.data.quantite ){
+  //     this.commandeFournisseurService.updateArticle(this.idCommande,data.id,article.id).subscribe((res:any)=>{
+
+
+  //       this.commandeFournisseurService.updateQuantiteCommande(this.idCommande,data.id,data.quantite).subscribe((res:any)=>{
+  //         this.dialogRef.close()
+  //         this.onUpdate.emit();
+  //         this.responseMessage = res.message
+  //         this.snackbarService.openSnackbar("Commande modifiée avec success !"+data.article.codeArticle,"success")
+  //      },(error:any)=>{
+  //        this.dialogRef.close();
+  //        if(error.error?.message){
+  //            this.responseMessage = error.error?.message
+  //        }
+  //        else {
+  //          this.responseMessage = GlobalConstants.genericErrorMessage
+  //        }
+  //        this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
+  //      })
+  //    },(error:any)=>{
+  //      this.dialogRef.close();
+  //      if(error.error?.message){
+  //          this.responseMessage = error.error?.message
+  //      }
+  //      else {
+  //        this.responseMessage = GlobalConstants.genericErrorMessage
+  //      }
+  //      this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
+  //    })
+
+
+
+  //   }
+
+
+  // }
 
   getClients(){
     this.clientService.getAllClients().subscribe((res:any)=>{

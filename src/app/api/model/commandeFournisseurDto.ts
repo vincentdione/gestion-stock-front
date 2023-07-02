@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import { LigneCommandeFournisseurDto } from './ligneCommandeFournisseurDto';
+import { ModePayementDto } from './modePayementDto';
 import { FournisseurDto } from './fournisseurDto';
 
 
@@ -20,6 +21,7 @@ export interface CommandeFournisseurDto {
     fournisseurDto?: FournisseurDto;
     etatCommande?: CommandeFournisseurDto.EtatCommandeEnum;
     idEntreprise?: number;
+    modePayement?: ModePayementDto;
     ligneCommandeFournisseurDtos?: Array<LigneCommandeFournisseurDto>;
     commandeLivree?: boolean;
 }

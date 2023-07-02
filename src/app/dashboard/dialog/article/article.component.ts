@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ArticleDto, ArticlesService, SousCategoriesService, SousCategoryDto } from 'src/app/api';
+import { ArticleDto, ArticlesService, SousCategoriesService, SousCategoryDto, UniteDto, UnitsService } from 'src/app/api';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { GlobalConstants } from 'src/app/shared/GlobalConstants';
 
@@ -24,10 +24,12 @@ export class ArticleComponent {
 
   souscategory: SousCategoryDto = {}
   listeSousCategories: Array<SousCategoryDto> = []
+  listeUnites: Array<UniteDto> = []
 
   constructor(@Inject(MAT_DIALOG_DATA) public dialogData: any,
   private formBuilder : FormBuilder,
   private articleService:ArticlesService,
+  private uniteService:UnitsService,
   private sousCategorieService: SousCategoriesService,
   private dialogRef: MatDialogRef<ArticleComponent>,private snackbarService: SnackbarService) { }
 
@@ -40,6 +42,7 @@ export class ArticleComponent {
       tauxTval :[null,[Validators.required]],
       prixUnitaireTtc :[null],
       sous_Category :[null,[Validators.required,]],
+      // unite :[null,[Validators.required,]],
     })
 
     if(this.dialogData.action === "Modifier"){
@@ -57,6 +60,7 @@ export class ArticleComponent {
     });
 
     this.getAllSousCategories()
+    this.getAllUnites()
 
   }
 
@@ -64,6 +68,21 @@ export class ArticleComponent {
   getAllSousCategories(){
     this.sousCategorieService.getAllSousCategorys().subscribe((res)=>{
        this.listeSousCategories = res
+    },(error=>{
+      if(error.error?.message){
+        this.responseMessage = error.error?.message
+        console.log(this.responseMessage)
+    }
+    else {
+      this.responseMessage = GlobalConstants.genericErrorMessage
+      console.log(this.responseMessage)
+    }
+    }))
+  }
+
+  getAllUnites(){
+    this.uniteService.getAllUnites().subscribe((res)=>{
+       this.listeUnites = res
     },(error=>{
       if(error.error?.message){
         this.responseMessage = error.error?.message
@@ -130,6 +149,7 @@ export class ArticleComponent {
       tauxTval :formData.tauxTval,
       prixUnitaireTtc :formData.prixUnitaireTtc,
       sousCategoryDto :formData.sous_Category,
+      unite :formData.unite,
     }
 
     console.log(data)

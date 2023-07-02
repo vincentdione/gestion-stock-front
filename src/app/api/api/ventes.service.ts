@@ -144,7 +144,7 @@ export class VentesService {
             }
         }
 
-        let localVarPath = `/api/v1/ventes/delete/${this.configuration.encodeParam({name: "idVente", value: idVente, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
+        let localVarPath = `/api/v1/admin/ventes/delete/${this.configuration.encodeParam({name: "idVente", value: idVente, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         return this.httpClient.request<string>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -208,7 +208,7 @@ export class VentesService {
             }
         }
 
-        let localVarPath = `/api/v1/ventes/ligneVente/${this.configuration.encodeParam({name: "idVente", value: idVente, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
+        let localVarPath = `/api/v1/admin/ventes/ligneVente/${this.configuration.encodeParam({name: "idVente", value: idVente, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         return this.httpClient.request<Array<LigneVenteDto>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -268,7 +268,7 @@ export class VentesService {
             }
         }
 
-        let localVarPath = `/api/v1/ventes/all`;
+        let localVarPath = `/api/v1/admin/ventes/all`;
         return this.httpClient.request<Array<VenteDto>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -332,7 +332,7 @@ export class VentesService {
             }
         }
 
-        let localVarPath = `/api/v1/ventes/${this.configuration.encodeParam({name: "code", value: code, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/api/v1/admin/ventes/${this.configuration.encodeParam({name: "code", value: code, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<VenteDto>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -396,7 +396,7 @@ export class VentesService {
             }
         }
 
-        let localVarPath = `/api/v1/ventes/${this.configuration.encodeParam({name: "idVente", value: idVente, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
+        let localVarPath = `/api/v1/admin/ventes/${this.configuration.encodeParam({name: "idVente", value: idVente, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         return this.httpClient.request<VenteDto>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -469,7 +469,7 @@ export class VentesService {
             }
         }
 
-        let localVarPath = `/api/v1/ventes`;
+        let localVarPath = `/api/v1/admin/ventes`;
         return this.httpClient.request<VenteDto>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,

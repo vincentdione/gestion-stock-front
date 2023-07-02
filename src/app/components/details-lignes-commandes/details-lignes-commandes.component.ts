@@ -44,6 +44,32 @@ export class DetailsLignesCommandesComponent {
     else if (this.origin == 'fournisseur'){
       this.tableDataFournisseurs()
     }
+
+    else {
+      this.tableDataVentes()
+
+    }
+
+  }
+
+  tableDataVentes(){
+    this.venteService.findAllLigneVenteByVenteId(this.idCommande).subscribe((res:any) => {
+      this.ngxService.stop()
+      this.dataSource = new MatTableDataSource(res)
+      console.log(res)
+      // this.total = res.reduce((acc:number, val:any) => {
+      //   return acc + parseInt(val.rad_prix);
+      // }, 0);
+    },(error)=>{
+      this.ngxService.stop()
+      if(error.error?.message){
+        this.responseMessage = error.error?.message
+    }
+    else {
+      this.responseMessage = GlobalConstants.genericErrorMessage
+    }
+    this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
+    })
   }
 
 
@@ -87,25 +113,6 @@ export class DetailsLignesCommandesComponent {
     })
   }
 
-  tableDataVentes(){
-    this.venteService.findAllLigneVenteByVenteId(this.idCommande).subscribe((res:any) => {
-      this.ngxService.stop()
-      this.dataSource = new MatTableDataSource(res)
-      console.log(res)
-      // this.total = res.reduce((acc:number, val:any) => {
-      //   return acc + parseInt(val.rad_prix);
-      // }, 0);
-    },(error)=>{
-      this.ngxService.stop()
-      if(error.error?.message){
-        this.responseMessage = error.error?.message
-    }
-    else {
-      this.responseMessage = GlobalConstants.genericErrorMessage
-    }
-    this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
-    })
-  }
 
 
   handleDelete(values:any){
@@ -161,6 +168,24 @@ export class DetailsLignesCommandesComponent {
 
    }
 
+   else {
+    this.venteService.deleteVente(this.idCommande,id).subscribe((res:any)=>{
+      this.ngxService.stop()
+      this.tableDataFournisseurs()
+      this.responseMessage = res?.message
+      this.snackbarService.openSnackbar("Ligne de vente supprimée avec success","success")
+  },(error:any)=>{
+    this.ngxService.stop()
+    if(error.error?.message){
+      this.responseMessage = error.error?.message
+  }
+  else {
+    this.responseMessage = GlobalConstants.genericErrorMessage
+  }
+  this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
+  })
+   }
+
   }
 
   handleEdit(values:any){
@@ -186,6 +211,9 @@ export class DetailsLignesCommandesComponent {
        else if (this.origin == 'fournisseur'){
         this.tableDataFournisseurs()
        }
+      //  else {
+      //   this.tableDataVentes()
+      //  }
      }
    )
  }

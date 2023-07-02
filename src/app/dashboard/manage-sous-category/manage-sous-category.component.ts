@@ -115,7 +115,7 @@ export class ManageSousCategoryComponent {
           this.ngxService.stop()
           this.tableData()
           this.responseMessage = res?.message
-          this.snackbarService.openSnackbar(this.responseMessage,"success")
+          this.snackbarService.openSnackbar("Sous catégorie supprimée avec success","success")
       },(error:any)=>{
         this.ngxService.stop()
         if(error.error?.message){

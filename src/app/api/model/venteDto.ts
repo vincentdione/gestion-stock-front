@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import { LigneVenteDto } from './ligneVenteDto';
+import { ModePayementDto } from './modePayementDto';
 
 
 export interface VenteDto { 
@@ -19,5 +20,6 @@ export interface VenteDto {
     commentaire?: string;
     ligneVentes?: Array<LigneVenteDto>;
     idEntreprise?: number;
+    modePayement?: ModePayementDto;
 }
 

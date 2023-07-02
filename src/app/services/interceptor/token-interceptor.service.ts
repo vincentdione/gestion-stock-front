@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { AuthenticationResponse } from 'src/app/api';
 import {tap} from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,19 +12,17 @@ import {tap} from 'rxjs/operators';
 export class TokenInterceptorService implements HttpInterceptor {
 
   constructor(
-    private loaderService: NgxUiLoaderService
+    private loaderService: NgxUiLoaderService,
+    private router: Router
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.loaderService.start();
-    console.log("HELLOOOOOOOOOOOOOOOOOOO")
     let authenticationResponse: AuthenticationResponse = {};
     if (localStorage.getItem('accessToken')) {
       authenticationResponse = JSON.parse(
         localStorage.getItem('accessToken') as string
       );
-      console.log("HELLOOOOOOOOOOOOOOOOOOO " +authenticationResponse.access_token)
-      console.log("HELLOOOOOOOOOOOOOOOOOOO " +JSON.parse(localStorage.getItem('accessToken') as string))
       const authReq = req.clone({
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
@@ -43,6 +42,11 @@ export class TokenInterceptorService implements HttpInterceptor {
           this.loaderService.stop();
         }
       }, (err: any) => {
+        if (err.status === 401) {
+          // Le token a expiré, déconnectez l'utilisateur et redirigez-le vers la page de connexion
+          this.router.navigate(['/login']);
+          this.loaderService.stop();
+        }
           this.loaderService.stop();
       }));
   }

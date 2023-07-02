@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import { EntrepriseDto } from './entrepriseDto';
+import { AdresseDto } from './adresseDto';
 
 
 export interface UtilisateurDto { 
@@ -19,6 +20,18 @@ export interface UtilisateurDto {
     email?: string;
     nom?: string;
     prenom?: string;
+    dateDeNaissance?: string;
     entrepriseDto?: EntrepriseDto;
+    role?: UtilisateurDto.RoleEnum;
+    adresse?: AdresseDto;
 }
+export namespace UtilisateurDto {
+    export type RoleEnum = 'USER' | 'ADMIN' | 'MANAGER';
+    export const RoleEnum = {
+        User: 'USER' as RoleEnum,
+        Admin: 'ADMIN' as RoleEnum,
+        Manager: 'MANAGER' as RoleEnum
+    };
+}
+
 

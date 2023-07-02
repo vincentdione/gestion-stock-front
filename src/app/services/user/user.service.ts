@@ -44,9 +44,6 @@ export class UserService {
 
   getUserByUsername(username?: string): Observable<UtilisateurDto> {
     if (username !== undefined) {
-      console.log('====================================');
-      console.log(username);
-      console.log('====================================');
       return this.utilisateurService.findByUsername(username);
     }
     return of();
@@ -72,7 +69,9 @@ export class UserService {
   }
 
   logout(){
-
+    localStorage.removeItem('user');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
   }
 
 

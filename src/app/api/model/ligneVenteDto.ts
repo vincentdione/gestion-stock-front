@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { UniteDto } from './uniteDto';
 import { VenteDto } from './venteDto';
 import { ArticleDto } from './articleDto';
 
@@ -19,5 +20,6 @@ export interface LigneVenteDto {
     quantite?: number;
     prixUnitaire?: number;
     article?: ArticleDto;
+    unite?: UniteDto;
 }
 

@@ -53,7 +53,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     FlexLayoutModule,
     HttpClientModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
-     DashboardModule
+    DashboardModule
   ],
   providers: [    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptorService, multi: true },
   ],

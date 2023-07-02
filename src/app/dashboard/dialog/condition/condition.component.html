@@ -1,0 +1,53 @@
+
+
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span class="title-center">{{dialogData.action}} Catégorie </span>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content>
+<form [formGroup]="conditionForm" >
+  <div fxFlex fxLayout="column">
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Article</mat-label>
+      <mat-select formControlName="article"  [(ngModel)]="selectedArticle">
+        <mat-option *ngFor="let u of listeArticles" [value]="u"> {{u.codeArticle}}</mat-option>
+    </mat-select>
+    <mat-error *ngIf="conditionForm.controls.article.touched && conditionForm.controls.article.invalid">
+      <span *ngIf="conditionForm.controls.article.errors.required" >This field is mandatory</span>
+    </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Unité</mat-label>
+      <mat-select formControlName="unite">
+        <mat-option *ngFor="let u of listeUnites" [value]="u"> {{u.nom}}</mat-option>
+    </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Prix</mat-label>
+      <input matInput formControlName="price"  [value]="selectedArticle.prixUnitaireTtc">
+      <mat-error *ngIf="conditionForm.controls.price.touched && conditionForm.controls.price.invalid">
+        <span *ngIf="conditionForm.controls.price.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+<!-- 
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Quantite</mat-label>
+      <input matInput formControlName="quantity" required>
+      <mat-error *ngIf="conditionForm.controls.quantity.touched && conditionForm.controls.quantity.invalid">
+        <span *ngIf="conditionForm.controls.quantity.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field> -->
+  </div>
+</form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+<button mat-raised-button color="primary" type="submit"
+(click)="handleSubmit()" [disabled]="!(conditionForm.dirty && conditionForm.valid)" >{{action}}</button>
+<button mat-raised-button color="accent" mat-dialog-close>Fermer</button>
+</mat-dialog-actions>
+

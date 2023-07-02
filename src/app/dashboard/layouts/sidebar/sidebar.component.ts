@@ -16,15 +16,14 @@ export class SidebarComponent implements OnDestroy {
 
   menus = [
   { label: 'Dashboard', icon: 'home', link: 'dashboard' },
-  {  label: 'Parametres',      icon: 'menu',
-    subMenuItems:
-    [
-       { label: 'Catégories', link: 'category',icon: 'view_module' },
-       { label: 'Sous-catégories', link: 'sousCategory',icon: 'view_quilt' },
-       { label: 'Articles', link: 'article',icon: 'add_shopping_cart' },
-       { label: 'Utilisateurs', link: 'users',icon: 'person' },
-    ]
-  },
+  {  label: 'Ventes',      icon: 'menu',
+  subMenuItems:
+  [
+     { label: 'Ventes', link: 'ventes',icon: 'shopping_cart' },
+    //  { label: 'Commandes', link: 'commandeFournisseurs',icon: 'assignment' },
+  ]
+},
+
   {  label: 'Clients',      icon: 'menu',
   subMenuItems:
   [
@@ -39,13 +38,25 @@ export class SidebarComponent implements OnDestroy {
      { label: 'Commandes', link: 'commandeFournisseurs',icon: 'assignment' },
   ]
 },
-{  label: 'Ventes',      icon: 'menu',
+
+{  label: 'Mouvements stocks',      icon: 'menu',
   subMenuItems:
   [
-     { label: 'Ventes', link: 'ventes',icon: 'shopping_cart' },
-    //  { label: 'Commandes', link: 'commandeFournisseurs',icon: 'assignment' },
+     { label: 'Stock', link: 'mouvements',icon: 'inventory' },
   ]
-}
+},
+
+{  label: 'Parametres',      icon: 'menu',
+    subMenuItems:
+    [
+      { label: 'Unités', link: 'unite',icon: 'extension' },
+      { label: 'Mode Payement', link: 'modePayement',icon: 'payment' },
+      { label: 'Catégories', link: 'category',icon: 'view_module' },
+       { label: 'Sous-catégories', link: 'sousCategory',icon: 'view_quilt' },
+       { label: 'Articles', link: 'article',icon: 'add_shopping_cart' },
+       { label: 'Conditions ventes', link: 'condition',icon: 'view_comfy' },
+    ]
+  },
      ];
 
   private _mobileQueryListener: () => void;

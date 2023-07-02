@@ -142,7 +142,7 @@ export class SousCategoriesService {
             }
         }
 
-        let localVarPath = `/api/v1/souscategories/delete/${this.configuration.encodeParam({name: "idSousCategory", value: idSousCategory, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
+        let localVarPath = `/api/v1/admin/api/v1/souscategories/delete/${this.configuration.encodeParam({name: "idSousCategory", value: idSousCategory, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         return this.httpClient.request<string>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -202,7 +202,7 @@ export class SousCategoriesService {
             }
         }
 
-        let localVarPath = `/api/v1/souscategories/all`;
+        let localVarPath = `/api/v1/admin/api/v1/souscategories/all`;
         return this.httpClient.request<Array<SousCategoryDto>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -266,7 +266,7 @@ export class SousCategoriesService {
             }
         }
 
-        let localVarPath = `/api/v1/souscategories/${this.configuration.encodeParam({name: "idSousCategory", value: idSousCategory, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
+        let localVarPath = `/api/v1/admin/api/v1/souscategories/${this.configuration.encodeParam({name: "idSousCategory", value: idSousCategory, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         return this.httpClient.request<SousCategoryDto>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -330,7 +330,7 @@ export class SousCategoriesService {
             }
         }
 
-        let localVarPath = `/api/v1/souscategories/${this.configuration.encodeParam({name: "nom", value: nom, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/api/v1/admin/api/v1/souscategories/${this.configuration.encodeParam({name: "nom", value: nom, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<SousCategoryDto>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -403,7 +403,7 @@ export class SousCategoriesService {
             }
         }
 
-        let localVarPath = `/api/v1/souscategories`;
+        let localVarPath = `/api/v1/admin/api/v1/souscategories`;
         return this.httpClient.request<SousCategoryDto>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,

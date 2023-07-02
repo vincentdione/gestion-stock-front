@@ -106,7 +106,7 @@ export class SousCategoryComponent {
        this.dialogRef.close()
        this.onAddSousCategory.emit();
        this.responseMessage = res.message
-       this.snackbarService.openSnackbar(this.responseMessage,"success")
+       this.snackbarService.openSnackbar("Sous catégorie ajoutée avec success","success")
     },(error)=>{
       this.dialogRef.close();
       if(error.error?.message){
@@ -138,7 +138,7 @@ export class SousCategoryComponent {
        this.dialogRef.close()
        this.onUpdateSousCategory.emit();
        this.responseMessage = res.message
-       this.snackbarService.openSnackbar(this.responseMessage,"success")
+       this.snackbarService.openSnackbar("Sous catégorie modifiée avec success","success")
     },(error:any)=>{
       this.dialogRef.close();
       if(error.error?.message){
