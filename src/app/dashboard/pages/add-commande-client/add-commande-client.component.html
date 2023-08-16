@@ -45,11 +45,21 @@
     <div fxLayout="row wrap" formGroupName="ligneCommandeClients"  >
         <mat-form-field appearance="fill"  fxFlex >
           <mat-label>Article</mat-label>
-        <mat-select formControlName="article" (selectionChange)="onChange($event.value)" [(ngModel)]="selectedArticle" >
-          <mat-option *ngFor="let c of dataArticles" [value]="c"> {{c.codeArticle}} </mat-option>
+        <mat-select formControlName="article" (selectionChange)="onChange($event.value)" [(ngModel)]="selectedCondition" >
+          <mat-option *ngFor="let c of dataConditions" [value]="c"> {{c.article.codeArticle}} </mat-option>
         </mat-select>
         <mat-error *ngIf="comClientForm.controls.ligneCommandeClients.controls.article.touched && comClientForm.controls.ligneCommandeClients.controls.article.invalid">
           <span *ngIf="comClientForm.controls.ligneCommandeClients.controls.article.errors.required" >This field is mandatory</span>
+        </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill"  fxFlex >
+          <mat-label>Unite</mat-label>
+        <mat-select formControlName="unite" (selectionChange)="onUniteSelected($event.value)" [(ngModel)]="selectedUnite" >
+          <mat-option *ngFor="let c of dataUnites" [value]="c"> {{c.nom}} </mat-option>
+        </mat-select>
+        <mat-error *ngIf="comClientForm.controls.ligneCommandeClients.controls.unite.touched && comClientForm.controls.ligneCommandeClients.controls.unite.invalid">
+          <span *ngIf="comClientForm.controls.ligneCommandeClients.controls.unite.errors.required" >This field is mandatory</span>
         </mat-error>
         </mat-form-field>
 
@@ -63,7 +73,7 @@
 
         <mat-form-field appearance="fill"  fxFlex >
           <mat-label>Prix Unitaire</mat-label>
-          <input matInput formControlName="prixUnitaire" [value]="selectedArticle.prixUnitaireTtc">
+          <input matInput formControlName="prixUnitaire">
           <mat-error *ngIf="comClientForm.controls.ligneCommandeClients.controls.prixUnitaire.touched && comClientForm.controls.ligneCommandeClients.controls.prixUnitaire.invalid">
             <span *ngIf="comClientForm.controls.ligneCommandeClients.controls.prixUnitaire.errors.required" >This field is mandatory</span>
           </mat-error>
@@ -103,7 +113,7 @@
 
            <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
             <mat-icon>delete</mat-icon>
-          </button>
+           </button>
          </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>

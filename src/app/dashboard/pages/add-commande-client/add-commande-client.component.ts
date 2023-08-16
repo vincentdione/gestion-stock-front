@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { ArticleDto, ArticlesService, ClientDto, ClientsService, CommandeClientDto, CommandeClientsService, CommandeFournisseursService, FournisseurDto, FournisseursService, LigneCommandeClientDto, LigneCommandeFournisseurDto } from 'src/app/api';
+import { ArticleDto,ConditionAVDto,UniteDto, ArticlesService, ClientDto, UnitsService,ClientsService, CommandeClientDto, CommandeClientsService,ConditionsDeVentesService, CommandeFournisseursService, FournisseurDto, FournisseursService, LigneCommandeClientDto, LigneCommandeFournisseurDto } from 'src/app/api';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { GlobalConstants } from 'src/app/shared/GlobalConstants';
 
@@ -39,12 +39,19 @@ export class AddCommandeClientComponent {
 
   dataClients : any [] = [];
   dataArticles : any [] = [];
+  dataConditions : any [] = [];
+  dataAllConditions : any [] = [];
+  dataUnites : any [] = [];
 
   selectedClient: ClientDto = {}
   selectedFournisseur: FournisseurDto = {}
   selectedArticle: ArticleDto = {}
+  selectedCondition: ConditionAVDto = {}
+  selectedUnite: UniteDto = {}
   searchedArticle: ArticleDto = {};
   origin = ''
+
+  uniqueArticles!: any[];
 
   constructor(
     private clientService:ClientsService,
@@ -52,6 +59,8 @@ export class AddCommandeClientComponent {
     private articleService: ArticlesService,
     private comClientService:CommandeClientsService,
     private comFournisseurService:CommandeFournisseursService,
+    private conditionAV:ConditionsDeVentesService,
+    private uniteService:UnitsService,
     // private ligneCommandeClients : Ligne
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -69,8 +78,9 @@ export class AddCommandeClientComponent {
       clientDto :[null],
       ligneCommandeClients: this.formBuilder.group({
         article :[null,[Validators.required]],
+        unite :[null,[Validators.required]],
         quantite :[null],
-        prixUnitaire :[this.selectedArticle?.prixUnitaireTtc],
+        prixUnitaire :[],
     })
 
     })
@@ -83,6 +93,12 @@ export class AddCommandeClientComponent {
       this.getFournisseurs()
     }
     this.getArticles()
+    this.getConditionAVs()
+    this.getAllConditions()
+
+    if (this.dataUnites.length > 0) {
+      this.selectedUnite = this.dataUnites[0];
+  }
   }
 
 
@@ -137,6 +153,62 @@ export class AddCommandeClientComponent {
     })
   }
 
+  getConditionAVs(){
+    this.conditionAV.getAllConditionWithDistincts().subscribe((res:any)=>{
+      this.dataConditions = res
+      //this.uniqueArticles = this.getUniqueArticles(res);
+      //this.dataConditions = this.uniqueArticles
+      console.log(this.dataConditions)
+      //console.log(this.uniqueArticles)
+    },(error)=>{
+      if(error.error?.message){
+          this.responseMessage = error.error?.message
+      }
+      else {
+        this.responseMessage = GlobalConstants.genericErrorMessage
+      }
+      this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
+    })
+  }
+
+  getAllConditions(){
+    this.conditionAV.getAllConditions().subscribe((res:any)=>{
+      this.dataAllConditions = res
+      //this.uniqueArticles = this.getUniqueArticles(res);
+      //this.dataConditions = this.uniqueArticles
+      console.log(this.dataConditions)
+      //console.log(this.uniqueArticles)
+    },(error)=>{
+      if(error.error?.message){
+          this.responseMessage = error.error?.message
+      }
+      else {
+        this.responseMessage = GlobalConstants.genericErrorMessage
+      }
+      this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
+    })
+  }
+
+  getUniqueArticles(data: any[]): any[] {
+    const uniqueArticles = new Map();
+    data.forEach(item => {
+      if (!uniqueArticles.has(item.article.id)) {
+        uniqueArticles.set(item.article.id, item.article);
+      }
+    });
+    return Array.from(uniqueArticles.values());
+  }
+
+  onUniteSelected(selectedUnite: any) {
+
+
+    const conditionWithSelectedUnite = this.dataAllConditions.find(condition => condition.unite.id === selectedUnite.id);
+    if (conditionWithSelectedUnite) {
+        this.comClientForm.get('ligneCommandeClients').get('prixUnitaire').setValue(conditionWithSelectedUnite.price);
+        this.selectedCondition = conditionWithSelectedUnite
+    }
+}
+
   getStatus(status:boolean){
     if(status === false){
      return "EN_COURS"
@@ -163,7 +235,7 @@ export class AddCommandeClientComponent {
    this.ligneComClient = {
     article : formData.ligneCommandeClients?.article,
     quantite: formData.ligneCommandeClients?.quantite,
-    prixUnitaire: this.selectedArticle.prixUnitaireTtc,
+    prixUnitaire: this.selectedCondition.price,
    }
 
 
@@ -174,6 +246,9 @@ export class AddCommandeClientComponent {
     etat: 'EN_PREPARATION',
     ligneCommandeClients: this.lignesCommande
   };
+
+  console.log("loggggg")
+  console.log(this.comClient)
 
   this.comClientService.saveCommandeClients(this.comClient).subscribe((res)=>{
     this.snackbarService.openSnackbar("Commande client ajoutée avec success","success");
@@ -194,7 +269,7 @@ export class AddCommandeClientComponent {
   this.ligneComFournisseur = {
     article : formData.ligneCommandeClients?.article,
    quantite: formData.ligneCommandeClients?.quantite,
-   prixUnitaire: this.selectedArticle.prixUnitaireTtc,
+   prixUnitaire: this.selectedCondition.price,
   }
 
   console.log(this.ligneComFournisseur)
@@ -210,7 +285,6 @@ export class AddCommandeClientComponent {
 
  console.log("this.comFournisseur")
  console.log(this.comFournisseur)
- console.log("this.comFournisseur")
 
   this.comFournisseurService.saveCommandeFournisseurs(this.comFournisseur).subscribe((res)=>{
     this.snackbarService.openSnackbar("Commande fournisseur ajoutée avec success","success");
@@ -242,6 +316,13 @@ this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
 
   onChange(value:any) {
     console.log(value)
+    this.uniteService.getAllUniteByArticle(value.article.id).subscribe(
+      (res:any)=>{
+         this.dataUnites = res
+         console.log(this.dataUnites)
+
+      },
+      )
 
  }
 
@@ -284,8 +365,8 @@ private checkLigneCommande(): void {
     });
   } else {
     const ligneCmd: LigneCommandeClientDto = {
-      article: formData?.ligneCommandeClients?.article,
-      prixUnitaire: this.selectedArticle?.prixUnitaireTtc,
+      article: formData?.ligneCommandeClients?.article.article,
+      prixUnitaire: this.selectedCondition?.price,
       quantite: +formData?.ligneCommandeClients?.quantite
     };
 
@@ -294,7 +375,6 @@ private checkLigneCommande(): void {
     this.dataSource = new MatTableDataSource(this.lignesCommande)
     console.log("lignes commandes")
     console.log(this.lignesCommande)
-    console.log(this.dataSource)
   }
 }
 

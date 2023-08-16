@@ -15,7 +15,6 @@ import { ArticleDto } from './articleDto';
 
 export interface ConditionAVDto { 
     id?: number;
-    quantity?: number;
     price?: number;
     unite?: UniteDto;
     article?: ArticleDto;

@@ -104,7 +104,7 @@ export class ConditionComponent {
     this.condition = {
       article : formData.article,
       unite : formData.unite,
-      price : this.selectedArticle?.prixUnitaireTtc,
+      price : formData.price,
       // quantity : formData.quantity,
     }
 
