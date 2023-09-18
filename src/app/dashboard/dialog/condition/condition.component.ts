@@ -42,8 +42,10 @@ export class ConditionComponent {
     this.conditionForm = this.formBuilder.group({
       article :[null,[Validators.required]],
       unite :[null,[Validators.required]],
-      // quantity :[null,[Validators.required]],
-      price :[this.selectedArticle?.prixUnitaireTtc],
+      quantite :[1,[Validators.required]],
+      prixUnitaireHt :[null,[Validators.required]],
+      tauxTval :[null,[Validators.required]],
+      prixUnitaireTtc :[null],
     })
 
     if(this.dialogData.action === "Modifier"){
@@ -104,7 +106,10 @@ export class ConditionComponent {
     this.condition = {
       article : formData.article,
       unite : formData.unite,
-      price : formData.price,
+      quantite: formData.quantite,
+      prixUnitaireHt :formData.prixUnitaireHt,
+      tauxTval :formData.tauxTval,
+      prixUnitaireTtc :formData.prixUnitaireTtc,
       // quantity : formData.quantity,
     }
 
@@ -159,5 +164,19 @@ export class ConditionComponent {
 
   }
 
+  calculerTTC(): void {
+
+    if (this.conditionForm.get('prixUnitaireHt')?.value &&  this.conditionForm.get('tauxTval')?.value) {
+      const prix = this.conditionForm.get('prixUnitaireHt')?.value;
+      const taux = this.conditionForm.get('tauxTval')?.value;
+      //const resultat = prix * taux / 100;
+      const resultat = +prix + (+(prix * (taux / 100)));
+      this.conditionForm.controls['prixUnitaireTtc'].setValue(resultat);
+
+      // this.articleForm.patchValue({prixUnitaireTtc: resultat})
+
+    }
+
+  }
 
 }

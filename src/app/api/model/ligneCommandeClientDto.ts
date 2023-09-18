@@ -18,5 +18,6 @@ export interface LigneCommandeClientDto {
     quantite?: number;
     prixUnitaire?: number;
     idEntreprise?: number;
+    unite?: string;
 }
 

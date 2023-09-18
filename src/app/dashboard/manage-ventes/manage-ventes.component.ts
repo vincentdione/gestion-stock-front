@@ -4,7 +4,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { ArticleDto, ArticlesService, LigneVenteDto, VenteDto, VentesService } from 'src/app/api';
+import { ArticleDto, ArticlesService, ConditionAVDto, ConditionsDeVentesService, LigneVenteDto, UniteDto, UnitsService, VenteDto, VentesService } from 'src/app/api';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { GlobalConstants } from 'src/app/shared/GlobalConstants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
@@ -33,7 +33,12 @@ export class ManageVentesComponent {
 
   dataArticles : any [] = [];
   dataVentes : any [] = [];
-  selectedArticle: ArticleDto = {}
+  dataConditions : any [] = [];
+  dataAllConditions : any [] = [];
+  dataUnites : any [] = [];
+  selectedArticle: ArticleDto = {};
+  selectedCondition: ConditionAVDto = {}
+  selectedUnite: UniteDto = {}
 
   codeArticle = '';
   quantite = '';
@@ -46,6 +51,8 @@ export class ManageVentesComponent {
     private ngxService:NgxUiLoaderService,
     private formBuilder: FormBuilder,
     private snackbarService: SnackbarService,
+    private conditionAV:ConditionsDeVentesService,
+    private uniteService:UnitsService,
     private router:Router, private dialog : MatDialog) { }
 
 
@@ -80,6 +87,62 @@ export class ManageVentesComponent {
       this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
     })
   }
+
+  getConditionAVs(){
+    this.conditionAV.getAllConditionWithDistincts().subscribe((res:any)=>{
+      this.dataConditions = res
+      //this.uniqueArticles = this.getUniqueArticles(res);
+      //this.dataConditions = this.uniqueArticles
+      console.log(this.dataConditions)
+      //console.log(this.uniqueArticles)
+    },(error)=>{
+      if(error.error?.message){
+          this.responseMessage = error.error?.message
+      }
+      else {
+        this.responseMessage = GlobalConstants.genericErrorMessage
+      }
+      this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
+    })
+  }
+
+  getAllConditions(){
+    this.conditionAV.getAllConditions().subscribe((res:any)=>{
+      this.dataAllConditions = res
+      //this.uniqueArticles = this.getUniqueArticles(res);
+      //this.dataConditions = this.uniqueArticles
+      console.log(this.dataConditions)
+      //console.log(this.uniqueArticles)
+    },(error)=>{
+      if(error.error?.message){
+          this.responseMessage = error.error?.message
+      }
+      else {
+        this.responseMessage = GlobalConstants.genericErrorMessage
+      }
+      this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
+    })
+  }
+
+  getUniqueArticles(data: any[]): any[] {
+    const uniqueArticles = new Map();
+    data.forEach(item => {
+      if (!uniqueArticles.has(item.article.id)) {
+        uniqueArticles.set(item.article.id, item.article);
+      }
+    });
+    return Array.from(uniqueArticles.values());
+  }
+
+  onUniteSelected(selectedUnite: any) {
+
+    const conditionWithSelectedUnite = this.dataAllConditions.find(condition => condition.unite.id === selectedUnite.id);
+    if (conditionWithSelectedUnite) {
+        this.comVenteForm.get('ligneVentes').get('prixUnitaire').setValue(conditionWithSelectedUnite.prixUnitaireTtc);
+        this.selectedCondition = conditionWithSelectedUnite
+    }
+}
+
 
   tableData(){
       this.venteService.getAllVentes().subscribe((res:any) => {

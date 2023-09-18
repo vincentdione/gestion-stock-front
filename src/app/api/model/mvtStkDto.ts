@@ -20,6 +20,7 @@ export interface MvtStkDto {
     typeMvtStk?: MvtStkDto.TypeMvtStkEnum;
     sourceMvt?: MvtStkDto.SourceMvtEnum;
     idEntreprise?: number;
+    unite?: string;
 }
 export namespace MvtStkDto {
     export type TypeMvtStkEnum = 'ENTREE' | 'SORTIE' | 'CORRECTION_POS' | 'CORRECTION_NEG';

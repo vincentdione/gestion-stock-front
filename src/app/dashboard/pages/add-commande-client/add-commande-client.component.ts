@@ -25,7 +25,7 @@ export class AddCommandeClientComponent {
   ligneComClient: LigneCommandeClientDto = {}
   ligneComFournisseur: LigneCommandeFournisseurDto = {}
 
-  displayColumns : string [] = ["code","article","quantite","prixUnitaire","action"];
+  displayColumns : string [] = ["code","unite","quantite","prixUnitaire","action"];
   dataSource:any = [];
 
   lignesCommande: Array<any> = [];
@@ -201,10 +201,9 @@ export class AddCommandeClientComponent {
 
   onUniteSelected(selectedUnite: any) {
 
-
     const conditionWithSelectedUnite = this.dataAllConditions.find(condition => condition.unite.id === selectedUnite.id);
     if (conditionWithSelectedUnite) {
-        this.comClientForm.get('ligneCommandeClients').get('prixUnitaire').setValue(conditionWithSelectedUnite.price);
+        this.comClientForm.get('ligneCommandeClients').get('prixUnitaire').setValue(conditionWithSelectedUnite.prixUnitaireTtc);
         this.selectedCondition = conditionWithSelectedUnite
     }
 }
@@ -235,7 +234,7 @@ export class AddCommandeClientComponent {
    this.ligneComClient = {
     article : formData.ligneCommandeClients?.article,
     quantite: formData.ligneCommandeClients?.quantite,
-    prixUnitaire: this.selectedCondition.price,
+    prixUnitaire: this.selectedCondition.prixUnitaireTtc,
    }
 
 
@@ -269,7 +268,7 @@ export class AddCommandeClientComponent {
   this.ligneComFournisseur = {
     article : formData.ligneCommandeClients?.article,
    quantite: formData.ligneCommandeClients?.quantite,
-   prixUnitaire: this.selectedCondition.price,
+   prixUnitaire: this.selectedCondition.prixUnitaireTtc,
   }
 
   console.log(this.ligneComFournisseur)
@@ -366,7 +365,8 @@ private checkLigneCommande(): void {
   } else {
     const ligneCmd: LigneCommandeClientDto = {
       article: formData?.ligneCommandeClients?.article.article,
-      prixUnitaire: this.selectedCondition?.price,
+      unite: formData?.ligneCommandeClients?.article.unite.nom,
+      prixUnitaire: this.selectedCondition?.prixUnitaireTtc,
       quantite: +formData?.ligneCommandeClients?.quantite
     };
 
@@ -375,6 +375,7 @@ private checkLigneCommande(): void {
     this.dataSource = new MatTableDataSource(this.lignesCommande)
     console.log("lignes commandes")
     console.log(this.lignesCommande)
+    console.log(formData?.ligneCommandeClients?.article)
   }
 }
 

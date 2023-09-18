@@ -39,6 +39,7 @@ import { UniteComponent } from './dialog/unite/unite.component';
 import { ModePayementComponent } from './dialog/mode-payement/mode-payement.component';
 import { ManageConditionComponent } from './manage-condition/manage-condition.component';
 import { ConditionComponent } from './dialog/condition/condition.component';
+import { SearchStockComponent } from './manage-mvt-stk/search-stock/search-stock.component';
 
 
 @NgModule({
@@ -74,7 +75,8 @@ import { ConditionComponent } from './dialog/condition/condition.component';
     UniteComponent,
     ModePayementComponent,
     ManageConditionComponent,
-    ConditionComponent
+    ConditionComponent,
+    SearchStockComponent
 
   ],
   imports: [

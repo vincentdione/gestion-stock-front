@@ -1,16 +1,39 @@
 
 <!-- //routerLink="/workspace/dashboard/addCategory" -->
 <mat-card>
-  <b> <span>Gestion des mouvements stocks</span> </b>
+  <b> <span>Rechercher le stock des articles</span> </b>
   <!-- <button mat-flat-button  color="primary" (click)="handleAdd()" >Ajouter une unité</button> -->
 </mat-card>
 <hr>
+
 <mat-card>
-  <mat-form-field appearance="fill" >
-    <mat-label>Filtrer</mat-label>
-    <input matInput (keyup)="applyFilter($event)" #input>
+  <mat-form-field class="filter-field" appearance="fill"  fxFlex >
+    <mat-label>Article</mat-label>
+    <mat-select formControlName="article"  [(ngModel)]="selectedArticle">
+      <mat-option *ngFor="let u of articles" [value]="u"> {{u.codeArticle}}</mat-option>
+  </mat-select>
   </mat-form-field>
+
+  <mat-form-field class="filter-field" appearance="fill"  fxFlex >
+    <mat-label>Unité</mat-label>
+    <mat-select formControlName="unite">
+      <mat-option *ngFor="let u of listeUnites" [value]="u"> {{u.nom}}</mat-option>
+  </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="filter-field" appearance="fill"  fxFlex >
+    <mat-label>Type Mouvement</mat-label>
+    <mat-select formControlName="type">
+      <mat-option value="entree">Entrée</mat-option>
+      <mat-option value="sortie">Sortie</mat-option>   </mat-select>
+  </mat-form-field>
+
+  <div class="button-container">
+    <button mat-raised-button color="primary">Rechercher</button>
+  </div>
 </mat-card>
+
+
 <hr>
 
 <div class="responsive_table">
@@ -25,14 +48,12 @@
         <td mat-cell *matCellDef="let element">{{element.unite}}</td>
        </ng-container>
 
-       <ng-container matColumnDef="typeMvtStk">
+      <ng-container matColumnDef="typeMvtStk">
         <th mat-header-cell *matHeaderCellDef>Type Mvt</th>
         <td mat-cell *matCellDef="let element">
-          <mat-chip [ngStyle]="{ 'background-color': element.typeMvtStk === 'ENTREE' ? 'green' : 'red' }">
-            {{ element.typeMvtStk }}
-          </mat-chip>
-        </td>
-      </ng-container>
+            <mat-chip color="primary" >{{element.typeMvtStk}}</mat-chip>
+         </td>
+       </ng-container>
 
        <ng-container matColumnDef="sourceMvt">
         <th mat-header-cell *matHeaderCellDef>Source Mvt</th>

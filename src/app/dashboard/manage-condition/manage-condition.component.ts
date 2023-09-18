@@ -16,7 +16,7 @@ import { ConditionComponent } from '../dialog/condition/condition.component';
 })
 export class ManageConditionComponent {
 
-  displayColumns : string[] = ["article","unite","prix","action"]
+  displayColumns : string[] = ["article","unite","quantite","prixUnitaireHt","tauxTval","prixUnitaireTtc","action"]
   dataSource : any;
   responseMessage : any;
 

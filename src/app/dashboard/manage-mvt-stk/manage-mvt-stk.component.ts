@@ -15,7 +15,7 @@ import { GlobalConstants } from 'src/app/shared/GlobalConstants';
 export class ManageMvtStkComponent {
 
 
-  displayColumns : string[] = ["article","typeMvtStk","sourceMvt","quantite","dateMvt","action"]
+  displayColumns : string[] = ["article","unite","typeMvtStk","sourceMvt","quantite","dateMvt","action"]
 
   dataSource : any;
   responseMessage : any;

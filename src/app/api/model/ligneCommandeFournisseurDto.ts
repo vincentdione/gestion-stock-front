@@ -20,5 +20,6 @@ export interface LigneCommandeFournisseurDto {
     quantite?: number;
     prixUnitaire?: number;
     idEntreprise?: number;
+    unite?: string;
 }
 

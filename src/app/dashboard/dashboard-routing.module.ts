@@ -17,6 +17,7 @@ import { AddCommandeClientComponent } from './pages/add-commande-client/add-comm
 import { ManageUniteComponent } from './manage-unite/manage-unite.component';
 import { ManageModePayementComponent } from './manage-mode-payement/manage-mode-payement.component';
 import { ManageConditionComponent } from './manage-condition/manage-condition.component';
+import { SearchStockComponent } from './manage-mvt-stk/search-stock/search-stock.component';
 
 const routes: Routes = [
   {
@@ -62,6 +63,7 @@ const routes: Routes = [
       },
       { path: 'ventes', component: ManageVentesComponent },
       { path: 'mouvements', component: ManageMvtStkComponent },
+      { path: 'search-stock', component: SearchStockComponent },
     ],
   },
 ];

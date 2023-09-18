@@ -16,7 +16,7 @@ import { GlobalConstants } from 'src/app/shared/GlobalConstants';
 })
 export class DetailsLignesCommandesComponent {
 
-  displayColumns : string [] = ["code","article","quantite","prixUnitaire","total","action"];
+  displayColumns : string [] = ["code","unite","quantite","prixUnitaire","total","action"];
   dataSource:any = [];
 
   @Input()

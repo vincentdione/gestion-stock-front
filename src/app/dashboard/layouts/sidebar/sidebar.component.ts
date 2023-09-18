@@ -42,7 +42,8 @@ export class SidebarComponent implements OnDestroy {
 {  label: 'Mouvements stocks',      icon: 'menu',
   subMenuItems:
   [
-     { label: 'Stock', link: 'mouvements',icon: 'inventory' },
+    { label: 'Stock', link: 'mouvements',icon: 'inventory' },
+    { label: 'Rechercher', link: 'search-stock',icon: 'search' },
   ]
 },
 

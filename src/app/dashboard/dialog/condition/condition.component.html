@@ -2,7 +2,7 @@
 
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <span class="title-center">{{dialogData.action}} Catégorie </span>
+    <span class="title-center">{{dialogData.action}} condition </span>
   </mat-toolbar-row>
 </mat-toolbar>
 
@@ -27,11 +27,33 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill"  fxFlex >
-      <mat-label>Prix</mat-label>
-      <input matInput formControlName="price">
-      <mat-error *ngIf="conditionForm.controls.price.touched && conditionForm.controls.price.invalid">
-        <span *ngIf="conditionForm.controls.price.errors.required" >This field is mandatory</span>
+      <mat-label>nombre</mat-label>
+      <input matInput formControlName="quantite"  required>
+      <mat-error *ngIf="conditionForm.controls.quantite.touched && conditionForm.controls.quantite.invalid">
+        <span *ngIf="conditionForm.controls.quantite.errors.required" >This field is mandatory</span>
       </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Prix Unitaire Hors Taxe</mat-label>
+      <input matInput formControlName="prixUnitaireHt" (input)="calculerTTC()" required>
+      <mat-error *ngIf="conditionForm.controls.prixUnitaireHt.touched && conditionForm.controls.prixUnitaireHt.invalid">
+        <span *ngIf="conditionForm.controls.prixUnitaireHt.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Taux</mat-label>
+      <input matInput formControlName="tauxTval" (input)="calculerTTC()" required>
+      <mat-error *ngIf="conditionForm.controls.tauxTval.touched && conditionForm.controls.tauxTval.invalid">
+        <span *ngIf="conditionForm.controls.tauxTval.errors.required" >This field is mandatory</span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill"  fxFlex >
+      <mat-label>Prix Unitaire</mat-label>
+      <input matInput formControlName="prixUnitaireTtc">
+
     </mat-form-field>
 <!--
     <mat-form-field appearance="fill"  fxFlex >

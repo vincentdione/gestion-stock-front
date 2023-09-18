@@ -43,25 +43,21 @@
 
    <form [formGroup]="comClientForm">
     <div fxLayout="row wrap" formGroupName="ligneCommandeClients"  >
-        <mat-form-field appearance="fill"  fxFlex >
-          <mat-label>Article</mat-label>
-        <mat-select formControlName="article" (selectionChange)="onChange($event.value)" [(ngModel)]="selectedCondition" >
+      <mat-form-field appearance="fill" fxFlex>
+        <mat-label>Article</mat-label>
+        <mat-select formControlName="article" (selectionChange)="onChange($event.value)">
           <mat-option *ngFor="let c of dataConditions" [value]="c"> {{c.article.codeArticle}} </mat-option>
         </mat-select>
-        <mat-error *ngIf="comClientForm.controls.ligneCommandeClients.controls.article.touched && comClientForm.controls.ligneCommandeClients.controls.article.invalid">
-          <span *ngIf="comClientForm.controls.ligneCommandeClients.controls.article.errors.required" >This field is mandatory</span>
-        </mat-error>
-        </mat-form-field>
+        <!-- Rest of your code... -->
+      </mat-form-field>
 
-        <mat-form-field appearance="fill"  fxFlex >
-          <mat-label>Unite</mat-label>
-        <mat-select formControlName="unite" (selectionChange)="onUniteSelected($event.value)" [(ngModel)]="selectedUnite" >
+      <mat-form-field appearance="fill" fxFlex>
+        <mat-label>Unite</mat-label>
+        <mat-select formControlName="unite" (selectionChange)="onUniteSelected($event.value)">
           <mat-option *ngFor="let c of dataUnites" [value]="c"> {{c.nom}} </mat-option>
         </mat-select>
-        <mat-error *ngIf="comClientForm.controls.ligneCommandeClients.controls.unite.touched && comClientForm.controls.ligneCommandeClients.controls.unite.invalid">
-          <span *ngIf="comClientForm.controls.ligneCommandeClients.controls.unite.errors.required" >This field is mandatory</span>
-        </mat-error>
-        </mat-form-field>
+        <!-- Rest of your code... -->
+      </mat-form-field>
 
         <mat-form-field appearance="fill"  fxFlex >
           <mat-label>Quantité</mat-label>
@@ -94,9 +90,9 @@
          <th mat-header-cell *matHeaderCellDef>Code</th>
          <td mat-cell *matCellDef="let element">{{element.article?.codeArticle}}</td>
         </ng-container>
-        <ng-container matColumnDef="article">
-         <th mat-header-cell *matHeaderCellDef>nom Article</th>
-         <td mat-cell *matCellDef="let element">{{element.article?.designation}}</td>
+        <ng-container matColumnDef="unite">
+         <th mat-header-cell *matHeaderCellDef>Unité</th>
+         <td mat-cell *matCellDef="let element">{{element.unite}}</td>
         </ng-container>
         <ng-container matColumnDef="quantite">
          <th mat-header-cell *matHeaderCellDef>Quantite</th>

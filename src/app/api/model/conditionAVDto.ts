@@ -15,7 +15,10 @@ import { ArticleDto } from './articleDto';
 
 export interface ConditionAVDto { 
     id?: number;
-    price?: number;
+    quantite?: number;
+    prixUnitaireHt?: number;
+    tauxTval?: number;
+    prixUnitaireTtc?: number;
     unite?: UniteDto;
     article?: ArticleDto;
 }

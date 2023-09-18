@@ -1,0 +1,37 @@
+.float-right {
+  float: right;
+  color: white;
+  background-color: teal;
+}
+
+mat-card {
+   padding: 20px;
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+}
+
+mat-form-field{
+  width: 100%;
+}
+
+table {
+  width: 100%;
+}
+
+
+.btn{
+  background: teal;
+}
+
+.filter-field {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+

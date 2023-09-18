@@ -22,15 +22,22 @@
       </mat-form-field>
       <div fxLayout="row wrap" formGroupName="ligneVentes"  >
 
-        <mat-form-field appearance="fill"  fxFlex >
+        <mat-form-field appearance="fill" fxFlex>
           <mat-label>Article</mat-label>
-        <mat-select formControlName="article" (selectionChange)="onChange($event.value)" [(ngModel)]="selectedArticle" >
-          <mat-option *ngFor="let c of dataArticles" [value]="c"> {{c.codeArticle}} </mat-option>
-        </mat-select>
-        <mat-error *ngIf="comVenteForm.controls.ligneVentes.controls.article.touched && comVenteForm.controls.ligneVentes.controls.article.invalid">
-          <span *ngIf="comVenteForm.controls.ligneVentes.controls.article.errors.required" >This field is mandatory</span>
-        </mat-error>
+          <mat-select formControlName="article" (selectionChange)="onChange($event.value)">
+            <mat-option *ngFor="let c of dataConditions" [value]="c"> {{c.article.codeArticle}} </mat-option>
+          </mat-select>
+          <!-- Rest of your code... -->
         </mat-form-field>
+
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>Unite</mat-label>
+          <mat-select formControlName="unite" (selectionChange)="onUniteSelected($event.value)">
+            <mat-option *ngFor="let c of dataUnites" [value]="c"> {{c.nom}} </mat-option>
+          </mat-select>
+          <!-- Rest of your code... -->
+        </mat-form-field>
+
 
         <mat-form-field appearance="fill"  fxFlex >
           <mat-label>Quantité</mat-label>
