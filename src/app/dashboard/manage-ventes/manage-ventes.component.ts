@@ -4,10 +4,11 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { ArticleDto, ArticlesService, ConditionAVDto, ConditionsDeVentesService, LigneVenteDto, UniteDto, UnitsService, VenteDto, VentesService } from 'src/app/api';
+import { ArticleDto, ArticlesService, ConditionAVDto, ConditionsDeVentesService, LigneVenteDto, ModePayementDto, ModesPayementService, UniteDto, UnitsService, VenteDto, VentesService } from 'src/app/api';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { GlobalConstants } from 'src/app/shared/GlobalConstants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
+import { ModePayementApiService } from 'src/app/api/api/modePayementApi.service';
 
 @Component({
   selector: 'app-manage-ventes',
@@ -26,12 +27,13 @@ export class ManageVentesComponent {
   comVente: VenteDto = {}
   lignes: LigneVenteDto = {}
 
-  displayColumnVentes : string [] = ["code","article","quantite","prixUnitaire","total","action"];
+  displayColumnVentes : string [] = ["code","unite","quantite","prixUnitaire","action"];
   dataSourceLigneVente:any = [];
 
   lignesCommande: Array<any> = [];
 
   dataArticles : any [] = [];
+  dataModePayement : ModePayementDto [] = [];
   dataVentes : any [] = [];
   dataConditions : any [] = [];
   dataAllConditions : any [] = [];
@@ -53,6 +55,7 @@ export class ManageVentesComponent {
     private snackbarService: SnackbarService,
     private conditionAV:ConditionsDeVentesService,
     private uniteService:UnitsService,
+    private modePayementService: ModesPayementService,
     private router:Router, private dialog : MatDialog) { }
 
 
@@ -63,15 +66,35 @@ export class ManageVentesComponent {
 
     this.comVenteForm = this.formBuilder.group({
       code :[null],
+      mode:[null],
       ligneVentes: this.formBuilder.group({
         article :[null,[Validators.required]],
         quantite :[null],
+        unite :[null],
         prixUnitaire :[this.selectedArticle?.prixUnitaireTtc],
     })
   })
 
   this.getArticles()
+  this.getConditionAVs()
+  this.getAllConditions()
+  this.getAllModePayement()
+  }
 
+  getAllModePayement(){
+    this.modePayementService.getAllModes().subscribe((res:any)=>{
+      this.dataModePayement = res
+      console.log(res)
+      console.log("modePayement")
+    },(error)=>{
+      if(error.error?.message){
+          this.responseMessage = error.error?.message
+      }
+      else {
+        this.responseMessage = GlobalConstants.genericErrorMessage
+      }
+      this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
+    })
   }
 
   getArticles(){
@@ -105,6 +128,18 @@ export class ManageVentesComponent {
       this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
     })
   }
+
+  onChange(value:any) {
+    console.log(value)
+    this.uniteService.getAllUniteByArticle(value.article.id).subscribe(
+      (res:any)=>{
+         this.dataUnites = res
+         console.log(this.dataUnites)
+
+      },
+      )
+
+ }
 
   getAllConditions(){
     this.conditionAV.getAllConditions().subscribe((res:any)=>{
@@ -180,6 +215,7 @@ export class ManageVentesComponent {
 
    this.comVente = {
     code: formData.code,
+    modePayement: formData.mode,
     dateVente: new Date().getTime().toString(),
     ligneVentes: this.lignesCommande
   };
@@ -244,12 +280,6 @@ export class ManageVentesComponent {
     }
 
 
-    onChange(val:any){
-
-    }
-
-
-
 
     addLigneVente(): void {
   this.checkLigneCommande();
@@ -259,6 +289,8 @@ export class ManageVentesComponent {
   this.codeArticle = '';
   this.articleNotYetSelected = false;
   this.getArticles();
+  console.log(this.lignesCommande)
+
 }
 
 calculerTotalCommande(): void {
@@ -286,8 +318,9 @@ private checkLigneCommande(): void {
     });
   } else {
     const ligneCmd: LigneVenteDto = {
-      article: formData?.ligneVentes?.article,
-      prixUnitaire: this.selectedArticle?.prixUnitaireTtc,
+      article: formData?.ligneVentes?.article.article,
+      unite: this.selectedCondition.unite?.nom,
+      prixUnitaire: this.selectedCondition?.prixUnitaireTtc,
       quantite: +formData?.ligneVentes?.quantite
     };
 

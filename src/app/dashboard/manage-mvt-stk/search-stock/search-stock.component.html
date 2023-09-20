@@ -5,7 +5,7 @@
   <!-- <button mat-flat-button  color="primary" (click)="handleAdd()" >Ajouter une unité</button> -->
 </mat-card>
 <hr>
-
+<form [formGroup]="filterForm" >
 <mat-card>
   <mat-form-field class="filter-field" appearance="fill"  fxFlex >
     <mat-label>Article</mat-label>
@@ -29,50 +29,26 @@
   </mat-form-field>
 
   <div class="button-container">
-    <button mat-raised-button color="primary">Rechercher</button>
+    <button mat-raised-button color="primary" (click)="onSearch()" >Rechercher</button>
   </div>
 </mat-card>
-
+</form>
 
 <hr>
 
 <div class="responsive_table">
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSourceStock" class="mat-elevation-z8">
       <ng-container matColumnDef="article">
        <th mat-header-cell *matHeaderCellDef>Article</th>
-       <td mat-cell *matCellDef="let element">{{element.article?.codeArticle}}</td>
+       <td mat-cell *matCellDef="let element">{{element?.name}}</td>
       </ng-container>
 
-      <ng-container matColumnDef="unite">
+      <ng-container matColumnDef="stock">
         <th mat-header-cell *matHeaderCellDef>Unité</th>
-        <td mat-cell *matCellDef="let element">{{element.unite}}</td>
+        <td mat-cell *matCellDef="let element">{{element.stockInfo | json}}</td>
        </ng-container>
 
-      <ng-container matColumnDef="typeMvtStk">
-        <th mat-header-cell *matHeaderCellDef>Type Mvt</th>
-        <td mat-cell *matCellDef="let element">
-            <mat-chip color="primary" >{{element.typeMvtStk}}</mat-chip>
-         </td>
-       </ng-container>
 
-       <ng-container matColumnDef="sourceMvt">
-        <th mat-header-cell *matHeaderCellDef>Source Mvt</th>
-        <td mat-cell *matCellDef="let element">
-          <mat-chip color="primary" >{{element.sourceMvt}}</mat-chip>
-        </td>
-
-
-       </ng-container>
-
-       <ng-container matColumnDef="quantite">
-        <th mat-header-cell *matHeaderCellDef>Quantité</th>
-        <td mat-cell *matCellDef="let element">{{element.quantite}}</td>
-       </ng-container>
-
-       <ng-container matColumnDef="dateMvt">
-        <th mat-header-cell *matHeaderCellDef>Date Mvt</th>
-        <td mat-cell *matCellDef="let element">{{element.dateMvt | date: 'dd/MM/yyyy' }}</td>
-       </ng-container>
 
 
       <ng-container matColumnDef="action">
@@ -87,8 +63,8 @@
 <!--          <mat-slide-toggle (change)="onChange($event.checked,element.id)" matTooltip="Activer ou desactiver" [checked]="element.status" ></mat-slide-toggle>
  -->       </td>
       </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
-      <tr mat-row *matRowDef="let row;columns:displayColumns"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayStockColumns;sticky:true"></tr>
+      <tr mat-row *matRowDef="let row;columns:displayStockColumns"></tr>
   </table>
 </div>
 

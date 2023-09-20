@@ -5,12 +5,21 @@
   <!-- <button mat-flat-button  color="primary" (click)="handleAdd()" >Ajouter une unité</button> -->
 </mat-card>
 <hr>
-<mat-card>
-  <mat-form-field appearance="fill" >
-    <mat-label>Filtrer</mat-label>
-    <input matInput (keyup)="applyFilter($event)" #input>
-  </mat-form-field>
-</mat-card>
+<form [formGroup]="filterForm">
+  <mat-card>
+    <mat-form-field class="filter-field" appearance="fill"  fxFlex >
+      <mat-label>Article</mat-label>
+      <mat-select formControlName="article"  [(ngModel)]="selectedArticle">
+        <mat-option *ngFor="let u of articles" [value]="u"> {{u.codeArticle}}</mat-option>
+    </mat-select>
+    </mat-form-field>
+
+
+    <div class="button-container">
+      <button mat-raised-button color="primary" (click)="onSearch()" >Rechercher</button>
+    </div>
+  </mat-card>
+  </form>
 <hr>
 
 <div class="responsive_table">
@@ -69,5 +78,7 @@
       <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
       <tr mat-row *matRowDef="let row;columns:displayColumns"></tr>
   </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+
 </div>
 

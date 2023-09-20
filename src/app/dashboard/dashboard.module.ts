@@ -29,8 +29,6 @@ import { SousCategoryComponent } from './dialog/sous-category/sous-category.comp
 import { ArticleComponent } from './dialog/article/article.component';
 import { ClientsComponent } from './dialog/clients/clients.component';
 import { FournisseursComponent } from './dialog/fournisseurs/fournisseurs.component';
-import { CommandeClientsComponent } from './dialog/commande-clients/commande-clients.component';
-import { CommandeFournisseursComponent } from './dialog/commande-fournisseurs/commande-fournisseurs.component';
 import { AddCommandeClientComponent } from './pages/add-commande-client/add-commande-client.component';
 import { LigneCommandeComponent } from './dialog/ligne-commande/ligne-commande.component';
 import { ManageUniteComponent } from './manage-unite/manage-unite.component';
@@ -65,8 +63,6 @@ import { SearchStockComponent } from './manage-mvt-stk/search-stock/search-stock
     ArticleComponent,
     ClientsComponent,
     FournisseursComponent,
-    CommandeClientsComponent,
-    CommandeFournisseursComponent,
     AddCommandeClientComponent,
     DetailsLignesCommandesComponent,
     LigneCommandeComponent,

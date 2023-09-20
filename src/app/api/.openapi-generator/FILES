@@ -26,6 +26,8 @@ index.ts
 model/adresse.ts
 model/adresseDto.ts
 model/articleDto.ts
+model/articleStockInfo.ts
+model/articleStockInfoDto.ts
 model/authenticationRequest.ts
 model/authenticationResponse.ts
 model/categoryDto.ts

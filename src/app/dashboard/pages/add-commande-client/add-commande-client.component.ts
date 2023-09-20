@@ -336,6 +336,7 @@ this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
   this.codeArticle = '';
   this.articleNotYetSelected = false;
   this.getArticles();
+  console.log(this.lignesCommande)
 }
 
 calculerTotalCommande(): void {
@@ -365,7 +366,7 @@ private checkLigneCommande(): void {
   } else {
     const ligneCmd: LigneCommandeClientDto = {
       article: formData?.ligneCommandeClients?.article.article,
-      unite: formData?.ligneCommandeClients?.article.unite.nom,
+      unite: this.selectedCondition.unite?.nom,
       prixUnitaire: this.selectedCondition?.prixUnitaireTtc,
       quantite: +formData?.ligneCommandeClients?.quantite
     };
