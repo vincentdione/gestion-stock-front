@@ -74,7 +74,7 @@ export class AddCommandeClientComponent {
     });
 
     this.comClientForm = this.formBuilder.group({
-      code :[null],
+      //code :[null],
       clientDto :[null],
       ligneCommandeClients: this.formBuilder.group({
         article :[null,[Validators.required]],
@@ -240,7 +240,7 @@ export class AddCommandeClientComponent {
 
    this.comClient = {
     clientDto: this.comClientForm.value.clientDto,
-    code: this.comClientForm.value.code,
+    //code: this.comClientForm.value.code,
     dateCommande: new Date().getTime().toString(),
     etat: 'EN_PREPARATION',
     ligneCommandeClients: this.lignesCommande
@@ -276,7 +276,7 @@ export class AddCommandeClientComponent {
 
   this.comFournisseur = {
    fournisseurDto: this.comClientForm.value.clientDto,
-   code: this.comClientForm.value.code,
+   //code: this.comClientForm.value.code,
    dateCommande: new Date().getTime().toString(),
    etatCommande: 'EN_PREPARATION',
    ligneCommandeFournisseurDtos: this.lignesCommande
@@ -305,7 +305,7 @@ this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
  private preparerCommande(): any {
     return  {
       clientDto: this.comClientForm.value.ClientDto,
-      code: this.comClientForm.code,
+     // code: this.comClientForm.code,
       dateCommande: new Date().getTime(),
       etatCommande: 'EN_PREPARATION',
       ligneCommandeClients: this.ligneComClient

@@ -12,10 +12,10 @@ import { SidebarComponent } from './layouts/full/sidebar/sidebar.component';
 import { HeaderComponent } from './layouts/full/header/header.component';
 import { SharedModule } from './shared/shared.module';
 import { MaterialModule } from './shared/material-module';
-import { DashboardModule } from './dashboard/dashboard.module';
 import {FormsModule,ReactiveFormsModule} from '@angular/forms'
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TokenInterceptorService } from './services/interceptor/token-interceptor.service';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {

@@ -13,13 +13,13 @@
    <form [formGroup]="comVenteForm">
     <div fxLayout="row wrap"  >
 
-      <mat-form-field appearance="fill"  fxFlex >
+      <!-- <mat-form-field appearance="fill"  fxFlex >
         <mat-label>Code</mat-label>
         <input matInput formControlName="code" required>
         <mat-error *ngIf="comVenteForm.controls.code.touched && comVenteForm.controls.code.invalid">
           <span *ngIf="comVenteForm.controls.code.errors.required" >This field is mandatory</span>
         </mat-error>
-      </mat-form-field>
+      </mat-form-field> -->
       <mat-form-field appearance="fill" fxFlex>
         <mat-label>Mode Payement</mat-label>
         <mat-select formControlName="mode">

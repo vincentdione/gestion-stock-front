@@ -77,6 +77,7 @@ export class ManageCommandeClientsComponent {
       this.radioDataExport = res
       this.dataSource = new MatTableDataSource(res)
       this.comClients = res
+      console.log("======= res ===")
       console.log(res)
       // this.total = res.reduce((acc:number, val:any) => {
       //   return acc + parseInt(val.rad_prix);

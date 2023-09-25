@@ -10,13 +10,13 @@
    <form [formGroup]="comClientForm">
     <div fxLayout="row wrap">
 
-        <mat-form-field appearance="fill"  fxFlex >
+        <!-- <mat-form-field appearance="fill"  fxFlex >
           <mat-label>Code</mat-label>
           <input matInput formControlName="code" required>
           <mat-error *ngIf="comClientForm.controls.code.touched && comClientForm.controls.code.invalid">
             <span *ngIf="comClientForm.controls.code.errors.required" >This field is mandatory</span>
           </mat-error>
-        </mat-form-field>
+        </mat-form-field> -->
 
         <mat-form-field appearance="fill"  fxFlex *ngIf="origin === 'client'" >
         <mat-label>client</mat-label>

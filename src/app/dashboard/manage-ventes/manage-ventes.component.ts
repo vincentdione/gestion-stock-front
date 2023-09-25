@@ -65,7 +65,7 @@ export class ManageVentesComponent {
     this.tableData()
 
     this.comVenteForm = this.formBuilder.group({
-      code :[null],
+     // code :[null],
       mode:[null],
       ligneVentes: this.formBuilder.group({
         article :[null,[Validators.required]],
@@ -214,7 +214,7 @@ export class ManageVentesComponent {
    }
 
    this.comVente = {
-    code: formData.code,
+    //code: formData.code,
     modePayement: formData.mode,
     dateVente: new Date().getTime().toString(),
     ligneVentes: this.lignesCommande
@@ -234,8 +234,6 @@ export class ManageVentesComponent {
       }
       this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
       })
-
-
 
     }
 
