@@ -72,7 +72,7 @@ export class ManageCommandeClientsComponent {
   }
 
   tableData(){
-    this.comClientService.getAllCommandeClients().subscribe((res:any) => {
+    this.comClientService.getCommandesByClient().subscribe((res:any) => {
       this.ngxService.stop()
       this.radioDataExport = res
       this.dataSource = new MatTableDataSource(res)
@@ -98,7 +98,7 @@ export class ManageCommandeClientsComponent {
   }
 
   tableDataCmFournisseurs(){
-    this.comFournisseurService.getAllCommandeFournisseurs().subscribe((res:any) => {
+    this.comFournisseurService.getCommandesByFournisseur().subscribe((res:any) => {
       this.ngxService.stop()
       this.dataSource = new MatTableDataSource(res)
       this.comFournisseurs = res

@@ -5,12 +5,71 @@
   <button mat-flat-button  color="primary" (click)="handleAdd()" >Ajouter un client</button>
 </mat-card>
 <hr>
-<mat-card>
+<form [formGroup]="filterForm">
+  <mat-card>
+    <mat-form-field class="filter-field" appearance="fill" fxFlex>
+      <mat-label>Nom ou Prénom</mat-label>
+      <input
+        type="text"
+        matInput
+        formControlName="nom"
+        [matAutocomplete]="autoNomPrenom"
+      />
+      <mat-autocomplete #autoNomPrenom="matAutocomplete">
+        <mat-option
+          *ngFor="let u of dataClients"
+          [value]="u.nom"
+        >
+          {{ u.nom }} {{ u.prenom }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field class="filter-field" appearance="fill" fxFlex>
+      <mat-label>Email</mat-label>
+      <input
+        type="text"
+        matInput
+        formControlName="email"
+        [matAutocomplete]="autoEmail"
+      />
+      <mat-autocomplete #autoEmail="matAutocomplete">
+        <mat-option
+          *ngFor="let u of dataClients"
+          [value]="u.email"
+        >
+          {{ u.email }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field class="filter-field" appearance="fill" fxFlex>
+      <mat-label>Téléphone</mat-label>
+      <input
+        type="text"
+        matInput
+        formControlName="numTel"
+      />
+    </mat-form-field>
+
+    <div class="button-container">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onSearch()"
+      >
+        Rechercher
+      </button>
+    </div>
+  </mat-card>
+</form>
+
+<!-- <mat-card>
   <mat-form-field appearance="fill" >
     <mat-label>Filtrer</mat-label>
     <input matInput (keyup)="applyFilter($event)" #input>
   </mat-form-field>
-</mat-card>
+</mat-card> -->
 <hr>
 
 <div class="responsive_table">

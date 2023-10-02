@@ -13,6 +13,12 @@ export class DefaultDashboardComponent {
   totalVentes! : number
   montantTotalVentes! : number
 
+  totalComFournisseurs! : number
+  montantTotalComFournisseurs! : number
+
+  totalComClients! : number
+  montantTotalComClients! : number
+
   constructor(private mvtStockService: MouvementsDeStockService,private comClientService:CommandeClientsService,
     private comFourClient:CommandeFournisseursService,
     private venteService: VentesService,
@@ -22,6 +28,8 @@ export class DefaultDashboardComponent {
 
     this.getArticles()
     this.getVentes()
+    this.getComFournisseurs()
+    this.getComClients()
 }
 
 
@@ -35,6 +43,38 @@ export class DefaultDashboardComponent {
     this.venteService.getMontantTotalVentes().subscribe((res:any) => {
       console.log(res)
       this.montantTotalVentes = res
+    }, err => {
+      console.log(err);
+    })
+
+  }
+
+  getComFournisseurs(){
+    this.comFourClient.getAllCommandeFournisseurs().subscribe((res:any) => {
+      this.totalComFournisseurs = res.length
+    }, err => {
+      console.log(err);
+    })
+
+    this.comFourClient.getMontantTotalComFournisseur().subscribe((res:any) => {
+      console.log(res)
+      this.montantTotalComFournisseurs = res
+    }, err => {
+      console.log(err);
+    })
+
+  }
+
+  getComClients(){
+    this.comClientService.getAllCommandeClients().subscribe((res:any) => {
+      this.totalComClients = res.length
+    }, err => {
+      console.log(err);
+    })
+
+    this.comClientService.getMontantTotalComClient().subscribe((res:any) => {
+      console.log(res)
+      this.montantTotalComClients = res
     }, err => {
       console.log(err);
     })

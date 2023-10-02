@@ -8,6 +8,7 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
 import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { ClientsComponent } from '../dialog/clients/clients.component';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-manage-clients',
@@ -20,9 +21,11 @@ export class ManageClientsComponent {
   displayColumns : string[] = ["nom","prenom","email","telephone","adresse","ville","codepostal","pays","action"]
   dataSource : any;
   responseMessage : any;
+  dataClients : any;
+  filterForm:any = FormGroup;
 
   constructor(private clientService: ClientsService,
-    private ngxService:NgxUiLoaderService,
+    private ngxService:NgxUiLoaderService, private formBuilder: FormBuilder,
     private snackbarService: SnackbarService,private router:Router, private dialog : MatDialog) { }
 
 
@@ -30,13 +33,19 @@ export class ManageClientsComponent {
   ngOnInit(): void {
     this.ngxService.start()
     this.tableData()
+
+    this.filterForm = this.formBuilder.group({
+      nom: [''], // Définissez les valeurs par défaut si nécessaire
+      email: [''],
+      numTel: ['']
+    });
   }
 
   tableData(){
-      this.clientService.getAllClients().subscribe((res:any) => {
+      this.clientService.searchClients().subscribe((res:any) => {
          this.ngxService.stop()
          this.dataSource = new MatTableDataSource(res)
-
+         this.dataClients = res
       },(error:any)=>{
         this.ngxService.stop()
         if(error.error?.message){
@@ -130,6 +139,33 @@ export class ManageClientsComponent {
     }
 
 
+    onSearch(){
+      const nomValue = this.filterForm.get('nom').value;
+      const emailValue = this.filterForm.get('email').value;
+      let telValue = this.filterForm.get('numTel').value;
+
+      let nom: string = '';
+      let prenom: string = '';
+
+      if (nomValue && nomValue.includes(' ')) {
+        const parts = nomValue.split(' ', 2);
+        nom = parts[0];
+        prenom = parts[1];
+      } else {
+        nom = nomValue;
+      }
+
+
+
+        this.clientService.searchClients(nomValue,emailValue, telValue).subscribe((res:any)=>{
+            this.dataClients = res;
+            this.tableData()
+            console.log(res);
+        }, (err:any)=>{
+
+        });
+
+    }
 
 
 }

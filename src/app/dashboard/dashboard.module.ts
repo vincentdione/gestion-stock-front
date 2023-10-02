@@ -38,6 +38,7 @@ import { ModePayementComponent } from './dialog/mode-payement/mode-payement.comp
 import { ManageConditionComponent } from './manage-condition/manage-condition.component';
 import { ConditionComponent } from './dialog/condition/condition.component';
 import { SearchStockComponent } from './manage-mvt-stk/search-stock/search-stock.component';
+import { XofPipe } from '../custumPipe/xof-pipe';
 
 
 @NgModule({
@@ -72,8 +73,8 @@ import { SearchStockComponent } from './manage-mvt-stk/search-stock/search-stock
     ModePayementComponent,
     ManageConditionComponent,
     ConditionComponent,
-    SearchStockComponent
-
+    SearchStockComponent,
+    XofPipe,
   ],
   imports: [
     CommonModule,
