@@ -18,6 +18,7 @@ import { ManageUniteComponent } from './manage-unite/manage-unite.component';
 import { ManageModePayementComponent } from './manage-mode-payement/manage-mode-payement.component';
 import { ManageConditionComponent } from './manage-condition/manage-condition.component';
 import { SearchStockComponent } from './manage-mvt-stk/search-stock/search-stock.component';
+import { SingleVenteComponent } from './manage-ventes/single-vente/single-vente.component';
 
 const routes: Routes = [
   {
@@ -62,6 +63,7 @@ const routes: Routes = [
         }
       },
       { path: 'ventes', component: ManageVentesComponent },
+      { path: 'ventes/:id', component: SingleVenteComponent },
       { path: 'mouvements', component: ManageMvtStkComponent },
       { path: 'search-stock', component: SearchStockComponent },
     ],

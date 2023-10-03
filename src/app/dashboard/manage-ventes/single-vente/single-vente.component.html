@@ -1,0 +1,8 @@
+<mat-card>
+  <b> <span>Détails de la vente {{vente.code}} </span> </b>
+  <!-- <button mat-flat-button  color="primary" (click)="handleAdd()" >Ajouter une sous-catégorie</button> -->
+</mat-card>
+
+<hr/>
+
+<app-details-lignes-commandes [idCommande]="vente?.id" [origin]="'ventes'" ></app-details-lignes-commandes>

@@ -1,6 +1,10 @@
 
 <mat-card class="top">
-  <b> <span>les commandes {{origin}}</span> </b>
+  <b>
+    <span *ngIf="origin === 'ventes'; else commandesBlock">Les lignes de ventes</span>
+    <ng-template #commandesBlock>Les commandes</ng-template>
+  </b>
+     <h1> Total: {{ total}} F CFA </h1>
 </mat-card>
 <hr>
 <mat-card>

@@ -38,6 +38,8 @@ export class ManageCommandeClientsComponent {
   total : number = 0;
   radioDataExport:any;
   panelOpenState = false;
+  filterForm:any = FormGroup;
+
 
   constructor(private clientService:ClientsService,
     private comClientService:CommandeClientsService,
@@ -49,6 +51,12 @@ export class ManageCommandeClientsComponent {
   ngOnInit(): void {
     this.ngxService.start()
 
+    this.filterForm = this.formBuilder.group({
+      nom: [''], // Définissez les valeurs par défaut si nécessaire
+      email: [''],
+      numTel: [''],
+      codeCommande: ['']
+    });
     this.activatedRoute.data.subscribe(data => {
       this.origin = data['origin'];
     });
@@ -157,7 +165,6 @@ export class ManageCommandeClientsComponent {
        this.ngxService.start();
        this.delete(values.id)
        dialogRef.close();
-
     })
   }
 
@@ -219,4 +226,42 @@ export class ManageCommandeClientsComponent {
 
  }
 
+ onSearch(){
+  const nomValue = this.filterForm.get('nom').value;
+  const emailValue = this.filterForm.get('email').value;
+  let telValue = this.filterForm.get('numTel').value;
+  let codeValue = this.filterForm.get('codeCommande').value;
+
+  let nom: string = '';
+  let prenom: string = '';
+
+  if (nomValue && nomValue.includes(' ')) {
+    const parts = nomValue.split(' ', 2);
+    nom = parts[0];
+    prenom = parts[1];
+  } else {
+    nom = nomValue;
+  }
+
+
+
+    if (this.origin === 'client') {
+      this.comClientService.getCommandesByClient(nomValue,emailValue, codeValue).subscribe((res:any)=>{
+        this.comClients = res;
+        this.dataSource = new MatTableDataSource(res);
+        console.log(res);
+    }, (err:any)=>{
+
+    });
+} else {
+  this.comFournisseurService.getCommandesByFournisseur(nomValue,emailValue, codeValue).subscribe((res:any)=>{
+    this.comFournisseurs = res;
+    this.dataSource = new MatTableDataSource(res);
+    console.log(res);
+}, (err:any)=>{
+
+});
+}
+
+ }
 }

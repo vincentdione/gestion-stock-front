@@ -1,4 +1,4 @@
-import { Component,Input } from '@angular/core';
+import { Component, Input, ChangeDetectorRef } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -22,7 +22,9 @@ export class DetailsLignesCommandesComponent {
   @Input()
   idCommande: any;
   @Input()
-  origin: any;
+  origin: any = '';
+
+  total: number = 0;
 
   responseMessage : any;
 
@@ -33,8 +35,9 @@ export class DetailsLignesCommandesComponent {
     private comFournisseurService:CommandeFournisseursService,
     private venteService: VentesService,
     // private ligneCommandeClients : Ligne
-    private router: Router, private dialog: MatDialog,
-    private snackbarService : SnackbarService, private ngxService: NgxUiLoaderService) { }
+    private router: Router, private dialog: MatDialog,private cdr: ChangeDetectorRef,
+    private snackbarService : SnackbarService,
+     private ngxService: NgxUiLoaderService) { }
 
   ngOnInit(): void {
     this.ngxService.start()
@@ -52,11 +55,21 @@ export class DetailsLignesCommandesComponent {
 
   }
 
+  updateTotal(dataSource:any) {
+    console.log("updateTotal")
+    console.log(this.dataSource)
+    this.total = dataSource.reduce((acc: number, curr: { prixUnitaire: number; quantite: number; }) => acc + (curr.prixUnitaire * curr.quantite), 0);
+    // Déclenchez la détection des changements pour mettre à jour la vue
+    this.cdr.detectChanges();
+    console.log(this.total)
+  }
+
   tableDataVentes(){
     this.venteService.findAllLigneVenteByVenteId(this.idCommande).subscribe((res:any) => {
       this.ngxService.stop()
       this.dataSource = new MatTableDataSource(res)
-      console.log(res)
+      this.updateTotal(res)
+
       // this.total = res.reduce((acc:number, val:any) => {
       //   return acc + parseInt(val.rad_prix);
       // }, 0);
@@ -77,7 +90,8 @@ export class DetailsLignesCommandesComponent {
     this.comClientService.findAllLignesCommandesClientByCommandeClientId(this.idCommande).subscribe((res:any) => {
       this.ngxService.stop()
       this.dataSource = new MatTableDataSource(res)
-      console.log(res)
+      this.updateTotal(res)
+
       // this.total = res.reduce((acc:number, val:any) => {
       //   return acc + parseInt(val.rad_prix);
       // }, 0);
@@ -97,7 +111,8 @@ export class DetailsLignesCommandesComponent {
     this.comFournisseurService.findAllLignesCommandesFournisseurByCommandeFournisseurId(this.idCommande).subscribe((res:any) => {
       this.ngxService.stop()
       this.dataSource = new MatTableDataSource(res)
-      console.log(res)
+      this.updateTotal(res)
+
       // this.total = res.reduce((acc:number, val:any) => {
       //   return acc + parseInt(val.rad_prix);
       // }, 0);
@@ -125,7 +140,6 @@ export class DetailsLignesCommandesComponent {
        this.ngxService.start();
        this.delete(values.id)
        dialogRef.close();
-
     })
   }
 
@@ -207,13 +221,14 @@ export class DetailsLignesCommandesComponent {
        this.ngxService.start();
        if (this.origin == 'client'){
         this.tableDataClients()
+
        }
        else if (this.origin == 'fournisseur'){
         this.tableDataFournisseurs()
        }
-      //  else {
-      //   this.tableDataVentes()
-      //  }
+       else {
+        this.tableDataVentes()
+       }
      }
    )
  }

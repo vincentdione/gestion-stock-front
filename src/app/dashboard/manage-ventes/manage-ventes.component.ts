@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ArticleDto, ArticlesService, ConditionAVDto, ConditionsDeVentesService, LigneVenteDto, ModePayementDto, ModesPayementService, UniteDto, UnitsService, VenteDto, VentesService } from 'src/app/api';
 import { SnackbarService } from 'src/app/services/snackbar.service';
@@ -332,9 +332,17 @@ private checkLigneCommande(): void {
 }
 
 
-handleDetails(el:any){
+handleView(el:any){
 
+  const navigationExtras: NavigationExtras = {
+    state: {
+      data: el,
+    },
+  };
+
+  this.router.navigate(['/workspace/dashboard/ventes', el.id],navigationExtras);
 }
+
 
 
 }
