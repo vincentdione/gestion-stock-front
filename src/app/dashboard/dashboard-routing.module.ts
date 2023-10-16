@@ -19,6 +19,7 @@ import { ManageModePayementComponent } from './manage-mode-payement/manage-mode-
 import { ManageConditionComponent } from './manage-condition/manage-condition.component';
 import { SearchStockComponent } from './manage-mvt-stk/search-stock/search-stock.component';
 import { SingleVenteComponent } from './manage-ventes/single-vente/single-vente.component';
+import { SingleCommandeClientComponent } from './pages/single-commande-client/single-commande-client.component';
 
 const routes: Routes = [
   {
@@ -43,6 +44,12 @@ const routes: Routes = [
             origin: 'client'
           }
     },
+    { path: 'commandeClients/:id',
+     component: SingleCommandeClientComponent,
+     data: {
+       origin: 'client'
+     }
+    },
       { path: 'addcommandeClient',
       component: AddCommandeClientComponent,
       data: {
@@ -55,13 +62,20 @@ const routes: Routes = [
         origin: 'fournisseur'
       }
      },
-      {
-        path: 'commandeFournisseurs',
-        component: ManageCommandeClientsComponent,
-        data: {
-          origin: 'fournisseur'
-        }
-      },
+     {
+      path: 'commandeFournisseurs',
+      component: ManageCommandeClientsComponent,
+      data: {
+        origin: 'fournisseur'
+      }
+    },
+     { path: 'commandeFournisseurs/:id',
+     component: SingleCommandeClientComponent,
+     data: {
+       origin: 'fournisseur'
+     }
+    },
+
       { path: 'ventes', component: ManageVentesComponent },
       { path: 'ventes/:id', component: SingleVenteComponent },
       { path: 'mouvements', component: ManageMvtStkComponent },

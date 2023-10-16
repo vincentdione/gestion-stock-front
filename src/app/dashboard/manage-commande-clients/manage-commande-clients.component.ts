@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ClientsService, CommandeClientDto, CommandeClientsService, CommandeFournisseurDto, CommandeFournisseursService } from 'src/app/api';
 import { SnackbarService } from 'src/app/services/snackbar.service';
@@ -68,7 +68,6 @@ export class ManageCommandeClientsComponent {
     else if (this.origin === 'fournisseur') {
       this.tableDataCmFournisseurs()
       this.addCommande = 'addcommandeFournisseur'
-
     }
 
 
@@ -264,4 +263,22 @@ export class ManageCommandeClientsComponent {
 }
 
  }
+
+
+ handleView(el:any){
+  const navigationExtras: NavigationExtras = {
+    state: {
+      data: el,
+    },
+  };
+
+  if (this.origin === 'client'){
+    this.router.navigate(['/workspace/dashboard/commandeClients', el.id],navigationExtras);
+  }
+  else if (this.origin === 'fournisseur'){
+    this.router.navigate(['/workspace/dashboard/commandeFournisseurs', el.id],navigationExtras);
+
+ }
+
+}
 }

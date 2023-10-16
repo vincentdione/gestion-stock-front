@@ -1,0 +1,7 @@
+<mat-card>
+  <b> <span>{{detailCommande}} {{commande.code}} </span> </b>
+</mat-card>
+
+<hr/>
+
+<app-details-lignes-commandes [idCommande]="commande?.id" [origin]="origin" ></app-details-lignes-commandes>

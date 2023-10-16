@@ -40,6 +40,7 @@ import { ConditionComponent } from './dialog/condition/condition.component';
 import { SearchStockComponent } from './manage-mvt-stk/search-stock/search-stock.component';
 import { XofPipe } from '../custumPipe/xof-pipe';
 import { SingleVenteComponent } from './manage-ventes/single-vente/single-vente.component';
+import { SingleCommandeClientComponent } from './pages/single-commande-client/single-commande-client.component';
 
 
 @NgModule({
@@ -77,6 +78,7 @@ import { SingleVenteComponent } from './manage-ventes/single-vente/single-vente.
     SearchStockComponent,
     XofPipe,
     SingleVenteComponent,
+    SingleCommandeClientComponent,
   ],
   imports: [
     CommonModule,

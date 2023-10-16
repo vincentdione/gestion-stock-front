@@ -15,6 +15,7 @@ api/fournisseurs.service.ts
 api/management.service.ts
 api/modesPayement.service.ts
 api/mouvementsDeStock.service.ts
+api/reports.service.ts
 api/sousCategories.service.ts
 api/units.service.ts
 api/utilisateurs.service.ts

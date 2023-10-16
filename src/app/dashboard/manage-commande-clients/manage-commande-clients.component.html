@@ -150,6 +150,9 @@
               <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
                 <mat-icon>delete</mat-icon>
               </button>
+              <button mat-icon-button color="primary"  matTooltip="voir les détails des ventes" (click)="handleView(element)" >
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
             </mat-panel-description>
           </mat-expansion-panel-header>
            <app-details-lignes-commandes [idCommande]="element?.id" [origin]="origin" ></app-details-lignes-commandes>
@@ -178,6 +181,9 @@
       <mat-panel-description>
         <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
           <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button color="primary"  matTooltip="voir les détails des ventes" (click)="handleView(element)" >
+          <mat-icon>arrow_forward</mat-icon>
         </button>
       </mat-panel-description>
     </mat-expansion-panel-header>
