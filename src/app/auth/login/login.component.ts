@@ -48,9 +48,8 @@ export class LoginComponent {
 
     this.userService.login(this.authenticationRequest).subscribe((res:any) => {
         this.ngxService.stop();
-        console.log(JSON.stringify(res))
-        console.log(res)
         const accessToken = res?.access_token;
+        console.log("res ==== "+JSON.stringify(res));
         if (accessToken) {
           this.userService.setAccessToken(res?.access_token)
           this.userService.setRefreshToken(res?.refresh_token)

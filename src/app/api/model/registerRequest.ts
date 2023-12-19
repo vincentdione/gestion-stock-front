@@ -20,9 +20,10 @@ export interface RegisterRequest {
     role?: RegisterRequest.RoleEnum;
 }
 export namespace RegisterRequest {
-    export type RoleEnum = 'USER' | 'ADMIN' | 'MANAGER';
+    export type RoleEnum = 'USER' | 'LIVREUR' | 'ADMIN' | 'MANAGER';
     export const RoleEnum = {
         User: 'USER' as RoleEnum,
+        Livreur: 'LIVREUR' as RoleEnum,
         Admin: 'ADMIN' as RoleEnum,
         Manager: 'MANAGER' as RoleEnum
     };

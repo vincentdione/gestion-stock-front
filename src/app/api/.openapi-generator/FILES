@@ -12,6 +12,7 @@ api/commandeFournisseurs.service.ts
 api/conditionsDeVentes.service.ts
 api/entreprises.service.ts
 api/fournisseurs.service.ts
+api/livraisons.service.ts
 api/management.service.ts
 api/modesPayement.service.ts
 api/mouvementsDeStock.service.ts
@@ -41,6 +42,7 @@ model/fournisseurDto.ts
 model/ligneCommandeClientDto.ts
 model/ligneCommandeFournisseurDto.ts
 model/ligneVenteDto.ts
+model/livraisonDto.ts
 model/modePayementDto.ts
 model/models.ts
 model/mvtStkDto.ts

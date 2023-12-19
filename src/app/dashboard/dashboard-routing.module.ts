@@ -20,6 +20,8 @@ import { ManageConditionComponent } from './manage-condition/manage-condition.co
 import { SearchStockComponent } from './manage-mvt-stk/search-stock/search-stock.component';
 import { SingleVenteComponent } from './manage-ventes/single-vente/single-vente.component';
 import { SingleCommandeClientComponent } from './pages/single-commande-client/single-commande-client.component';
+import { ManageLivraisonsComponent } from './manage-livraisons/manage-livraisons.component';
+import { SearchLivraisonsComponent } from './manage-livraisons/search-livraisons/search-livraisons.component';
 
 const routes: Routes = [
   {
@@ -80,6 +82,8 @@ const routes: Routes = [
       { path: 'ventes/:id', component: SingleVenteComponent },
       { path: 'mouvements', component: ManageMvtStkComponent },
       { path: 'search-stock', component: SearchStockComponent },
+      { path: 'livraisons', component: ManageLivraisonsComponent },
+      { path: 'search-livraisons', component: SearchLivraisonsComponent },
     ],
   },
 ];

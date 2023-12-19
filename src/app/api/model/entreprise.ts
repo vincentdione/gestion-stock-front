@@ -9,19 +9,19 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ModePayement } from './modePayement';
-import { LigneVente } from './ligneVente';
+import { Adresse } from './adresse';
+import { Utilisateur } from './utilisateur';
 
 
-export interface Ventes { 
+export interface Entreprise { 
     id?: number;
-    code?: string;
-    dateVente?: string;
-    commentaire?: string;
-    idEntreprise?: number;
-    ligneVentes?: Array<LigneVente>;
-    modePayement?: ModePayement;
-    nombreDeVentes?: number;
-    montantTotal?: number;
+    nom?: string;
+    description?: string;
+    codeFiscal?: string;
+    siteWeb?: string;
+    adresse?: Adresse;
+    email?: string;
+    numTel?: string;
+    utilisateurs?: Array<Utilisateur>;
 }
 

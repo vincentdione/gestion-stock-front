@@ -9,19 +9,22 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ModePayement } from './modePayement';
-import { LigneVente } from './ligneVente';
+import { Utilisateur } from './utilisateur';
 
 
-export interface Ventes { 
+export interface Token { 
     id?: number;
-    code?: string;
-    dateVente?: string;
-    commentaire?: string;
-    idEntreprise?: number;
-    ligneVentes?: Array<LigneVente>;
-    modePayement?: ModePayement;
-    nombreDeVentes?: number;
-    montantTotal?: number;
+    token?: string;
+    tokenType?: Token.TokenTypeEnum;
+    revoked?: boolean;
+    expired?: boolean;
+    utilisateur?: Utilisateur;
 }
+export namespace Token {
+    export type TokenTypeEnum = 'BEARER';
+    export const TokenTypeEnum = {
+        Bearer: 'BEARER' as TokenTypeEnum
+    };
+}
+
 

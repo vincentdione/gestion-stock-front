@@ -15,6 +15,7 @@ export * from './fournisseurDto';
 export * from './ligneCommandeClientDto';
 export * from './ligneCommandeFournisseurDto';
 export * from './ligneVenteDto';
+export * from './livraisonDto';
 export * from './modePayementDto';
 export * from './mvtStkDto';
 export * from './registerRequest';

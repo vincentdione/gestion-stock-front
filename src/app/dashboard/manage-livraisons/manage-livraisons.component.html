@@ -1,0 +1,97 @@
+
+<!-- //routerLink="/workspace/dashboard/addCategory" -->
+<mat-card>
+  <b> <span>Gestion des livraisons</span> </b>
+  <!-- <button mat-flat-button  color="primary" (click)="handleAdd()" >Ajouter une unité</button> -->
+</mat-card>
+<hr>
+<!-- <form [formGroup]="filterForm">
+  <mat-card>
+    <mat-form-field class="filter-field" appearance="fill"  fxFlex >
+      <mat-label>Article</mat-label>
+      <mat-select formControlName="article"  [(ngModel)]="selectedArticle">
+        <mat-option *ngFor="let u of articles" [value]="u"> {{u.codeArticle}}</mat-option>
+    </mat-select>
+    </mat-form-field>
+
+
+    <div class="button-container">
+      <button mat-raised-button color="primary" (click)="onSearch()" >Rechercher</button>
+    </div>
+  </mat-card>
+  </form> -->
+<hr>
+
+<div class="responsive_table">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="code">
+       <th mat-header-cell *matHeaderCellDef>Code</th>
+       <td mat-cell *matCellDef="let element">{{element.code}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="dateLivraison">
+        <th mat-header-cell *matHeaderCellDef>Date livraison</th>
+        <td mat-cell *matCellDef="let element">{{element.dateLivraison}}</td>
+       </ng-container>
+
+       <ng-container matColumnDef="etat">
+        <th mat-header-cell *matHeaderCellDef>Statut</th>
+        <td mat-cell *matCellDef="let element">
+          <!-- <mat-chip  [ngStyle]="{ 'background-color':
+            element.etat === 'EN_COURS' ? 'blue' : element.etat == 'ANNULER' ? 'red' : element.etat == 'VALIDER' ? 'green' : 'red' }">
+            {{ element.etat }}
+          </mat-chip> -->
+          <mat-chip-option *ngIf="element.etat == 'VALIDER'" color="primary" selected >{{element?.etat}}</mat-chip-option>
+          <mat-chip-option *ngIf="element.etat == 'ANNULER'" color="accent" selected >{{element?.etat}}</mat-chip-option>
+          <mat-chip-option *ngIf="element.etat == 'EN_COURS'" color="warn" selected >{{element?.etat}}</mat-chip-option>
+          <mat-chip-option *ngIf="element.etat == 'RENVOYER'" color="accent" selected >{{element?.etat}}</mat-chip-option>
+
+        </td>
+      </ng-container>
+
+       <ng-container matColumnDef="client">
+        <th mat-header-cell *matHeaderCellDef>Client</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-chip color="primary" >{{element.commandeClient.clientDto.prenom}} {{element.commandeClient.clientDto.nom}} </mat-chip>
+        </td>
+       </ng-container>
+
+       <ng-container matColumnDef="livreur">
+        <th mat-header-cell *matHeaderCellDef>Livreur</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-chip color="primary">
+            {{ element.utilisateur ? element.utilisateur.prenom + ' ' + element.utilisateur.nom : 'Pas de livreur' }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+       <ng-container matColumnDef="quantite">
+        <th mat-header-cell *matHeaderCellDef>Quantité</th>
+        <td mat-cell *matCellDef="let element">{{element.quantite}}</td>
+       </ng-container>
+
+       <ng-container matColumnDef="dateMvt">
+        <th mat-header-cell *matHeaderCellDef>Date Mvt</th>
+        <td mat-cell *matCellDef="let element">{{element.dateMvt | date: 'dd/MM/yyyy' }}</td>
+       </ng-container>
+
+
+      <ng-container matColumnDef="action">
+       <th mat-header-cell *matHeaderCellDef>Action</th>
+       <td mat-cell *matCellDef="let element" class="action-link" >
+         <button mat-icon-button color="primary" matTooltip="Modifier" >
+           <mat-icon>edit</mat-icon>
+         </button>
+         <!-- <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
+           <mat-icon>delete</mat-icon>
+         </button> -->
+<!--          <mat-slide-toggle (change)="onChange($event.checked,element.id)" matTooltip="Activer ou desactiver" [checked]="element.status" ></mat-slide-toggle>
+ -->       </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
+      <tr mat-row *matRowDef="let row;columns:displayColumns"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+
+</div>
+

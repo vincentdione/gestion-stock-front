@@ -41,6 +41,8 @@ import { SearchStockComponent } from './manage-mvt-stk/search-stock/search-stock
 import { XofPipe } from '../custumPipe/xof-pipe';
 import { SingleVenteComponent } from './manage-ventes/single-vente/single-vente.component';
 import { SingleCommandeClientComponent } from './pages/single-commande-client/single-commande-client.component';
+import { ManageLivraisonsComponent } from './manage-livraisons/manage-livraisons.component';
+import { SearchLivraisonsComponent } from './manage-livraisons/search-livraisons/search-livraisons.component';
 
 
 @NgModule({
@@ -79,6 +81,8 @@ import { SingleCommandeClientComponent } from './pages/single-commande-client/si
     XofPipe,
     SingleVenteComponent,
     SingleCommandeClientComponent,
+    ManageLivraisonsComponent,
+    SearchLivraisonsComponent,
   ],
   imports: [
     CommonModule,

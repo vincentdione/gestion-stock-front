@@ -9,11 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { EntrepriseDto } from './entrepriseDto';
-import { AdresseDto } from './adresseDto';
+import { Adresse } from './adresse';
+import { Entreprise } from './entreprise';
+import { GrantedAuthority } from './grantedAuthority';
+import { Token } from './token';
+import { Livraison } from './livraison';
 
 
-export interface UtilisateurDto { 
+export interface Utilisateur { 
     id?: number;
     username?: string;
     password?: string;
@@ -21,11 +24,18 @@ export interface UtilisateurDto {
     nom?: string;
     prenom?: string;
     dateDeNaissance?: string;
-    entrepriseDto?: EntrepriseDto;
-    role?: UtilisateurDto.RoleEnum;
-    adresse?: AdresseDto;
+    adresse?: Adresse;
+    entreprise?: Entreprise;
+    role?: Utilisateur.RoleEnum;
+    tokens?: Array<Token>;
+    livraisons?: Array<Livraison>;
+    enabled?: boolean;
+    authorities?: Array<GrantedAuthority>;
+    accountNonExpired?: boolean;
+    credentialsNonExpired?: boolean;
+    accountNonLocked?: boolean;
 }
-export namespace UtilisateurDto {
+export namespace Utilisateur {
     export type RoleEnum = 'USER' | 'LIVREUR' | 'ADMIN' | 'MANAGER';
     export const RoleEnum = {
         User: 'USER' as RoleEnum,

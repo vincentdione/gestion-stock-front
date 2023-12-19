@@ -15,13 +15,13 @@ export class SidebarComponent implements OnDestroy {
   tokenPayload: any;
 
   menus = [
-  { label: 'Dashboard', icon: 'home', link: 'dashboard' },
+  { label: 'Dashboard', icon: 'home', link: 'dashboard',role:'ADMIN' },
   {  label: 'Ventes',      icon: 'menu',
   subMenuItems:
   [
      { label: 'Ventes', link: 'ventes',icon: 'shopping_cart' },
     //  { label: 'Commandes', link: 'commandeFournisseurs',icon: 'assignment' },
-  ]
+  ],role:'ADMIN'
 },
 
   {  label: 'Clients',      icon: 'menu',
@@ -29,14 +29,14 @@ export class SidebarComponent implements OnDestroy {
   [
      { label: 'Clients', link: 'clients',icon: 'person' },
      { label: 'Commandes', link: 'commandeClients',icon: 'assignment' },
-  ]
+  ],role:'ADMIN'
 },
 {  label: 'Fournisseurs',      icon: 'menu',
   subMenuItems:
   [
      { label: 'Fournisseurs', link: 'fournisseurs',icon: 'person' },
      { label: 'Commandes', link: 'commandeFournisseurs',icon: 'assignment' },
-  ]
+  ],role:'ADMIN'
 },
 
 {  label: 'Mouvements stocks',      icon: 'menu',
@@ -44,7 +44,14 @@ export class SidebarComponent implements OnDestroy {
   [
     { label: 'Stock', link: 'mouvements',icon: 'inventory' },
     { label: 'Rechercher', link: 'search-stock',icon: 'search' },
-  ]
+  ],role:'ADMIN'
+},
+{  label: 'Livraisons',      icon: 'menu',
+subMenuItems:
+[
+  { label: 'Livraisons', link: 'livraisons',icon: 'inventory' },
+  { label: 'Rechercher', link: 'search-livraisons',icon: 'search' },
+],role:'ADMIN'
 },
 
 {  label: 'Parametres',      icon: 'menu',
@@ -56,8 +63,11 @@ export class SidebarComponent implements OnDestroy {
        { label: 'Sous-catégories', link: 'sousCategory',icon: 'view_quilt' },
        { label: 'Articles', link: 'article',icon: 'add_shopping_cart' },
        { label: 'Conditions ventes', link: 'condition',icon: 'view_comfy' },
-    ]
+    ],role:'ADMIN'
   },
+
+
+
      ];
 
   private _mobileQueryListener: () => void;
