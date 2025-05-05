@@ -13,7 +13,10 @@ const routes: Routes = [
   {
     path: 'workspace/dashboard',
     loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule),
-    canActivate: [AuthGardService]
+    canActivate: [AuthGardService],
+    data : {
+      expectedRole: ["ROLE_ADMIN","ROLE_MANAGER","ROLE_SUPER_ADMIN"]
+    },
     },
 
   // {path: '',

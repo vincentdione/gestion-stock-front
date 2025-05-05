@@ -1,20 +1,32 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpErrorResponse
+} from '@angular/common/http';
 import { catchError, switchMap } from 'rxjs/operators';
 import { throwError, BehaviorSubject, Observable } from 'rxjs';
-import { UserService } from '../user/user.service';
 import { AuthentificationService } from 'src/app/api';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
   private refreshTokenInProgress = false;
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
   constructor(private authService: AuthentificationService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const accessToken = localStorage.getItem('accessToken');
-    request = this.addAuthorizationHeader(request, accessToken || '');
+
+    if (accessToken) {
+      request = this.addAuthorizationHeader(request, accessToken);
+
+      // 🔍 Optionnel : décode le token si nécessaire
+      const decodedToken = this.decodeJWT(accessToken);
+      console.log('Payload JWT :', decodedToken);
+    }
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -25,34 +37,37 @@ export class TokenInterceptor implements HttpInterceptor {
 
             return this.authService.refreshToken().pipe(
               switchMap((response: any) => {
+                const newAccessToken = response.access_token;
+                const newRefreshToken = response.refresh_token;
+
                 this.refreshTokenInProgress = false;
-                this.refreshTokenSubject.next(response.accessToken);
-                localStorage.setItem('accessToken', response.accessToken);
-                localStorage.setItem('refreshToken', response.refreshToken);
+                this.refreshTokenSubject.next(newAccessToken);
 
-                request = this.addAuthorizationHeader(request, response.accessToken);
+                localStorage.setItem('accessToken', newAccessToken);
+                localStorage.setItem('refreshToken', newRefreshToken);
 
+                request = this.addAuthorizationHeader(request, newAccessToken);
                 return next.handle(request);
               }),
               catchError((refreshError: any) => {
                 this.refreshTokenInProgress = false;
-                // Handle refresh token error, e.g., log out the user or perform other appropriate actions
+                // Optionnel : redirect to login or logout
                 return throwError(refreshError);
               })
-            ) as Observable<HttpEvent<any>>; // Explicitly cast the observable type
+            );
           } else {
             return this.refreshTokenSubject.pipe(
-              switchMap((accessToken: string) => {
-                if (accessToken) {
-                  request = this.addAuthorizationHeader(request, accessToken);
+              switchMap((newToken: string | null) => {
+                if (newToken) {
+                  request = this.addAuthorizationHeader(request, newToken);
                 }
                 return next.handle(request);
               })
-            ) as Observable<HttpEvent<any>>; // Explicitly cast the observable type
+            );
           }
         }
 
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }
@@ -64,4 +79,22 @@ export class TokenInterceptor implements HttpInterceptor {
       }
     });
   }
+
+  private decodeJWT(token: string): any {
+    try {
+      // Vérifie d'abord si le token est au format JWT valide
+      if (!token || token.split('.').length !== 3) {
+        console.error('Token invalide');
+        return null;
+      }
+
+      const payloadBase64 = token.split('.')[1];
+      const payloadDecoded = atob(payloadBase64);
+      return JSON.parse(payloadDecoded);
+    } catch (error) {
+      console.error('Erreur lors du décodage du token :', error);
+      return null;
+    }
+  }
+
 }

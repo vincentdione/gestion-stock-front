@@ -18,6 +18,7 @@ export interface RegisterRequest {
     email?: string;
     password?: string;
     role?: RegisterRequest.RoleEnum;
+    entrepriseId?: number;
 }
 export namespace RegisterRequest {
     export type RoleEnum = 'USER' | 'LIVREUR' | 'ADMIN' | 'MANAGER';

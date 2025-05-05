@@ -51,9 +51,10 @@ export class LoginComponent {
         const accessToken = res?.access_token;
         console.log("res ==== "+JSON.stringify(res));
         if (accessToken) {
-          this.userService.setAccessToken(res?.access_token)
+          this.userService.setAccessToken(res)
           this.userService.setRefreshToken(res?.refresh_token)
           this.userService.setConnectedUser(res)
+          localStorage.setItem("role",JSON.stringify(res?.roles[0]))
           this.responseMessage = res?.message
           this.snackbarService.openSnackbar("Bienvenue dans votre gestion de stock!!!","Bienvenue dans votre gestion de stock!!!")
           this.router.navigate(["/workspace/dashboard"])
@@ -99,5 +100,7 @@ export class LoginComponent {
       console.log(error)
     });
   }
+
+
 
 }

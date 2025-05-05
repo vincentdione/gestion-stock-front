@@ -50,19 +50,27 @@ export class UserService {
   }
 
   setAccessToken(authenticationResponse: AuthenticationResponse): void {
-    localStorage.setItem('accessToken', JSON.stringify(authenticationResponse));
+    if (authenticationResponse.access_token) {
+      localStorage.setItem('accessToken', authenticationResponse.access_token);
+    } else {
+      console.error('Access token est undefined dans la réponse');
+    }
   }
 
   setRefreshToken(authenticationResponse: AuthenticationResponse): void {
-    localStorage.setItem('refreshToken', JSON.stringify(authenticationResponse));
+    if (authenticationResponse.refresh_token) {
+      localStorage.setItem('refreshToken', authenticationResponse.refresh_token);
+    } else {
+      console.error('Refresh token est undefined dans la réponse');
+    }
   }
+
 
   refreshToken(){
     var authenticationResponse = JSON.parse(
       localStorage.getItem('refreshToken') as string
     );
       return this.authenticationService.refreshToken(authenticationResponse?.refresh_token).subscribe((res=>{
-          console.log("Refresh OKIIIIIIIIIIIIIIIII")
       }),(error=>{
         console.log("Erreur lors la récuperation du refresh Token");
       }))
@@ -81,6 +89,7 @@ export class UserService {
 
   getConnectedUser(): UtilisateurDto {
     if (localStorage.getItem('user')) {
+      console.log(JSON.parse(localStorage.getItem('user') as string));
       return JSON.parse(localStorage.getItem('user') as string);
     }
     return {};
@@ -95,4 +104,18 @@ export class UserService {
     return false;
   }
 
+
+  getEntrepriseName(): string | null {
+    const storedData = localStorage.getItem('user');  // Récupérer la chaîne JSON
+    if (storedData) {
+      try {
+        const parsedData = JSON.parse(storedData);  // Convertir la chaîne JSON en objet
+        return parsedData?.entrepriseNom || null;  // Récupérer l'attribut 'entrepriseNom' ou null si absent
+      } catch (error) {
+        console.error('Erreur de parsing du JSON', error);
+        return null;
+      }
+    }
+    return null;  // Si aucune donnée n'est trouvée
+  }
 }

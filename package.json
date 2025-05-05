@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "npm run gs-openapi && ng serve -o",
-    "gs-openapi": " openapi-generator-cli  generate  -i http://localhost:8082/v3/api-docs  -g typescript-angular -o ./src/app/api ",
+    "gs-openapi": " openapi-generator-cli  generate  -i http://localhost:8084/v3/api-docs  -g typescript-angular -o ./src/app/api ",
+    "gs-openapi-docker": " openapi-generator-cli  generate  -i http://stock-api:8082/v3/api-docs  -g typescript-angular -o ./src/app/api ",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

@@ -12,6 +12,8 @@
 
 
 export interface AuthenticationResponse { 
+    entrepriseNom?: string;
+    roles?: Array<string>;
     access_token?: string;
     refresh_token?: string;
 }

@@ -12,6 +12,34 @@ export class AuthGardService {
   constructor(public authService: UserService,public router: Router) { }
 
 
+  // canActivate(
+  //   route: ActivatedRouteSnapshot,
+  //   state: RouterStateSnapshot
+  // ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+
+  //   // Vérifier si l'utilisateur est authentifié
+  //   const isLoggedIn = this.authService.isUserLoggedAndAccessTokenValid();
+  //   if (!isLoggedIn) {
+  //     this.router.navigate(['/login']);
+  //     return false;
+  //   }
+
+  //   // Récupérer le rôle attendu depuis la route
+  //   const expectedRoles = route.data['expectedRole'] as Array<string>;
+
+  //   // Récupérer le rôle de l'utilisateur depuis le localStorage
+  //   const userRole = JSON.parse(localStorage.getItem('role') || '""');
+
+  //   // Vérifier si le rôle de l'utilisateur est dans la liste des rôles attendus
+  //   if (expectedRoles.includes(userRole)) {
+  //     return true;
+  //   }
+
+  //   // Rediriger vers la page de login si le rôle n'est pas autorisé
+  //   this.router.navigate(['/login']);
+  //   return false;
+  // }
+
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot

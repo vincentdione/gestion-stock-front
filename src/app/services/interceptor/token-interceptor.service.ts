@@ -20,14 +20,13 @@ export class TokenInterceptorService implements HttpInterceptor {
     this.loaderService.start();
     let authenticationResponse: AuthenticationResponse = {};
     if (localStorage.getItem('accessToken')) {
-      authenticationResponse = JSON.parse(
-        localStorage.getItem('accessToken') as string
-      );
+      const token = localStorage.getItem('accessToken') as string;
+
       const authReq = req.clone({
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
-           Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('accessToken') as string)
+          Authorization: 'Bearer ' + token
         })
       });
       return this.handleRequest(authReq, next);

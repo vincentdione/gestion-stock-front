@@ -16,6 +16,7 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
   private _mobileQueryListener: () => void;
 
   userId : any
+  entrepriseNom: string | null = '';
   user : UtilisateurDto = {}
   constructor(
     changeDetectorRef: ChangeDetectorRef,
@@ -32,6 +33,7 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.userId = localStorage.getItem("user")
     this.getUser()
+    this.getEntrepriseName()
     }
 
   ngOnDestroy(): void {
@@ -41,6 +43,10 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
 
   getUser(){
     this.userService.isAuthencated();
+  }
+
+  getEntrepriseName() {
+    this.entrepriseNom = this.userService.getEntrepriseName();
   }
 
 }
