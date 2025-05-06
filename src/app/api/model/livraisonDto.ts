@@ -22,6 +22,7 @@ export interface LivraisonDto {
     commandeClient?: CommandeClientDto;
     adresse?: Adresse;
     utilisateur?: UtilisateurDto;
+    idEntreprise?: number;
 }
 export namespace LivraisonDto {
     export type EtatEnum = 'EN_COURS' | 'LIVRER' | 'ANNULER' | 'RENVOYER';

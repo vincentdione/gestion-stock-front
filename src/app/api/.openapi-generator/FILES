@@ -20,6 +20,7 @@ api/reports.service.ts
 api/sousCategories.service.ts
 api/units.service.ts
 api/utilisateurs.service.ts
+api/utilisateursEntreprises.service.ts
 api/ventes.service.ts
 configuration.ts
 encoder.ts

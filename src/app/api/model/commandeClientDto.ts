@@ -21,6 +21,7 @@ export interface CommandeClientDto {
     clientDto?: ClientDto;
     etat?: CommandeClientDto.EtatEnum;
     modePayement?: ModePayementDto;
+    idEntreprise?: number;
     ligneCommandeClients?: Array<LigneCommandeClientDto>;
     commandeLivree?: boolean;
 }

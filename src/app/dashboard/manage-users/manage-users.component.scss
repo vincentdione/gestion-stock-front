@@ -1,0 +1,25 @@
+.float-right {
+  float: right;
+  color: white;
+  background-color: teal;
+}
+
+mat-card {
+   padding: 20px;
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+}
+
+mat-form-field{
+  width: 100%;
+}
+
+table {
+  width: 100%;
+}
+
+
+.btn{
+  background: teal;
+}

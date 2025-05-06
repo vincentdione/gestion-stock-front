@@ -53,6 +53,12 @@ subMenuItems:
   { label: 'Rechercher', link: 'search-livraisons',icon: 'search' },
 ],role:'ADMIN'
 },
+{  label: 'Utilisateurs',      icon: 'person',
+  subMenuItems:
+  [
+     { label: 'Utilisateurs', link: 'users',icon: 'person' },
+  ],role:'ADMIN'
+},
 
 {  label: 'Parametres',      icon: 'menu',
     subMenuItems:

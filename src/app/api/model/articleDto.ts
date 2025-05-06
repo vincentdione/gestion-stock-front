@@ -20,6 +20,7 @@ export interface ArticleDto {
     tauxTval?: number;
     prixUnitaireTtc?: number;
     photo?: string;
+    idEntreprise?: number;
     sousCategoryDto?: SousCategoryDto;
 }
 
