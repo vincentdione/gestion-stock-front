@@ -9,12 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { UniteDto } from './uniteDto';
 import { SousCategoryDto } from './sousCategoryDto';
 
 
 export interface ArticleDto { 
     id?: number;
     codeArticle?: string;
+    codeBarre?: string;
     designation?: string;
     prixUnitaireHt?: number;
     tauxTval?: number;
@@ -22,5 +24,6 @@ export interface ArticleDto {
     photo?: string;
     idEntreprise?: number;
     sousCategoryDto?: SousCategoryDto;
+    unites?: Array<UniteDto>;
 }
 

@@ -118,4 +118,13 @@ export class UserService {
     }
     return null;  // Si aucune donnée n'est trouvée
   }
+
+  hasRole(expectedRole: UtilisateurDto.RoleEnum): boolean {
+    const user = this.getConnectedUser();
+    console.log(user);
+    return user && user.role === expectedRole;
+  }
+
+
+
 }

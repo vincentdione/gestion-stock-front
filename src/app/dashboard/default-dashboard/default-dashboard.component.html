@@ -1,41 +1,269 @@
-<div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="16px grid">
-  <mat-card fxFlex="100%" fxFlex.lt-md="calc(50% - 8px)" fxFlex.lt-sm="100%" >
-    <mat-card-header>
-      <mat-card-title> ARTICLES </mat-card-title>
-      <mat-card-subtitle>les articles</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <p>{{totalArticles}}</p>
-    </mat-card-content>
-  </mat-card>
+<div class="modern-dashboard-page">
+  <!-- Section d'accueil -->
+  <div class="welcome-section">
+    <div class="welcome-content">
+      <h1 class="welcome-title">Tableau de Bord</h1>
+      <p class="welcome-subtitle">Vue d'ensemble de votre gestion de stock</p>
+      <div class="date-info">
+        <mat-icon>calendar_today</mat-icon>
+        <span>{{ currentDate | date: 'EEEE d MMMM y' }}</span>
+      </div>
+    </div>
+    <div class="welcome-actions">
+      <button mat-raised-button color="accent" class="action-btn">
+        <mat-icon>add_circle</mat-icon>
+        Nouvelle Vente
+      </button>
+      <button mat-stroked-button class="action-btn">
+        <mat-icon>bar_chart</mat-icon>
+        Voir Rapports
+      </button>
+    </div>
+  </div>
 
-  <mat-card fxFlex="100%" fxFlex.lt-md="calc(50% - 8px)" fxFlex.lt-sm="100%" >
-    <mat-card-header>
-      <mat-card-title>VENTES</mat-card-title>
-      <mat-card-subtitle>{{totalVentes}}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-chip>{{montantTotalVentes  | currency: 'XOF' }}</mat-chip>
-    </mat-card-content>
-  </mat-card>
+  <!-- Grille de statistiques -->
+  <div class="stats-grid">
+    <!-- Carte Articles -->
+    <mat-card class="stat-card article-card" fxFlex="100%" fxFlex.lt-md="calc(50% - 8px)" fxFlex.lt-sm="100%">
+      <div class="card-header">
+        <div class="card-icon">
+          <div class="icon-circle">
+            <mat-icon>inventory_2</mat-icon>
+          </div>
+        </div>
+        <div class="card-title-section">
+          <h3 class="card-title">ARTICLES</h3>
+          <p class="card-subtitle">Total en stock</p>
+        </div>
+        <button mat-icon-button class="card-action">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </div>
+      <mat-card-content class="card-content">
+        <div class="stat-value">{{totalArticles}}</div>
+        <div class="stat-info">
+          <mat-icon class="stat-icon">trending_up</mat-icon>
+          <span class="stat-label">Tous les produits</span>
+        </div>
+        <div class="card-footer">
+          <button mat-button color="primary" class="card-btn">
+            <span>Voir détails</span>
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
 
-  <mat-card fxFlex="100%" fxFlex.lt-md="calc(50% - 8px)" fxFlex.lt-sm="100%" >
-    <mat-card-header>
-      <mat-card-title>COMMANDES CLIENTS</mat-card-title>
-      <mat-card-subtitle> {{totalComClients}} </mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-chip> {{montantTotalComClients | currency: 'XOF'}} </mat-chip>
-    </mat-card-content>
-  </mat-card>
+    <!-- Carte Ventes -->
+    <mat-card class="stat-card sales-card" fxFlex="100%" fxFlex.lt-md="calc(50% - 8px)" fxFlex.lt-sm="100%">
+      <div class="card-header">
+        <div class="card-icon">
+          <div class="icon-circle">
+            <mat-icon>point_of_sale</mat-icon>
+          </div>
+        </div>
+        <div class="card-title-section">
+          <h3 class="card-title">VENTES</h3>
+          <p class="card-subtitle">{{totalVentes}} transactions</p>
+        </div>
+        <button mat-icon-button class="card-action">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </div>
+      <mat-card-content class="card-content">
+        <div class="stat-value">{{montantTotalVentes | currency: 'XOF'}}</div>
+        <div class="stat-info">
+          <mat-icon class="stat-icon">monetization_on</mat-icon>
+          <span class="stat-label">Chiffre d'affaires total</span>
+        </div>
+        <div class="pending-count">
+          <mat-icon>pending</mat-icon>
+          <span>5 ventes en attente</span>
+        </div>
+        <div class="card-footer">
+          <button mat-button color="primary" class="card-btn">
+            <span>Voir toutes les ventes</span>
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
 
-  <mat-card fxFlex="100%" fxFlex.lt-md="calc(50% - 8px)" fxFlex.lt-sm="100%" >
-    <mat-card-header>
-      <mat-card-title>COMMANDES FOURNISSEURS</mat-card-title>
-      <mat-card-subtitle>{{totalComFournisseurs}}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-chip> {{montantTotalComFournisseurs | currency: 'XOF' }} </mat-chip>
-    </mat-card-content>
-  </mat-card>
+    <!-- Carte Commandes Clients -->
+    <mat-card class="stat-card orders-card" fxFlex="100%" fxFlex.lt-md="calc(50% - 8px)" fxFlex.lt-sm="100%">
+      <div class="card-header">
+        <div class="card-icon">
+          <div class="icon-circle">
+            <mat-icon>shopping_cart</mat-icon>
+          </div>
+        </div>
+        <div class="card-title-section">
+          <h3 class="card-title">COMMANDES CLIENTS</h3>
+          <p class="card-subtitle">{{totalComClients}} commandes</p>
+        </div>
+        <button mat-icon-button class="card-action">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </div>
+      <mat-card-content class="card-content">
+        <div class="stat-value">{{montantTotalComClients | currency: 'XOF'}}</div>
+        <div class="stat-info">
+          <mat-icon class="stat-icon">euro</mat-icon>
+          <span class="stat-label">Valeur totale</span>
+        </div>
+        <div class="pending-count">
+          <mat-icon>schedule</mat-icon>
+          <span>3 commandes en traitement</span>
+        </div>
+        <div class="card-footer">
+          <button mat-button color="primary" class="card-btn">
+            <span>Gérer les commandes</span>
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Carte Commandes Fournisseurs -->
+    <mat-card class="stat-card suppliers-card" fxFlex="100%" fxFlex.lt-md="calc(50% - 8px)" fxFlex.lt-sm="100%">
+      <div class="card-header">
+        <div class="card-icon">
+          <div class="icon-circle">
+            <mat-icon>local_shipping</mat-icon>
+          </div>
+        </div>
+        <div class="card-title-section">
+          <h3 class="card-title">COMMANDES FOURNISSEURS</h3>
+          <p class="card-subtitle">{{totalComFournisseurs}} commandes</p>
+        </div>
+        <button mat-icon-button class="card-action">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </div>
+      <mat-card-content class="card-content">
+        <div class="stat-value">{{montantTotalComFournisseurs | currency: 'XOF'}}</div>
+        <div class="stat-info">
+          <mat-icon class="stat-icon">payments</mat-icon>
+          <span class="stat-label">Montant total</span>
+        </div>
+        <div class="delivery-info">
+          <mat-icon>local_shipping</mat-icon>
+          <span>2 en livraison</span>
+        </div>
+        <div class="card-footer">
+          <button mat-button color="primary" class="card-btn">
+            <span>Suivi fournisseurs</span>
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Section inférieure -->
+  <div class="dashboard-bottom-section">
+    <!-- Graphique -->
+    <mat-card class="chart-card">
+      <div class="card-header">
+        <h3 class="card-title">Évolution des Ventes</h3>
+        <div class="time-selector">
+          <button mat-button [class.active]="true">7j</button>
+          <button mat-button>30j</button>
+          <button mat-button>90j</button>
+        </div>
+      </div>
+      <div class="chart-container">
+        <div class="chart-placeholder">
+          <mat-icon>bar_chart</mat-icon>
+          <p>Graphique des ventes</p>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- Activités récentes -->
+    <mat-card class="activity-card">
+      <div class="card-header">
+        <h3 class="card-title">Activités Récentes</h3>
+        <button mat-button color="primary">Voir tout</button>
+      </div>
+      <div class="activity-list">
+        <div class="activity-item">
+          <div class="activity-icon sale">
+            <mat-icon>attach_money</mat-icon>
+          </div>
+          <div class="activity-content">
+            <p class="activity-text">Nouvelle vente enregistrée</p>
+            <span class="activity-time">Il y a 5 minutes</span>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon order">
+            <mat-icon>shopping_basket</mat-icon>
+          </div>
+          <div class="activity-content">
+            <p class="activity-text">Commande client traitée</p>
+            <span class="activity-time">Il y a 15 minutes</span>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon stock">
+            <mat-icon>inventory</mat-icon>
+          </div>
+          <div class="activity-content">
+            <p class="activity-text">Stock mis à jour</p>
+            <span class="activity-time">Il y a 2 heures</span>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon alert">
+            <mat-icon>notification_important</mat-icon>
+          </div>
+          <div class="activity-content">
+            <p class="activity-text">Stock bas pour Article #123</p>
+            <span class="activity-time">Il y a 3 heures</span>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Statistiques rapides -->
+  <div class="quick-stats">
+    <div class="stat-badge">
+      <div class="badge-icon">
+        <mat-icon>store</mat-icon>
+      </div>
+      <div class="badge-content">
+        <span class="badge-value">{{totalVentes}}</span>
+        <span class="badge-label">Ventes aujourd'hui</span>
+      </div>
+    </div>
+    <div class="stat-badge">
+      <div class="badge-icon">
+        <mat-icon>people</mat-icon>
+      </div>
+      <div class="badge-content">
+        <span class="badge-value">24</span>
+        <span class="badge-label">Clients actifs</span>
+      </div>
+    </div>
+    <div class="stat-badge">
+      <div class="badge-icon">
+        <mat-icon>warning</mat-icon>
+      </div>
+      <div class="badge-content">
+        <span class="badge-value">8</span>
+        <span class="badge-label">Alertes stock</span>
+      </div>
+    </div>
+    <div class="stat-badge">
+      <div class="badge-icon">
+        <mat-icon>update</mat-icon>
+      </div>
+      <div class="badge-content">
+        <span class="badge-value">92%</span>
+        <span class="badge-label">Disponibilité</span>
+      </div>
+    </div>
+  </div>
 </div>

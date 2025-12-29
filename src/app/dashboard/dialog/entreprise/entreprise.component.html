@@ -1,0 +1,112 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span class="title-center">{{ dialogData.action }} Entreprise</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content>
+  <form [formGroup]="entrepriseForm">
+    <div fxFlex fxLayout="column">
+
+      <!-- Nom -->
+      <mat-form-field appearance="fill" fxFlex>
+        <mat-label>Nom</mat-label>
+        <input matInput formControlName="nom" required>
+        <mat-error *ngIf="entrepriseForm.controls.nom.touched && entrepriseForm.controls.nom.invalid">
+          <span *ngIf="entrepriseForm.controls.nom.errors?.required">This field is mandatory</span>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Logo -->
+      <!-- <div fxFlex class="file-input-container">
+        <label for="logoFile" class="mat-body-1">Logo</label>
+        <input id="logoFile" type="file" (change)="onFileChange($event)" accept="image/*" />
+      </div> -->
+
+      <!-- Description -->
+      <mat-form-field appearance="fill" fxFlex>
+        <mat-label>Description</mat-label>
+        <input matInput formControlName="description" required>
+        <mat-error *ngIf="entrepriseForm.controls.description.touched && entrepriseForm.controls.description.invalid">
+          <span *ngIf="entrepriseForm.controls.description.errors?.required">This field is mandatory</span>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Code Fiscal -->
+      <mat-form-field appearance="fill" fxFlex>
+        <mat-label>Code Fiscal</mat-label>
+        <input matInput formControlName="codeFiscal" required>
+        <mat-error *ngIf="entrepriseForm.controls.codeFiscal.touched && entrepriseForm.controls.codeFiscal.invalid">
+          <span *ngIf="entrepriseForm.controls.codeFiscal.errors?.required">This field is mandatory</span>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Email -->
+      <mat-form-field appearance="fill" fxFlex>
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" required>
+        <mat-error *ngIf="entrepriseForm.controls.email.touched && entrepriseForm.controls.email.invalid">
+          <span *ngIf="entrepriseForm.controls.email.errors?.required">This field is mandatory</span>
+          <span *ngIf="entrepriseForm.controls.email.errors?.pattern">Invalid email format</span>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Téléphone -->
+      <mat-form-field appearance="fill" fxFlex>
+        <mat-label>Téléphone</mat-label>
+        <input matInput formControlName="numTel" required>
+        <mat-error *ngIf="entrepriseForm.controls.numTel.touched && entrepriseForm.controls.numTel.invalid">
+          <span *ngIf="entrepriseForm.controls.numTel.errors?.required">This field is mandatory</span>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Site Web -->
+      <mat-form-field appearance="fill" fxFlex>
+        <mat-label>Site Web</mat-label>
+        <input matInput formControlName="siteWeb">
+      </mat-form-field>
+
+      <!-- Adresse -->
+      <div formGroupName="adresseDto" fxLayout="column" fxFlex>
+        <h3>Adresse Principale</h3>
+
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>Adresse 1</mat-label>
+          <input matInput formControlName="adresse1">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>Ville</mat-label>
+          <input matInput formControlName="ville">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>Code postal</mat-label>
+          <input matInput formControlName="codePostal">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>Pays</mat-label>
+          <input matInput formControlName="pays">
+        </mat-form-field>
+
+        <h3>Adresse Secondaire</h3>
+
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>Adresse 2</mat-label>
+          <input matInput formControlName="adresse2">
+        </mat-form-field>
+      </div>
+
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+  <button mat-raised-button color="primary" type="submit"
+    (click)="handleUserSubmit()"
+    [disabled]="!entrepriseForm.valid">
+    {{ action }}
+  </button>
+  <button mat-raised-button color="accent" mat-dialog-close>Fermer</button>
+</mat-dialog-actions>

@@ -1,7 +1,7 @@
 import { Component, Input, ChangeDetectorRef } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ArticlesService, ClientsService, CommandeClientsService, CommandeFournisseursService, LigneCommandeClientDto, VentesService } from 'src/app/api';
 import { ConfirmationComponent } from 'src/app/dashboard/dialog/confirmation/confirmation.component';
@@ -61,7 +61,6 @@ export class DetailsLignesCommandesComponent {
     this.total = dataSource.reduce((acc: number, curr: { prixUnitaire: number; quantite: number; }) => acc + (curr.prixUnitaire * curr.quantite), 0);
     // Déclenchez la détection des changements pour mettre à jour la vue
     this.cdr.detectChanges();
-    console.log(this.total)
   }
 
   tableDataVentes(){
@@ -232,5 +231,7 @@ export class DetailsLignesCommandesComponent {
      }
    )
  }
+
+
 
 }

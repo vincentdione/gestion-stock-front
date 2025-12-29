@@ -1,45 +1,345 @@
+<div class="modern-unite-container">
+  <!-- Header -->
+  <div class="modern-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="title-icon">straighten</mat-icon>
+        <div>
+          <h1 class="page-title">Gestion des unités</h1>
+          <p class="page-subtitle">Gérez les unités de mesure utilisées dans le système</p>
+        </div>
+      </div>
+      <button mat-flat-button color="primary" (click)="handleAdd()" class="add-btn">
+        <mat-icon>add_circle</mat-icon>
+        Ajouter une unité
+      </button>
+    </div>
+  </div>
 
-<!-- //routerLink="/workspace/dashboard/addCategory" -->
-<mat-card>
-  <b> <span>Gestion des unités</span> </b>
-  <button mat-flat-button  color="primary" (click)="handleAdd()" >Ajouter une unité</button>
-</mat-card>
-<hr>
-<mat-card>
-  <mat-form-field appearance="fill" >
-    <mat-label>Filtrer</mat-label>
-    <input matInput (keyup)="applyFilter($event)" #input>
-  </mat-form-field>
-</mat-card>
-<hr>
+  <!-- Statistiques -->
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon">straighten</mat-icon>
+        <div class="stat-details">
+          <span class="stat-value">{{dataSource?.data?.length || 0}}</span>
+          <span class="stat-label">Unités totales</span>
+        </div>
+      </div>
+    </mat-card>
 
-<div class="responsive_table">
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-      <ng-container matColumnDef="nom">
-       <th mat-header-cell *matHeaderCellDef>Nom</th>
-       <td mat-cell *matCellDef="let element">{{element.nom}}</td>
-      </ng-container>
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon" style="color: #4CAF50;">checklist</mat-icon>
+        <div class="stat-details">
+          <span class="stat-value">{{getCompleteDataCount()}}</span>
+          <span class="stat-label">Complètes</span>
+        </div>
+      </div>
+    </mat-card>
 
-      <ng-container matColumnDef="designation">
-        <th mat-header-cell *matHeaderCellDef>Désignation</th>
-        <td mat-cell *matCellDef="let element">{{element.designation}}</td>
-       </ng-container>
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon" style="color: #2196F3;">category</mat-icon>
+        <div class="stat-details">
+          <span class="stat-value">{{getUniqueCategoriesCount()}}</span>
+          <span class="stat-label">Catégories</span>
+        </div>
+      </div>
+    </mat-card>
 
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon" style="color: #FF9800;">trending_up</mat-icon>
+        <div class="stat-details">
+          <span class="stat-value">{{getRecentAdditions()}}</span>
+          <span class="stat-label">Ajouts récents</span>
+        </div>
+      </div>
+    </mat-card>
+  </div>
 
-      <ng-container matColumnDef="action">
-       <th mat-header-cell *matHeaderCellDef>Action</th>
-       <td mat-cell *matCellDef="let element" class="action-link" >
-         <button mat-icon-button color="primary" matTooltip="Modifier" (click)="handleEdit(element)" >
-           <mat-icon>edit</mat-icon>
-         </button>
-         <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
-           <mat-icon>delete</mat-icon>
-         </button>
-<!--          <mat-slide-toggle (change)="onChange($event.checked,element.id)" matTooltip="Activer ou desactiver" [checked]="element.status" ></mat-slide-toggle>
- -->       </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
-      <tr mat-row *matRowDef="let row;columns:displayColumns"></tr>
-  </table>
+  <!-- Filtres -->
+  <mat-card class="filter-card">
+    <div class="filter-header">
+      <mat-icon>search</mat-icon>
+      <h3>Rechercher des unités</h3>
+    </div>
+
+    <div class="filter-form">
+      <div class="filter-grid">
+        <!-- Champ de recherche -->
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Rechercher une unité</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Nom, désignation..." #input>
+          <mat-icon matPrefix>search</mat-icon>
+          <button mat-icon-button matSuffix *ngIf="input.value" (click)="clearSearch(input)">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <!-- Filtre par catégorie (optionnel - si vous avez des catégories) -->
+        <mat-form-field appearance="outline" class="filter-field" *ngIf="hasCategories()">
+          <mat-label>Catégorie</mat-label>
+          <mat-select (selectionChange)="filterByCategory($event.value)">
+            <!-- Template pour afficher la valeur sélectionnée -->
+            <mat-select-trigger>
+              <div *ngIf="selectedCategory" class="selected-value">
+                <mat-icon class="trigger-icon">category</mat-icon>
+                <span class="trigger-text">
+                  {{selectedCategory}}
+                </span>
+              </div>
+            </mat-select-trigger>
+
+            <mat-option [value]="null">Toutes les catégories</mat-option>
+            <mat-option *ngFor="let category of getCategories()" [value]="category">
+              <div class="category-option">
+                <mat-icon>label</mat-icon>
+                <span>{{category}}</span>
+              </div>
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>filter_list</mat-icon>
+        </mat-form-field>
+
+        <!-- Actions -->
+        <div class="filter-actions">
+          <button mat-stroked-button type="button" (click)="resetFilters(input)" class="reset-btn">
+            <mat-icon>refresh</mat-icon>
+            Réinitialiser
+          </button>
+          <button mat-flat-button color="primary" (click)="exportToExcel()" class="export-btn">
+            <mat-icon>download</mat-icon>
+            Exporter
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Tableau des unités -->
+  <mat-card class="results-card">
+    <div class="table-header">
+      <div class="header-left">
+        <mat-icon>list_alt</mat-icon>
+        <h3>Liste des unités</h3>
+        <span class="count-badge" *ngIf="dataSource?.data?.length">
+          {{getFilteredCount()}} unité(s)
+        </span>
+      </div>
+      <div class="header-right">
+        <button mat-icon-button matTooltip="Actualiser" (click)="tableData()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Afficher/masquer les colonnes" (click)="toggleColumns()">
+          <mat-icon>view_column</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- État vide -->
+    <div *ngIf="!dataSource?.data?.length" class="empty-state">
+      <mat-icon class="empty-icon">straighten</mat-icon>
+      <h4>Aucune unité trouvée</h4>
+      <p>Il n'y a actuellement aucune unité dans le système</p>
+      <button mat-flat-button color="primary" (click)="handleAdd()" class="empty-action-btn">
+        <mat-icon>add</mat-icon>
+        Ajouter une unité
+      </button>
+    </div>
+
+    <!-- État recherche vide -->
+    <div *ngIf="dataSource?.data?.length && getFilteredCount() === 0" class="empty-state">
+      <mat-icon class="empty-icon">search_off</mat-icon>
+      <h4>Aucun résultat</h4>
+      <p>Aucune unité ne correspond à votre recherche</p>
+      <button mat-stroked-button color="primary" (click)="resetFilters(input)" class="empty-action-btn">
+        <mat-icon>refresh</mat-icon>
+        Réinitialiser la recherche
+      </button>
+    </div>
+
+    <!-- Version desktop -->
+    <div *ngIf="dataSource?.data?.length && getFilteredCount() > 0" class="table-container">
+      <div class="desktop-view">
+        <table mat-table [dataSource]="dataSource" class="modern-table">
+
+          <!-- Nom -->
+          <ng-container matColumnDef="nom">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>title</mat-icon>
+                <span>Nom</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="name-cell">
+                <mat-icon class="cell-icon">straighten</mat-icon>
+                <div class="name-info">
+                  <span class="name-value">{{element.nom}}</span>
+                  <span class="name-code" *ngIf="element.code">
+                    {{element.code}}
+                  </span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Désignation -->
+          <ng-container matColumnDef="designation">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>description</mat-icon>
+                <span>Désignation</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="designation-cell">
+                <mat-icon>info</mat-icon>
+                <div class="designation-info">
+                  <span class="designation-text">{{element.designation || 'Aucune description'}}</span>
+                  <span class="designation-meta" *ngIf="element.categorie">
+                    Catégorie: {{element.categorie}}
+                  </span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Symbol (optionnel) -->
+          <ng-container matColumnDef="symbol" *ngIf="hasSymbolColumn()">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>tag</mat-icon>
+                <span>Symbole</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="symbol-cell">
+                <mat-icon>code</mat-icon>
+                <span class="symbol-value">{{element.symbol || 'N/A'}}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Statut (optionnel) -->
+          <ng-container matColumnDef="status" *ngIf="hasStatusColumn()">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>toggle_on</mat-icon>
+                <span>Statut</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="status-cell">
+                <mat-slide-toggle [checked]="element.status" color="primary"
+                                  (change)="toggleStatus(element)">
+                </mat-slide-toggle>
+                <span class="status-label">{{element.status ? 'Active' : 'Inactive'}}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Actions -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>settings</mat-icon>
+                <span>Actions</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="actions-container">
+                <button mat-icon-button color="primary" matTooltip="Modifier" (click)="handleEdit(element)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="accent" matTooltip="Voir détails" (click)="viewDetails(element)">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" matTooltip="Supprimer" (click)="handleDelete(element)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="getDisplayColumns()"></tr>
+          <tr mat-row *matRowDef="let row; columns: getDisplayColumns()"></tr>
+        </table>
+      </div>
+
+      <!-- Version mobile -->
+      <div class="mobile-view">
+        <div class="unite-cards">
+          <mat-card *ngFor="let unite of getFilteredData()" class="unite-card">
+            <mat-card-header>
+              <mat-card-title>
+                <div class="card-title-row">
+                  <mat-icon>straighten</mat-icon>
+                  <div class="title-content">
+                    <span class="unite-name-mobile">{{unite.nom}}</span>
+                    <span class="unite-code-mobile" *ngIf="unite.code">
+                      {{unite.code}}
+                    </span>
+                  </div>
+                </div>
+              </mat-card-title>
+              <mat-card-subtitle *ngIf="unite.categorie">
+                {{unite.categorie}}
+              </mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+              <div class="unite-info-mobile">
+                <div class="info-row">
+                  <mat-icon>description</mat-icon>
+                  <div class="info-content">
+                    <span class="info-label">Désignation</span>
+                    <span class="info-value">{{unite.designation || 'Aucune description'}}</span>
+                  </div>
+                </div>
+
+                <div class="info-row" *ngIf="unite.symbol">
+                  <mat-icon>tag</mat-icon>
+                  <div class="info-content">
+                    <span class="info-label">Symbole</span>
+                    <span class="info-value">{{unite.symbol}}</span>
+                  </div>
+                </div>
+
+                <div class="info-row" *ngIf="hasStatusColumn()">
+                  <mat-icon>toggle_on</mat-icon>
+                  <div class="info-content">
+                    <span class="info-label">Statut</span>
+                    <span class="info-value">{{unite.status ? 'Active' : 'Inactive'}}</span>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+
+            <mat-card-actions>
+              <button mat-button color="primary" (click)="viewDetails(unite)">
+                <mat-icon>visibility</mat-icon>
+                Détails
+              </button>
+              <button mat-button color="accent" (click)="handleEdit(unite)">
+                <mat-icon>edit</mat-icon>
+                Modifier
+              </button>
+              <button mat-button color="warn" (click)="handleDelete(unite)">
+                <mat-icon>delete</mat-icon>
+                Supprimer
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons
+                     [length]="getFilteredCount()"
+                     [pageSize]="10">
+      </mat-paginator>
+    </div>
+  </mat-card>
 </div>
-

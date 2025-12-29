@@ -10,12 +10,14 @@
  * Do not edit the class manually.
  */
 import { UtilisateurDto } from './utilisateurDto';
+import { FileInfo } from './fileInfo';
 import { AdresseDto } from './adresseDto';
 
 
 export interface EntrepriseDto { 
     id?: number;
     nom?: string;
+    logo?: FileInfo;
     description?: string;
     codeFiscal?: string;
     siteWeb?: string;

@@ -1,0 +1,16 @@
+<div class="ml-auto w-full md:w-1/2 space-y-2">
+  <div class="flex justify-between py-2 text-sm">
+    <span class="text-gray-600">Subtotal:</span>
+    <span class="font-medium text-gray-800">{{ format(subtotal) }}</span>
+  </div>
+
+  <!-- <div class="flex justify-between py-2 text-sm border-b border-gray-200">
+    <span class="text-gray-600">Tax ({{ taxRate }}%):</span>
+    <span class="font-medium text-gray-800">{{ format(taxAmount) }}</span>
+  </div> -->
+
+  <div class="flex justify-between py-3 text-base font-bold">
+    <span class="text-gray-800">Total:</span>
+    <span class="text-blue-800">{{ format(total) }}</span>
+  </div>
+</div>

@@ -1,70 +1,365 @@
+<div class="modern-article-container">
+  <!-- Header -->
+  <div class="modern-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="title-icon">inventory_2</mat-icon>
+        <div>
+          <h1 class="page-title">Gestion des articles</h1>
+          <p class="page-subtitle">Gérez votre inventaire et vos produits</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button mat-stroked-button color="primary" class="import-btn" (click)="fileInput.click()">
+          <mat-icon>upload</mat-icon>
+          Importer CSV
+        </button>
+        <button mat-flat-button color="primary" class="add-btn" (click)="handleAddCat()">
+          <mat-icon>add_circle</mat-icon>
+          Ajouter un article
+        </button>
+        <input hidden #fileInput type="file" accept=".csv" (change)="onFileSelected($event)">
+      </div>
+    </div>
+  </div>
 
-<!-- //routerLink="/workspace/dashboard/addCategory" -->
-<mat-card>
-  <b> <span>Gestion des articles</span> </b>
-  <button mat-flat-button  color="primary" (click)="handleAddCat()" >Ajouter un article</button>
+  <!-- Statistiques -->
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon">inventory</mat-icon>
+        <div class="stat-details">
+          <span class="stat-value">{{dataSource?.data?.length || 0}}</span>
+          <span class="stat-label">Articles totaux</span>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon" style="color: #4CAF50;">category</mat-icon>
+        <div class="stat-details">
+          <span class="stat-value">{{getCategoriesCount()}}</span>
+          <span class="stat-label">Catégories</span>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon" style="color: #2196F3;">layers</mat-icon>
+        <div class="stat-details">
+          <span class="stat-value">{{getSousCategoriesCount()}}</span>
+          <span class="stat-label">Sous-catégories</span>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon" style="color: #FF9800;">trending_up</mat-icon>
+        <div class="stat-details">
+          <span class="stat-value">{{getAveragePrice() | currency:'EUR':'symbol':'1.2-2'}}</span>
+          <span class="stat-label">Prix moyen</span>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+<mat-card class="filter-card">
+  <div class="filter-header">
+    <mat-icon>search</mat-icon>
+    <h3>Rechercher des articles</h3>
+  </div>
+
+  <div class="filter-form">
+    <div class="filter-grid">
+      <mat-form-field appearance="outline" class="filter-field search-field">
+        <mat-label>Rechercher un article</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Code, catégorie, prix..." #input>
+        <mat-icon matPrefix>search</mat-icon>
+        <button mat-icon-button matSuffix *ngIf="input.value" (click)="clearSearch(input)">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field category-field">
+        <mat-label>Filtrer par catégorie</mat-label>
+        <mat-select (selectionChange)="filterByCategory($event.value)">
+          <mat-option [value]="null">Toutes les catégories</mat-option>
+          <mat-option *ngFor="let category of getUniqueCategories()" [value]="category">
+            {{category}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>filter_list</mat-icon>
+      </mat-form-field>
+
+      <div class="filter-actions">
+        <button mat-stroked-button type="button" (click)="resetFilters(input)" class="reset-btn">
+          <mat-icon>refresh</mat-icon>
+          Réinitialiser
+        </button>
+        <button mat-flat-button color="primary" (click)="exportToExcel()" class="export-btn">
+          <mat-icon>download</mat-icon>
+          Exporter
+        </button>
+      </div>
+    </div>
+  </div>
 </mat-card>
-<hr>
-<mat-card>
-  <mat-form-field appearance="fill" >
-    <mat-label>Filtrer</mat-label>
-    <input matInput (keyup)="applyFilter($event)" #input>
-  </mat-form-field>
-</mat-card>
-<hr>
 
-<div class="responsive_table">
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-      <ng-container matColumnDef="code">
-       <th mat-header-cell *matHeaderCellDef>Code</th>
-       <td mat-cell *matCellDef="let element">{{element.codeArticle}}</td>
-      </ng-container>
+  <!-- Tableau des articles -->
+  <mat-card class="results-card">
+    <div class="table-header">
+      <div class="header-left">
+        <mat-icon>list_alt</mat-icon>
+        <h3>Liste des articles</h3>
+        <span class="count-badge" *ngIf="dataSource?.data?.length">
+          {{getFilteredCount()}} article(s)
+        </span>
+      </div>
+      <div class="header-right">
+        <button mat-icon-button matTooltip="Actualiser" (click)="tableData()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Afficher/masquer les colonnes" (click)="toggleColumns()">
+          <mat-icon>view_column</mat-icon>
+        </button>
+      </div>
+    </div>
 
-      <!-- <ng-container matColumnDef="unite">
-        <th mat-header-cell *matHeaderCellDef>Unite</th>
-        <td mat-cell *matCellDef="let element">{{element.unite?.nom}}</td>
-       </ng-container> -->
-       <!-- "souscategory","prixUnitaireHt","tauxTval","prixUnitaireTtc" -->
+    <!-- État vide -->
+    <div *ngIf="!dataSource?.data?.length" class="empty-state">
+      <mat-icon class="empty-icon">inventory</mat-icon>
+      <h4>Aucun article trouvé</h4>
+      <p>Commencez par ajouter votre premier article ou importer un fichier CSV</p>
+      <div class="empty-actions">
+        <button mat-stroked-button color="primary" (click)="fileInput.click()" class="empty-action-btn">
+          <mat-icon>upload</mat-icon>
+          Importer CSV
+        </button>
+        <button mat-flat-button color="primary" (click)="handleAddCat()" class="empty-action-btn">
+          <mat-icon>add</mat-icon>
+          Ajouter un article
+        </button>
+      </div>
+    </div>
 
-       <ng-container matColumnDef="category">
-        <th mat-header-cell *matHeaderCellDef>Catégorie</th>
-        <td mat-cell *matCellDef="let element">{{element.sousCategoryDto?.category?.code}}</td>
-       </ng-container>
+    <!-- État recherche vide -->
+    <div *ngIf="dataSource?.data?.length && getFilteredCount() === 0" class="empty-state">
+      <mat-icon class="empty-icon">search_off</mat-icon>
+      <h4>Aucun résultat</h4>
+      <p>Aucun article ne correspond à votre recherche</p>
+      <button mat-stroked-button color="primary" (click)="resetFilters(input)" class="empty-action-btn">
+        <mat-icon>refresh</mat-icon>
+        Réinitialiser la recherche
+      </button>
+    </div>
 
-       <ng-container matColumnDef="souscategory">
-        <th mat-header-cell *matHeaderCellDef>Sous-catégorie</th>
-        <td mat-cell *matCellDef="let element">{{element.sousCategoryDto?.code}}</td>
-       </ng-container>
+    <!-- Version desktop -->
+    <div *ngIf="dataSource?.data?.length && getFilteredCount() > 0" class="table-container">
+      <div class="desktop-view">
+        <table mat-table [dataSource]="dataSource" class="modern-table">
 
-       <ng-container matColumnDef="prixUnitaireHt">
-        <th mat-header-cell *matHeaderCellDef>Prix Unitaire Ht</th>
-        <td mat-cell *matCellDef="let element">{{element.prixUnitaireHt}}</td>
-       </ng-container>
+          <!-- Code Article -->
+          <ng-container matColumnDef="code">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>tag</mat-icon>
+                <span>Code</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="code-cell">
+                <mat-icon class="cell-icon">inventory_2</mat-icon>
+                <div class="code-info">
+                  <span class="code-value">{{element.codeArticle}}</span>
+                  <span class="code-badge">Article</span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
 
-       <ng-container matColumnDef="tauxTval">
-        <th mat-header-cell *matHeaderCellDef>Taux</th>
-        <td mat-cell *matCellDef="let element">{{element.tauxTval}}</td>
-       </ng-container>
+          <!-- Catégorie -->
+          <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>category</mat-icon>
+                <span>Catégorie</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="category-cell">
+                <mat-icon>folder</mat-icon>
+                <div class="category-info">
+                  <span class="category-text">{{element?.sousCategoryDto?.category?.code || 'Non classé'}}</span>
+                  <span class="category-description" *ngIf="element?.sousCategoryDto?.category?.designation">
+                    {{element.sousCategoryDto.category.designation}}
+                  </span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
 
-       <ng-container matColumnDef="prixUnitaireTtc">
-        <th mat-header-cell *matHeaderCellDef>Prix Unitaire Ttc</th>
-        <td mat-cell *matCellDef="let element">{{element.prixUnitaireTtc}}</td>
-       </ng-container>
+          <!-- Sous-catégorie -->
+          <ng-container matColumnDef="souscategory">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>subdirectory_arrow_right</mat-icon>
+                <span>Sous-catégorie</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="souscategory-cell">
+                <mat-icon>folder_open</mat-icon>
+                <span class="souscategory-text">{{element?.sousCategoryDto?.code || '—'}}</span>
+              </div>
+            </td>
+          </ng-container>
 
-      <ng-container matColumnDef="action">
-       <th mat-header-cell *matHeaderCellDef>Action</th>
-       <td mat-cell *matCellDef="let element" class="action-link" >
-         <button mat-icon-button color="primary" matTooltip="Modifier" (click)="handleEdit(element)" >
-           <mat-icon>edit</mat-icon>
-         </button>
-         <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
-           <mat-icon>delete</mat-icon>
-         </button>
-<!--          <mat-slide-toggle (change)="onChange($event.checked,element.id)" matTooltip="Activer ou desactiver" [checked]="element.status" ></mat-slide-toggle>
- -->       </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
-      <tr mat-row *matRowDef="let row;columns:displayColumns"></tr>
-  </table>
+          <!-- Prix Unitaire HT -->
+          <ng-container matColumnDef="prixUnitaireHt">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>euro_symbol</mat-icon>
+                <span>Prix HT</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="price-cell">
+                <span class="price-value">{{element.prixUnitaireHt | currency:'EUR':'symbol':'1.2-2'}}</span>
+                <span class="price-label">HT</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Taux TVA -->
+          <ng-container matColumnDef="tauxTval">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>percent</mat-icon>
+                <span>TVA</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="tva-cell">
+                <div class="tva-badge">
+                  {{element.tauxTval}}%
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Prix Unitaire TTC -->
+          <ng-container matColumnDef="prixUnitaireTtc">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>receipt</mat-icon>
+                <span>Prix TTC</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="price-cell ttc">
+                <span class="price-value">{{element.prixUnitaireTtc | currency:'EUR':'symbol':'1.2-2'}}</span>
+                <span class="price-label">TTC</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Actions -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>settings</mat-icon>
+                <span>Actions</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="actions-container">
+                <button mat-icon-button color="primary" matTooltip="Modifier" (click)="handleEdit(element)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" matTooltip="Supprimer" (click)="handleDelete(element)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <button mat-icon-button color="accent" matTooltip="Voir détails" (click)="viewDetails(element)">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
+        </table>
+      </div>
+
+      <!-- Version mobile -->
+      <div class="mobile-view">
+        <div class="article-cards">
+          <mat-card *ngFor="let article of getFilteredData()" class="article-card">
+            <mat-card-header>
+              <mat-card-title>
+                <div class="card-title-row">
+                  <mat-icon>inventory_2</mat-icon>
+                  <div class="title-content">
+                    <span class="article-code-mobile">{{article.codeArticle}}</span>
+                    <div class="price-badge-mobile">
+                      {{article.prixUnitaireTtc | currency:'EUR':'symbol':'1.2-2'}}
+                    </div>
+                  </div>
+                </div>
+              </mat-card-title>
+              <mat-card-subtitle>
+                <div class="category-row">
+                  <span class="category-mobile">{{article?.sousCategoryDto?.category?.code || 'Non classé'}}</span>
+                  <span class="separator">•</span>
+                  <span class="souscategory-mobile">{{article?.sousCategoryDto?.code || '—'}}</span>
+                </div>
+              </mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+              <div class="article-info-mobile">
+                <div class="price-row">
+                  <div class="price-info">
+                    <span class="price-label-mobile">Prix HT</span>
+                    <span class="price-value-mobile">{{article.prixUnitaireHt | currency:'EUR':'symbol':'1.2-2'}}</span>
+                  </div>
+                  <div class="tva-info">
+                    <span class="tva-label-mobile">TVA</span>
+                    <div class="tva-badge-mobile">{{article.tauxTval}}%</div>
+                  </div>
+                  <div class="price-info">
+                    <span class="price-label-mobile">Prix TTC</span>
+                    <span class="price-value-mobile ttc">{{article.prixUnitaireTtc | currency:'EUR':'symbol':'1.2-2'}}</span>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+
+            <mat-card-actions>
+              <button mat-button color="primary" (click)="viewDetails(article)">
+                <mat-icon>visibility</mat-icon>
+                Détails
+              </button>
+              <button mat-button color="accent" (click)="handleEdit(article)">
+                <mat-icon>edit</mat-icon>
+                Modifier
+              </button>
+              <button mat-button color="warn" (click)="handleDelete(article)">
+                <mat-icon>delete</mat-icon>
+                Supprimer
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons
+                     [length]="getFilteredCount()"
+                     [pageSize]="10">
+      </mat-paginator>
+    </div>
+  </mat-card>
 </div>
-

@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { ArticleDto, ArticleStockInfo, ArticleStockInfoDto, ArticlesService, MouvementsDeStockService, MvtStkDto, UniteDto, UnitsService } from 'src/app/api';
+import { ArticleDto, ArticleStockInfoDto, ArticlesService, MouvementsDeStockService, UniteDto, UnitsService } from 'src/app/api';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { GlobalConstants } from 'src/app/shared/GlobalConstants';
 
@@ -15,133 +15,163 @@ import { GlobalConstants } from 'src/app/shared/GlobalConstants';
 })
 export class SearchStockComponent {
 
-  displayColumns : string[] = ["article","unite","typeMvtStk","sourceMvt","quantite","dateMvt","action"]
-  displayStockColumns : string[] = ["article","stock","action"]
+  displayStockColumns: string[] = ["article", "stock", "action"];
+  dataSourceStock: MatTableDataSource<any> = new MatTableDataSource<any>();
+  responseMessage: any;
 
-  dataSource : any;
-  dataSourceStock: any;
-  responseMessage : any;
+  articles: ArticleDto[] = [];
+  listeArticles: ArticleStockInfoDto[] = [];
+  listeUnites: UniteDto[] = [];
+  selectedArticle: ArticleDto = {};
+  filterForm: FormGroup;
 
-  mvtStock: MvtStkDto = {}
-  articles: ArticleDto []= []
-  listeArticles: ArticleStockInfoDto []= []
-  listeUnites: UniteDto [] = []
-  selectedArticle : ArticleDto = {}
-  filterForm:any = FormGroup;
-  articleStocks : ArticleStockInfo []= []
-
-  constructor(private mvtService: MouvementsDeStockService, private articleService: ArticlesService,
-    private uniteService: UnitsService, private formBuilder: FormBuilder,
-    private ngxService:NgxUiLoaderService,
-    private snackbarService: SnackbarService,private router:Router, private dialog : MatDialog) { }
-
-
-
-  ngOnInit(): void {
-    this.ngxService.start()
-    this.tableData()
-
+  constructor(
+    private mvtService: MouvementsDeStockService,
+    private articleService: ArticlesService,
+    private uniteService: UnitsService,
+    private formBuilder: FormBuilder,
+    private ngxService: NgxUiLoaderService,
+    private snackbarService: SnackbarService,
+    private router: Router,
+    private dialog: MatDialog
+  ) {
     this.filterForm = this.formBuilder.group({
-      article: [''], // Définissez les valeurs par défaut si nécessaire
+      article: [''],
       unite: [''],
       type: ['']
     });
-
   }
 
-
-  tableData(){
-    this.mvtService.findAllMvtStock().subscribe((res:any) => {
-       this.ngxService.stop()
-       this.dataSource = new MatTableDataSource(res)
-
-    },(error:any)=>{
-      this.ngxService.stop()
-      if(error.error?.message){
-        this.responseMessage = error.error?.message
-    }
-    else {
-      this.responseMessage = GlobalConstants.genericErrorMessage
-    }
-    this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
-    })
-
-    this.articleService.getAllArticles().subscribe((res:any) => {
-      this.ngxService.stop()
-      this.articles = res
-
-   },(error:any)=>{
-     this.ngxService.stop()
-     if(error.error?.message){
-       this.responseMessage = error.error?.message
-   }
-   else {
-     this.responseMessage = GlobalConstants.genericErrorMessage
-   }
-   this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
-   })
-
-
-   this.uniteService.getAllUnites().subscribe((res)=>{
-    this.listeUnites = res
- },(error=>{
-   if(error.error?.message){
-     this.responseMessage = error.error?.message
-     console.log(this.responseMessage)
- }
- else {
-   this.responseMessage = GlobalConstants.genericErrorMessage
-   console.log(this.responseMessage)
- }
- }))
-
- this.mvtService.getAllArticlesWithStockInfo().subscribe((res)=>{
-  this.listeArticles = res
-  console.log(res)
-  console.log("res")
-},(error=>{
- if(error.error?.message){
-   this.responseMessage = error.error?.message
-   console.log(this.responseMessage)
-}
-else {
- this.responseMessage = GlobalConstants.genericErrorMessage
- console.log(this.responseMessage)
-}
-}))
-
+  ngOnInit(): void {
+    this.ngxService.start();
+    this.loadInitialData();
   }
 
+  loadInitialData() {
+    // Charger les articles
+    this.articleService.getAllArticles().subscribe(
+      (res: any) => {
+        this.articles = res;
+      },
+      (error: any) => {
+        this.handleError(error);
+      }
+    );
 
-  onSearch(){
-    const articleValue = this.filterForm.get('article').value;
-    const uniteValue = this.filterForm.get('unite').value;
-    let typeValue = this.filterForm.get('type').value;
+    // Charger les unités
+    this.uniteService.getAllUnites().subscribe(
+      (res: any) => {
+        this.listeUnites = res;
+      },
+      (error: any) => {
+        this.handleError(error);
+      }
+    );
 
-    typeValue = typeValue.toUpperCase();
-
-
-    if (articleValue !== undefined && uniteValue !== undefined && typeValue !== undefined){
-
-      this.mvtService.getStockInfoByUnite(articleValue.id,typeValue).subscribe((res:any)=>{
-        this.dataSourceStock = new MatTableDataSource(res)
-        console.log(res)
-      },error => {
-        console.log("first")
-      } )
-    }
-
+    // Charger les stocks initiaux
+    this.mvtService.getAllArticlesWithStockInfo().subscribe(
+      (res: any) => {
+        this.listeArticles = res;
+        this.dataSourceStock = new MatTableDataSource(res);
+        this.ngxService.stop();
+      },
+      (error: any) => {
+        this.handleError(error);
+        this.ngxService.stop();
+      }
+    );
   }
 
+  onSearch() {
+    const articleValue = this.filterForm.get('article')?.value;
+    const uniteValue = this.filterForm.get('unite')?.value;
+    let typeValue = this.filterForm.get('type')?.value;
 
-  applyFilter(event:Event){
+    if (!articleValue) {
+      this.snackbarService.openSnackbar("Veuillez sélectionner un article", "warning");
+      return;
+    }
+
+    this.ngxService.start();
+
+    if (typeValue) {
+      typeValue = typeValue.toUpperCase();
+      this.mvtService.getStockInfoByUnite(articleValue.id, typeValue).subscribe(
+        (res: any) => {
+          this.ngxService.stop();
+          this.dataSourceStock = new MatTableDataSource(res);
+          if (res.length === 0) {
+            this.snackbarService.openSnackbar("Aucun résultat trouvé", "info");
+          }
+        },
+        (error: any) => {
+          this.ngxService.stop();
+          this.handleError(error);
+        }
+      );
+    } else {
+      // Si pas de type spécifié, montrer tout le stock
+      this.mvtService.getAllArticlesWithStockInfo().subscribe(
+        (res: any) => {
+          this.ngxService.stop();
+          this.dataSourceStock = new MatTableDataSource(
+            res.filter((item: any) =>
+              !articleValue || item.articleId === articleValue.id
+            )
+          );
+        },
+        (error: any) => {
+          this.ngxService.stop();
+          this.handleError(error);
+        }
+      );
+    }
+  }
+
+  resetFilters() {
+    this.filterForm.reset();
+    this.loadInitialData();
+    this.snackbarService.openSnackbar("Filtres réinitialisés", "success");
+  }
+
+  applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase()
- }
+    this.dataSourceStock.filter = filterValue.trim().toLowerCase();
+  }
 
- getStockInfoKeys(stockInfo: any): string[] {
-  return Object.keys(stockInfo);
-}
+  getStockInfoKeys(stockInfo: any): string[] {
+    return stockInfo ? Object.keys(stockInfo) : [];
+  }
 
+  calculateTotalStock(stockInfo: any): number {
+    if (!stockInfo) return 0;
+    return Object.values(stockInfo).reduce((sum: number, val: any) => sum + (Number(val) || 0), 0);
+  }
 
+  calculateTotalAllStock(): number {
+    if (!this.dataSourceStock?.data) return 0;
+    return this.dataSourceStock.data.reduce((total: number, item: any) => {
+      return total + this.calculateTotalStock(item.stockInfo);
+    }, 0);
+  }
+
+  getAverageStock(): number {
+    if (!this.dataSourceStock?.data?.length) return 0;
+    const total = this.calculateTotalAllStock();
+    return Math.round(total / this.dataSourceStock.data.length * 10) / 10; // Arrondi à 1 décimale
+  }
+
+  exportToExcel() {
+    // Implémentez l'export Excel ici
+    this.snackbarService.openSnackbar("Export Excel bientôt disponible", "info");
+  }
+
+  private handleError(error: any) {
+    if (error.error?.message) {
+      this.responseMessage = error.error?.message;
+    } else {
+      this.responseMessage = GlobalConstants.genericErrorMessage;
+    }
+    this.snackbarService.openSnackbar(this.responseMessage, GlobalConstants.error);
+  }
 }

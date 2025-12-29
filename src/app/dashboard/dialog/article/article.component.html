@@ -26,13 +26,15 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="fill"  fxFlex >
+    <mat-form-field appearance="fill" fxFlex>
       <mat-label>Sous catégorie</mat-label>
-      <mat-select formControlName="sous_Category">
-        <mat-option *ngFor="let s of listeSousCategories" [value]="s"> {{s.code}}</mat-option>
-    </mat-select>
+      <mat-select formControlName="sous_Category" [compareWith]="compareSousCategories">
+        <mat-option *ngFor="let s of listeSousCategories" [value]="s">
+          {{s.code}}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
-<!-- 
+<!--
     <mat-form-field appearance="fill"  fxFlex >
       <mat-label>Unité</mat-label>
       <mat-select formControlName="unite">

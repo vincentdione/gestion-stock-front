@@ -175,3 +175,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 @import './assets/styles/header';
 @import './assets/styles/pages';
 @import './assets/styles/app';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

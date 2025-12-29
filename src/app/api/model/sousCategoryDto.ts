@@ -17,5 +17,6 @@ export interface SousCategoryDto {
     code?: string;
     designation?: string;
     category?: CategoryDto;
+    categoryCode?: string;
 }
 

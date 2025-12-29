@@ -1,0 +1,42 @@
+<div class="min-h-screen bg-gray-50 p-4 md:p-8 flex justify-center">
+  <div class="bg-white max-w-4xl w-full mx-auto shadow-lg rounded-lg overflow-hidden print:shadow-none print:rounded-none">
+    <div class="p-6 md:p-10 space-y-8">
+      <app-facture-header [entreprise]="entreprise"></app-facture-header>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <app-client-info [customer]="myCustomer"></app-client-info>
+
+        <div class="flex flex-col items-end justify-end">
+          <h2 class="text-2xl font-bold text-blue-800">FACTURE</h2>
+          <div class="mt-2 space-y-1">
+            <p class="text-sm text-gray-600">
+              <span class="font-medium">Numéro de facture:</span> F2024-001
+            </p>
+            <p class="text-sm text-gray-600">
+              <span class="font-medium">Date:</span> 2024-05-01
+            </p>
+            <p class="text-sm text-gray-600">
+              <span class="font-medium">Date d'échéance:</span> 2024-05-31
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <app-facture-items *ngIf="myInvoiceItems.length > 0" [items]="myInvoiceItems"></app-facture-items>
+
+      <app-facture-summary
+      [subtotal]="subtotal"
+      [taxAmount]="taxAmount"
+      [total]="total"
+      currency="EUR">
+    </app-facture-summary>
+
+
+      <app-facture-footer
+        [paymentTerms]="'Net 30 days'"
+        [paymentMethods]="['Credit Card', 'Bank Transfer']"
+        [notes]="'Please make sure to include the invoice number in your payment reference.'">
+      </app-facture-footer>
+    </div>
+  </div>
+</div>

@@ -1,35 +1,597 @@
-.float-right {
-  float: right;
-  color: white;
-  background-color: teal;
+// Variables de couleurs
+$primary-color: #008080; // Teal
+$primary-dark: #006666;
+$primary-light: #00a0a0;
+$accent-color: #ff5722;
+$success-color: #4caf50;
+$warning-color: #ff9800;
+$danger-color: #f44336;
+$light-bg: #f8f9fa;
+$dark-bg: #2c3e50;
+$text-color: #333;
+$text-light: #666;
+$border-color: #e0e0e0;
+$shadow-color: rgba(0, 0, 0, 0.08);
+
+// Mixins
+@mixin card-shadow {
+  box-shadow: 0 4px 12px $shadow-color;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  }
 }
 
-mat-card {
-   padding: 20px;
-   display: flex;
-   flex-direction: row;
-   justify-content: space-between;
+@mixin gradient-bg {
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
 }
 
-mat-form-field{
-  width: 100%;
-}
-
-table {
-  width: 100%;
-}
-
-
-.btn{
-  background: teal;
-}
-
-.filter-field {
-  flex: 1;
-  margin-right: 10px;
-}
-.button-container {
+@mixin flex-center {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+// Styles principaux
+.clients-container {
+  padding: 24px;
+  background: $light-bg;
+  min-height: 100vh;
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+}
+
+// Header section
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .header-content {
+    .title-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 10px;
+
+      .title-icon {
+        font-size: 40px;
+        width: 40px;
+        height: 40px;
+        color: $primary-color;
+        background: rgba($primary-color, 0.1);
+        padding: 10px;
+        border-radius: 12px;
+      }
+
+      .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: $dark-bg;
+        margin: 0;
+      }
+    }
+
+    .page-subtitle {
+      color: $text-light;
+      margin: 0;
+      font-size: 16px;
+    }
+  }
+
+  .add-client-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    @include gradient-bg;
+    color: white;
+    font-weight: 500;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+    }
+  }
+}
+
+// Filter section
+// Filter section - CORRECTION COMPLÈTE
+.filter-section {
+  margin-bottom: 30px;
+
+  .filter-card {
+    @include card-shadow;
+    border-radius: 16px;
+    overflow: hidden;
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      background: $light-bg;
+      border-bottom: 1px solid $border-color;
+
+      h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 18px;
+        color: $dark-bg;
+        margin: 0;
+
+        mat-icon {
+          color: $primary-color;
+        }
+      }
+
+      button {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+    }
+
+    .filter-form {
+      padding: 30px;
+
+      .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        align-items: start; // Important: utiliser start au lieu de center
+
+        @media (max-width: 1024px) {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (max-width: 768px) {
+          grid-template-columns: 1fr;
+        }
+
+        .filter-field {
+          width: 100%;
+
+          // Forcer la même hauteur pour tous les champs
+          ::ng-deep .mat-form-field-wrapper {
+            padding-bottom: 0;
+          }
+
+          ::ng-deep .mat-form-field-flex {
+            min-height: 56px; // Hauteur fixe
+            align-items: center; // Centrer verticalement
+          }
+
+          ::ng-deep .mat-form-field-infix {
+            padding: 0.5em 0;
+            border-top: 0.84375em solid transparent; // Correction pour alignement
+          }
+
+          ::ng-deep .mat-form-field-outline {
+            background: $light-bg;
+            border-radius: 10px;
+          }
+
+          ::ng-deep .mat-form-field-outline-thick {
+            color: $primary-color;
+          }
+
+          mat-icon[matPrefix] {
+            color: $text-light;
+            margin-right: 8px;
+          }
+
+          // S'assurer que le label est bien positionné
+          ::ng-deep .mat-form-field-label-wrapper {
+            top: -1.5em;
+          }
+
+          ::ng-deep .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+            transform: translateY(-1.1em) scale(0.75);
+          }
+        }
+
+        .search-btn-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .search-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 24px;
+            height: 56px; // Même hauteur que les champs
+            width: 100%;
+            border-radius: 10px;
+            @include gradient-bg;
+            color: white;
+            font-weight: 500;
+
+            // S'assurer que le texte et l'icône sont centrés
+            line-height: 1;
+
+            &:hover {
+              box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Stats section
+.stats-section {
+  margin-bottom: 30px;
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+      @include card-shadow;
+      border-radius: 12px;
+      overflow: hidden;
+      border: none;
+
+      .stat-content {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 25px;
+
+        .stat-icon {
+          font-size: 36px;
+          width: 36px;
+          height: 36px;
+          color: $primary-color;
+          background: rgba($primary-color, 0.1);
+          padding: 10px;
+          border-radius: 10px;
+        }
+
+        .stat-info {
+          .stat-value {
+            display: block;
+            font-size: 28px;
+            font-weight: 700;
+            color: $dark-bg;
+            line-height: 1;
+            margin-bottom: 5px;
+          }
+
+          .stat-label {
+            font-size: 14px;
+            color: $text-light;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Table section
+.table-section {
+  .table-card {
+    @include card-shadow;
+    border-radius: 16px;
+    overflow: hidden;
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 25px 30px;
+      background: $light-bg;
+      border-bottom: 1px solid $border-color;
+
+      @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+
+      .header-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        h2 {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 22px;
+          color: $dark-bg;
+          margin: 0;
+
+          mat-icon {
+            color: $primary-color;
+          }
+        }
+
+        .badge {
+          background: $primary-color;
+          color: white;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 14px;
+          font-weight: 500;
+        }
+      }
+
+      .table-actions {
+        display: flex;
+        gap: 10px;
+      }
+    }
+
+    .table-container {
+      padding: 0;
+      overflow: hidden;
+
+      .clients-table {
+        width: 100%;
+        border-collapse: collapse;
+
+        .table-header {
+          background: $light-bg;
+          color: $dark-bg;
+          font-weight: 600;
+          font-size: 14px;
+          padding: 20px 16px;
+          border-bottom: 2px solid $primary-color;
+
+          .header-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            mat-icon {
+              font-size: 18px;
+              color: $primary-color;
+            }
+          }
+        }
+
+        .table-cell {
+          padding: 16px;
+          border-bottom: 1px solid $border-color;
+          color: $text-color;
+
+          &.client-cell {
+            .client-info {
+              display: flex;
+              align-items: center;
+              gap: 12px;
+
+              .client-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+                @include flex-center;
+
+                mat-icon {
+                  color: white;
+                  font-size: 24px;
+                }
+              }
+
+              .client-details {
+                display: flex;
+                flex-direction: column;
+
+                .client-name {
+                  font-weight: 600;
+                  color: $dark-bg;
+                }
+
+                .client-email {
+                  font-size: 12px;
+                  color: $text-light;
+                  margin-top: 2px;
+                }
+              }
+            }
+          }
+
+          .contact-info {
+            .phone-info {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+
+              .contact-icon {
+                color: $primary-color;
+                font-size: 16px;
+              }
+            }
+          }
+
+          .address-info {
+            .address-line {
+              font-size: 14px;
+              margin-bottom: 4px;
+            }
+
+            .address-details {
+              display: flex;
+              gap: 8px;
+              flex-wrap: wrap;
+
+              .city-badge {
+                background: rgba($primary-color, 0.1);
+                color: $primary-color;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: 500;
+              }
+
+              .postal-code {
+                color: $text-light;
+                font-size: 12px;
+              }
+            }
+          }
+
+          .country-badge {
+            background: rgba($success-color, 0.1);
+            color: $success-color;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+          }
+
+          &.actions-cell {
+            .actions-container {
+              display: flex;
+              gap: 8px;
+
+              .action-button {
+                transition: transform 0.2s;
+
+                &:hover {
+                  transform: scale(1.1);
+                }
+              }
+            }
+          }
+        }
+
+        .table-row {
+          transition: background-color 0.2s;
+
+          &:hover {
+            background-color: rgba($primary-color, 0.04);
+          }
+
+          &:last-child {
+            .table-cell {
+              border-bottom: none;
+            }
+          }
+        }
+      }
+
+      .pagination-container {
+        padding: 20px;
+        border-top: 1px solid $border-color;
+
+        ::ng-deep .mat-paginator-container {
+          justify-content: center;
+        }
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 30px;
+
+      .empty-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        color: #ccc;
+        margin-bottom: 20px;
+      }
+
+      h3 {
+        color: #666;
+        margin-bottom: 10px;
+        font-weight: 500;
+      }
+
+      p {
+        color: #999;
+        margin: 0 0 20px 0;
+      }
+
+      .add-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border-radius: 10px;
+        @include gradient-bg;
+        color: white;
+        font-weight: 500;
+
+        &:hover {
+          box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+        }
+      }
+    }
+  }
+}
+
+// Client option styling
+.client-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  mat-icon {
+    color: $text-light;
+    font-size: 18px;
+  }
+
+  .client-email {
+    margin-left: auto;
+    font-size: 12px;
+    color: $text-light;
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header-section, .filter-section, .stats-section, .table-section {
+  animation: fadeIn 0.5s ease-out;
+}
+
+// Scrollbar personnalisée
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $light-bg;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $primary-color;
+  border-radius: 4px;
+
+  &:hover {
+    background: $primary-dark;
+  }
 }

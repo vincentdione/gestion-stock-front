@@ -281,4 +281,67 @@ export class ManageCommandeClientsComponent {
  }
 
 }
+
+getChipColor(etat?: string): string {
+  if (!etat) {
+    return 'basic';
+  }
+
+  switch(etat) {
+    case 'EN_PREPARATION': return 'accent';
+    case 'VALIDEE': return 'primary';
+    case 'LIVREE': return 'accent';
+    default: return 'basic';
+  }
+}
+
+refreshData(): void {
+  this.ngxService.start();
+  if (this.origin === 'client') {
+    this.tableData();
+  } else {
+    this.tableDataCmFournisseurs();
+  }
+}
+
+resetFilters(): void {
+  this.filterForm.reset();
+  this.refreshData();
+}
+
+
+// Ajoutez ces méthodes à votre composant
+
+getEnPreparationCount(): number {
+  if (this.origin === 'client') {
+    return (this.comClients ?? []).filter(c => c.etat === 'EN_PREPARATION').length;
+  } else {
+    return (this.comFournisseurs ?? []).filter(c => c.etatCommande === 'EN_PREPARATION').length;
+  }
+}
+
+getValideesCount(): number {
+  if (this.origin === 'client') {
+    return (this.comClients ?? []).filter(c => c.etat === 'VALIDEE').length;
+  } else {
+    return (this.comFournisseurs ?? []).filter(c => c.etatCommande === 'VALIDEE').length;
+  }
+}
+
+getLivreesCount(): number {
+  if (this.origin === 'client') {
+    return (this.comClients ?? []).filter(c => c.etat === 'LIVREE').length;
+  } else {
+    return (this.comFournisseurs ?? []).filter(c => c.etatCommande === 'LIVREE').length;
+  }
+}
+
+getTotalCount(): number {
+  if (this.origin === 'client') {
+    return (this.comClients ?? []).length;
+  } else {
+    return (this.comFournisseurs ?? []).length;
+  }
+}
+
 }

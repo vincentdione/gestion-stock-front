@@ -4,6 +4,7 @@ api.module.ts
 api/adminController.service.ts
 api/api.ts
 api/articles.service.ts
+api/articlesImport.service.ts
 api/authentification.service.ts
 api/categories.service.ts
 api/clients.service.ts
@@ -31,6 +32,7 @@ model/adresseDto.ts
 model/articleDto.ts
 model/articleStockInfo.ts
 model/articleStockInfoDto.ts
+model/articleStockStatsDto.ts
 model/authenticationRequest.ts
 model/authenticationResponse.ts
 model/categoryDto.ts
@@ -39,6 +41,7 @@ model/commandeClientDto.ts
 model/commandeFournisseurDto.ts
 model/conditionAVDto.ts
 model/entrepriseDto.ts
+model/fileInfo.ts
 model/fournisseurDto.ts
 model/ligneCommandeClientDto.ts
 model/ligneCommandeFournisseurDto.ts

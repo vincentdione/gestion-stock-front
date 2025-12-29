@@ -27,6 +27,7 @@ export class AddCommandeClientComponent {
 
   displayColumns : string [] = ["code","unite","quantite","prixUnitaire","action"];
   dataSource:any = [];
+  displayColumnsWithTotal: string[] = ["code", "unite", "quantite", "prixUnitaire", "totalLigne", "action"];
 
   lignesCommande: Array<any> = [];
   totalCommande = 0;
@@ -246,9 +247,6 @@ export class AddCommandeClientComponent {
     ligneCommandeClients: this.lignesCommande
   };
 
-  console.log("loggggg")
-  console.log(this.comClient)
-
   this.comClientService.saveCommandeClients(this.comClient).subscribe((res)=>{
     this.snackbarService.openSnackbar("Commande client ajoutée avec success","success");
     this.router.navigate(['/workspace/dashboard/commandeClients']);
@@ -390,6 +388,10 @@ if (index > -1) {
 
 }
 
+}
+
+getTotalQuantity(): number {
+  return this.lignesCommande.reduce((total, ligne) => total + (ligne.quantite || 0), 0);
 }
 
 }

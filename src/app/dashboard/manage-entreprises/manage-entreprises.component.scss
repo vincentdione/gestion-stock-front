@@ -1,0 +1,693 @@
+// Variables de couleurs
+$primary-color: #008080; // Teal
+$primary-dark: #006666;
+$primary-light: #00a0a0;
+$light-bg: #f8f9fa;
+$dark-bg: #2c3e50;
+$text-color: #333;
+$text-light: #666;
+$border-color: #e0e0e0;
+
+// Mixins
+@mixin card-shadow {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  }
+}
+
+@mixin gradient-bg {
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+}
+
+.modern-entreprise-container {
+  padding: 24px;
+  background: $light-bg;
+  min-height: 100vh;
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+}
+
+// Header
+.modern-header {
+  margin-bottom: 30px;
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    .title-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .title-icon {
+        font-size: 40px;
+        width: 40px;
+        height: 40px;
+        color: $primary-color;
+        background: rgba($primary-color, 0.1);
+        padding: 10px;
+        border-radius: 12px;
+      }
+
+      .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: $dark-bg;
+        margin: 0 0 8px 0;
+      }
+
+      .page-subtitle {
+        color: $text-light;
+        margin: 0;
+        font-size: 16px;
+      }
+    }
+
+    .add-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 500;
+      @include gradient-bg;
+      color: white;
+      box-shadow: 0 4px 12px rgba($primary-color, 0.2);
+
+      &:hover {
+        box-shadow: 0 6px 16px rgba($primary-color, 0.3);
+        transform: translateY(-1px);
+      }
+
+      mat-icon {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+// Stats Grid
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+
+  .stat-card {
+    @include card-shadow;
+    border-radius: 12px;
+    padding: 20px;
+    background: white;
+    border: none;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    .stat-content {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .stat-icon {
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+        background: rgba($primary-color, 0.1);
+        padding: 8px;
+        border-radius: 8px;
+        color: $primary-color;
+      }
+
+      .stat-details {
+        display: flex;
+        flex-direction: column;
+
+        .stat-value {
+          font-size: 24px;
+          font-weight: 700;
+          color: $dark-bg;
+          line-height: 1;
+        }
+
+        .stat-label {
+          font-size: 14px;
+          color: $text-light;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+// Filtres
+.filter-card {
+  @include card-shadow;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  border: none;
+
+  .filter-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 24px;
+    background: $light-bg;
+    border-bottom: 1px solid $border-color;
+
+    mat-icon {
+      color: $primary-color;
+      font-size: 24px;
+    }
+
+    h3 {
+      margin: 0;
+      color: $dark-bg;
+      font-weight: 600;
+      font-size: 18px;
+    }
+  }
+
+  .filter-form {
+    padding: 24px;
+
+    .filter-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: stretch;
+
+      @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-field {
+        flex: 1;
+        min-width: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        height: 80px;
+
+        .selected-value {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 4px 0;
+
+          .trigger-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+          }
+
+          .trigger-text {
+            font-weight: 500;
+          }
+        }
+
+        .entreprise-option, .ville-option {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 8px 0;
+
+          mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+          }
+        }
+
+        .entreprise-details {
+          display: flex;
+          flex-direction: column;
+
+          .entreprise-name {
+            font-weight: 500;
+            color: $dark-bg;
+          }
+
+          .entreprise-email {
+            font-size: 12px;
+            color: $text-light;
+            margin-top: 2px;
+          }
+        }
+
+        ::ng-deep {
+          .mat-form-field {
+            width: 100%;
+            height: 100%;
+
+            .mat-form-field-wrapper {
+              padding-bottom: 0 !important;
+              margin-bottom: 0 !important;
+              height: 100%;
+            }
+
+            .mat-form-field-flex {
+              height: 56px !important;
+              min-height: 56px !important;
+              align-items: center !important;
+            }
+
+            .mat-form-field-infix {
+              padding: 0.5em 0 !important;
+              border-top: 0.84375em solid transparent !important;
+              display: flex !important;
+              align-items: center !important;
+              height: 100% !important;
+            }
+
+            .mat-form-field-outline {
+              background: $light-bg;
+              border-radius: 10px;
+            }
+
+            .mat-form-field-outline-thick {
+              color: $primary-color;
+            }
+
+            .mat-select-value {
+              display: flex !important;
+              align-items: center !important;
+              height: 100% !important;
+            }
+          }
+        }
+      }
+
+      .filter-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        height: 56px;
+        margin-bottom: 0.75em;
+        flex-shrink: 0;
+
+        @media (max-width: 768px) {
+          justify-content: flex-end;
+          margin-top: 8px;
+          width: 100%;
+          height: auto;
+          margin-bottom: 0;
+        }
+
+        .reset-btn, .search-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 0 24px;
+          height: 56px;
+          border-radius: 8px;
+          font-weight: 500;
+          white-space: nowrap;
+          transition: all 0.3s ease;
+          box-sizing: border-box;
+
+          mat-icon {
+            font-size: 20px;
+          }
+        }
+
+        .search-btn {
+          @include gradient-bg;
+          color: white;
+          box-shadow: 0 4px 12px rgba($primary-color, 0.2);
+
+          &:hover:not(:disabled) {
+            box-shadow: 0 6px 16px rgba($primary-color, 0.3);
+            transform: translateY(-1px);
+          }
+        }
+
+        .reset-btn {
+          background: white;
+          color: $primary-color;
+          border: 1px solid $primary-color;
+
+          &:hover {
+            background: rgba($primary-color, 0.04);
+            transform: translateY(-1px);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Tableau
+.results-card {
+  @include card-shadow;
+  border-radius: 16px;
+  overflow: hidden;
+  border: none;
+
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: $light-bg;
+    border-bottom: 1px solid $border-color;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      mat-icon {
+        color: $primary-color;
+        font-size: 24px;
+      }
+
+      h3 {
+        margin: 0;
+        color: $dark-bg;
+        font-weight: 600;
+        font-size: 18px;
+      }
+
+      .count-badge {
+        background: $primary-color;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+
+    .header-right {
+      display: flex;
+      gap: 8px;
+
+      button {
+        color: $primary-color;
+        background: rgba($primary-color, 0.1);
+
+        &:hover {
+          background: rgba($primary-color, 0.2);
+        }
+      }
+    }
+  }
+}
+
+// État vide
+.empty-state {
+  text-align: center;
+  padding: 60px 24px;
+
+  .empty-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #ccc;
+    margin-bottom: 20px;
+  }
+
+  h4 {
+    color: $text-color;
+    margin: 0 0 8px 0;
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  p {
+    color: $text-light;
+    margin: 0 0 24px 0;
+  }
+}
+
+// Tableau desktop
+.table-container {
+  .desktop-view {
+    @media (max-width: 768px) {
+      display: none;
+    }
+
+    .modern-table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th {
+        background: $light-bg;
+        color: $dark-bg;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 16px;
+        border-bottom: 2px solid $primary-color;
+
+        .header-content {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          mat-icon {
+            color: $primary-color;
+            font-size: 18px;
+          }
+        }
+      }
+
+      td {
+        padding: 16px;
+        border-bottom: 1px solid $border-color;
+        color: $text-color;
+      }
+
+      tr:hover {
+        background-color: rgba($primary-color, 0.04);
+      }
+
+      // Styles spécifiques des cellules
+      .entreprise-name-cell, .email-cell, .phone-cell, .address-cell, .fiscal-cell, .website-cell {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+
+        .cell-icon {
+          color: $primary-color;
+          margin-top: 4px;
+        }
+
+        .entreprise-info, .address-info {
+          display: flex;
+          flex-direction: column;
+
+          .entreprise-name {
+            font-weight: 600;
+            color: $dark-bg;
+          }
+
+          .entreprise-fiscal {
+            font-size: 12px;
+            color: $text-light;
+            margin-top: 2px;
+          }
+
+          .address-ville {
+            font-weight: 500;
+          }
+
+          .address-code {
+            font-size: 12px;
+            color: $text-light;
+          }
+        }
+
+        .fiscal-code {
+          font-family: 'Courier New', monospace;
+          font-weight: 500;
+        }
+
+        .email-link, .phone-link, .website-link {
+          color: $primary-color;
+          text-decoration: none;
+          font-weight: 500;
+          word-break: break-all;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        .no-email, .no-phone, .no-website, .no-address {
+          color: $text-light;
+          font-style: italic;
+        }
+      }
+
+      .description-cell {
+        .description-text {
+          margin: 0;
+          font-size: 14px;
+          line-height: 1.4;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .actions-container {
+        display: flex;
+        gap: 8px;
+
+        button {
+          transition: transform 0.2s;
+
+          &:hover {
+            transform: scale(1.1);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Version mobile
+.mobile-view {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    padding: 16px;
+  }
+
+  .entreprise-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .entreprise-card {
+      @include card-shadow;
+      border-radius: 12px;
+
+      .card-title-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+
+        mat-icon {
+          color: $primary-color;
+          font-size: 24px;
+        }
+
+        .title-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+
+          .entreprise-name-mobile {
+            font-size: 16px;
+            font-weight: 600;
+            color: $dark-bg;
+          }
+
+          .entreprise-fiscal-mobile {
+            font-size: 12px;
+            color: $text-light;
+            margin-top: 2px;
+          }
+        }
+      }
+
+      .entreprise-info-mobile {
+        .info-row {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 12px 0;
+          border-bottom: 1px solid rgba($border-color, 0.5);
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          mat-icon {
+            color: $text-light;
+            flex-shrink: 0;
+            margin-top: 2px;
+          }
+
+          .info-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+
+            .info-label {
+              font-size: 12px;
+              color: $text-light;
+              margin-bottom: 2px;
+            }
+
+            .info-value {
+              font-weight: 500;
+              color: $text-color;
+
+              &.description-text {
+                margin: 0;
+                line-height: 1.4;
+              }
+            }
+          }
+        }
+      }
+
+      mat-card-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        padding-top: 16px;
+        margin: 0;
+        border-top: 1px solid $border-color;
+
+        button {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 14px;
+
+          mat-icon {
+            font-size: 18px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Paginator
+mat-paginator {
+  border-top: 1px solid $border-color;
+  background: $light-bg;
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modern-header, .stats-grid, .filter-card, .results-card {
+  animation: fadeIn 0.5s ease-out;
+}

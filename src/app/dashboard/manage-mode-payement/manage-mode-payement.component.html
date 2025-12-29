@@ -1,45 +1,365 @@
+<div class="modern-payment-container">
+  <!-- Header -->
+  <div class="modern-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="title-icon">payments</mat-icon>
+        <div>
+          <h1 class="page-title">Gestion des modes de paiement</h1>
+          <p class="page-subtitle">Gérez les méthodes de paiement disponibles dans le système</p>
+        </div>
+      </div>
+      <button mat-flat-button color="primary" (click)="handleAdd()" class="add-btn">
+        <mat-icon>add_card</mat-icon>
+        Ajouter un mode
+      </button>
+    </div>
+  </div>
 
-<!-- //routerLink="/workspace/dashboard/addCategory" -->
-<mat-card>
-  <b> <span>Gestion des modes de payement</span> </b>
-  <button mat-flat-button  color="primary" (click)="handleAdd()" >Ajouter un mode</button>
-</mat-card>
-<hr>
-<mat-card>
-  <mat-form-field appearance="fill" >
-    <mat-label>Filtrer</mat-label>
-    <input matInput (keyup)="applyFilter($event)" #input>
-  </mat-form-field>
-</mat-card>
-<hr>
+  <!-- Statistiques -->
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon">payments</mat-icon>
+        <div class="stat-details">
+          <span class="stat-value">{{dataSource?.data?.length || 0}}</span>
+          <span class="stat-label">Modes de paiement</span>
+        </div>
+      </div>
+    </mat-card>
 
-<div class="responsive_table">
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-      <ng-container matColumnDef="code">
-       <th mat-header-cell *matHeaderCellDef>Code</th>
-       <td mat-cell *matCellDef="let element">{{element.code}}</td>
-      </ng-container>
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon" style="color: #4CAF50;">check_circle</mat-icon>
+        <div class="stat-details">
+          <span class="stat-value">{{getActiveCount()}}</span>
+          <span class="stat-label">Actifs</span>
+        </div>
+      </div>
+    </mat-card>
 
-      <ng-container matColumnDef="designation">
-        <th mat-header-cell *matHeaderCellDef>Désignation</th>
-        <td mat-cell *matCellDef="let element">{{element.designation}}</td>
-       </ng-container>
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon" style="color: #2196F3;">credit_card</mat-icon>
+        <div class="stat-details">
+          <span class="stat-value">{{getElectronicCount()}}</span>
+          <span class="stat-label">Électroniques</span>
+        </div>
+      </div>
+    </mat-card>
 
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon" style="color: #FF9800;">receipt</mat-icon>
+        <div class="stat-details">
+          <span class="stat-value">{{getTraditionalCount()}}</span>
+          <span class="stat-label">Traditionnels</span>
+        </div>
+      </div>
+    </mat-card>
+  </div>
 
-      <ng-container matColumnDef="action">
-       <th mat-header-cell *matHeaderCellDef>Action</th>
-       <td mat-cell *matCellDef="let element" class="action-link" >
-         <button mat-icon-button color="primary" matTooltip="Modifier" (click)="handleEdit(element)" >
-           <mat-icon>edit</mat-icon>
-         </button>
-         <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
-           <mat-icon>delete</mat-icon>
-         </button>
-<!--          <mat-slide-toggle (change)="onChange($event.checked,element.id)" matTooltip="Activer ou desactiver" [checked]="element.status" ></mat-slide-toggle>
- -->       </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
-      <tr mat-row *matRowDef="let row;columns:displayColumns"></tr>
-  </table>
+  <!-- Filtres -->
+  <mat-card class="filter-card">
+    <div class="filter-header">
+      <mat-icon>search</mat-icon>
+      <h3>Rechercher des modes de paiement</h3>
+    </div>
+
+    <div class="filter-form">
+      <div class="filter-grid">
+        <!-- Champ de recherche -->
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Rechercher un mode de paiement</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Code, désignation..." #input>
+          <mat-icon matPrefix>search</mat-icon>
+          <button mat-icon-button matSuffix *ngIf="input.value" (click)="clearSearch(input)">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <!-- Filtre par type -->
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Type</mat-label>
+          <mat-select (selectionChange)="filterByType($event.value)">
+            <!-- Template pour afficher la valeur sélectionnée -->
+            <mat-select-trigger>
+              <div *ngIf="selectedType" class="selected-value">
+                <mat-icon class="trigger-icon">{{getTypeIcon(selectedType)}}</mat-icon>
+                <span class="trigger-text">
+                  {{getTypeLabel(selectedType)}}
+                </span>
+              </div>
+            </mat-select-trigger>
+
+            <mat-option [value]="null">Tous les types</mat-option>
+            <mat-option value="electronique">
+              <div class="type-option">
+                <mat-icon style="color: #2196F3;">credit_card</mat-icon>
+                <span>Électronique</span>
+              </div>
+            </mat-option>
+            <mat-option value="traditionnel">
+              <div class="type-option">
+                <mat-icon style="color: #FF9800;">receipt</mat-icon>
+                <span>Traditionnel</span>
+              </div>
+            </mat-option>
+            <mat-option value="mobile">
+              <div class="type-option">
+                <mat-icon style="color: #4CAF50;">smartphone</mat-icon>
+                <span>Mobile</span>
+              </div>
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>filter_list</mat-icon>
+        </mat-form-field>
+
+        <!-- Actions -->
+        <div class="filter-actions">
+          <button mat-stroked-button type="button" (click)="resetFilters(input)" class="reset-btn">
+            <mat-icon>refresh</mat-icon>
+            Réinitialiser
+          </button>
+          <button mat-flat-button color="primary" (click)="exportToExcel()" class="export-btn">
+            <mat-icon>download</mat-icon>
+            Exporter
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Tableau des modes de paiement -->
+  <mat-card class="results-card">
+    <div class="table-header">
+      <div class="header-left">
+        <mat-icon>list_alt</mat-icon>
+        <h3>Liste des modes de paiement</h3>
+        <span class="count-badge" *ngIf="dataSource?.data?.length">
+          {{getFilteredCount()}} mode(s)
+        </span>
+      </div>
+      <div class="header-right">
+        <button mat-icon-button matTooltip="Actualiser" (click)="tableData()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Afficher/masquer les colonnes" (click)="toggleColumns()">
+          <mat-icon>view_column</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- État vide -->
+    <div *ngIf="!dataSource?.data?.length" class="empty-state">
+      <mat-icon class="empty-icon">payments</mat-icon>
+      <h4>Aucun mode de paiement trouvé</h4>
+      <p>Il n'y a actuellement aucun mode de paiement dans le système</p>
+      <button mat-flat-button color="primary" (click)="handleAdd()" class="empty-action-btn">
+        <mat-icon>add</mat-icon>
+        Ajouter un mode de paiement
+      </button>
+    </div>
+
+    <!-- État recherche vide -->
+    <div *ngIf="dataSource?.data?.length && getFilteredCount() === 0" class="empty-state">
+      <mat-icon class="empty-icon">search_off</mat-icon>
+      <h4>Aucun résultat</h4>
+      <p>Aucun mode de paiement ne correspond à votre recherche</p>
+      <button mat-stroked-button color="primary" (click)="resetFilters(input)" class="empty-action-btn">
+        <mat-icon>refresh</mat-icon>
+        Réinitialiser la recherche
+      </button>
+    </div>
+
+    <!-- Version desktop -->
+    <div *ngIf="dataSource?.data?.length && getFilteredCount() > 0" class="table-container">
+      <div class="desktop-view">
+        <table mat-table [dataSource]="dataSource" class="modern-table">
+
+          <!-- Code -->
+          <ng-container matColumnDef="code">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>tag</mat-icon>
+                <span>Code</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="code-cell">
+                <mat-icon class="cell-icon">{{getPaymentIcon(element.type)}}</mat-icon>
+                <div class="code-info">
+                  <span class="code-value">{{element.code}}</span>
+                  <span class="code-type" *ngIf="element.type">
+                    {{getTypeLabel(element.type)}}
+                  </span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Désignation -->
+          <ng-container matColumnDef="designation">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>description</mat-icon>
+                <span>Désignation</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="designation-cell">
+                <mat-icon>info</mat-icon>
+                <div class="designation-info">
+                  <span class="designation-text">{{element.designation || 'Aucune description'}}</span>
+                  <span class="designation-meta" *ngIf="element.description">
+                    {{element.description | slice:0:50}}{{element.description.length > 50 ? '...' : ''}}
+                  </span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Type (optionnel) -->
+          <ng-container matColumnDef="type" *ngIf="showAdditionalColumns">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>category</mat-icon>
+                <span>Type</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div [ngClass]="getTypeClass(element.type)" class="type-badge">
+                <mat-icon>{{getTypeIcon(element.type)}}</mat-icon>
+                <span>{{getTypeLabel(element.type) || 'Non spécifié'}}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Statut (optionnel) -->
+          <ng-container matColumnDef="status" *ngIf="showAdditionalColumns">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>toggle_on</mat-icon>
+                <span>Statut</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="status-cell">
+                <mat-slide-toggle [checked]="element.actif !== false" color="primary"
+                                  (change)="toggleStatus(element)">
+                </mat-slide-toggle>
+                <span class="status-label">{{element.actif !== false ? 'Actif' : 'Inactif'}}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Actions -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-content">
+                <mat-icon>settings</mat-icon>
+                <span>Actions</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="actions-container">
+                <button mat-icon-button color="primary" matTooltip="Modifier" (click)="handleEdit(element)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="accent" matTooltip="Voir détails" (click)="viewDetails(element)">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" matTooltip="Supprimer" (click)="handleDelete(element)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="getDisplayColumns()"></tr>
+          <tr mat-row *matRowDef="let row; columns: getDisplayColumns()"></tr>
+        </table>
+      </div>
+
+      <!-- Version mobile -->
+      <div class="mobile-view">
+        <div class="payment-cards">
+          <mat-card *ngFor="let payment of getFilteredData()" class="payment-card">
+            <mat-card-header>
+              <mat-card-title>
+                <div class="card-title-row">
+                  <mat-icon>{{getPaymentIcon(payment.type)}}</mat-icon>
+                  <div class="title-content">
+                    <span class="payment-code-mobile">{{payment.code}}</span>
+                    <div [ngClass]="getTypeClass(payment.type)" class="type-badge-mobile">
+                      {{getTypeLabel(payment.type) || 'Standard'}}
+                    </div>
+                  </div>
+                </div>
+              </mat-card-title>
+              <mat-card-subtitle>
+                {{payment.designation}}
+              </mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+              <div class="payment-info-mobile">
+                <div class="info-row">
+                  <mat-icon>description</mat-icon>
+                  <div class="info-content">
+                    <span class="info-label">Désignation</span>
+                    <span class="info-value">{{payment.designation}}</span>
+                  </div>
+                </div>
+
+                <div class="info-row" *ngIf="payment.type">
+                  <mat-icon>category</mat-icon>
+                  <div class="info-content">
+                    <span class="info-label">Type</span>
+                    <span class="info-value">{{getTypeLabel(payment.type)}}</span>
+                  </div>
+                </div>
+
+                <div class="info-row" *ngIf="payment.description">
+                  <mat-icon>info</mat-icon>
+                  <div class="info-content">
+                    <span class="info-label">Description</span>
+                    <span class="info-value">{{payment.description}}</span>
+                  </div>
+                </div>
+
+                <div class="info-row" *ngIf="showAdditionalColumns">
+                  <mat-icon>toggle_on</mat-icon>
+                  <div class="info-content">
+                    <span class="info-label">Statut</span>
+                    <span class="info-value">{{payment.actif !== false ? 'Actif' : 'Inactif'}}</span>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+
+            <mat-card-actions>
+              <button mat-button color="primary" (click)="viewDetails(payment)">
+                <mat-icon>visibility</mat-icon>
+                Détails
+              </button>
+              <button mat-button color="accent" (click)="handleEdit(payment)">
+                <mat-icon>edit</mat-icon>
+                Modifier
+              </button>
+              <button mat-button color="warn" (click)="handleDelete(payment)">
+                <mat-icon>delete</mat-icon>
+                Supprimer
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons
+                     [length]="getFilteredCount()"
+                     [pageSize]="10">
+      </mat-paginator>
+    </div>
+  </mat-card>
 </div>
-

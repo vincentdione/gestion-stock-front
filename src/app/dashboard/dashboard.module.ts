@@ -43,6 +43,16 @@ import { SingleVenteComponent } from './manage-ventes/single-vente/single-vente.
 import { SingleCommandeClientComponent } from './pages/single-commande-client/single-commande-client.component';
 import { ManageLivraisonsComponent } from './manage-livraisons/manage-livraisons.component';
 import { SearchLivraisonsComponent } from './manage-livraisons/search-livraisons/search-livraisons.component';
+import { UserComponent } from './dialog/user/user.component';
+import { ManageEntreprisesComponent } from './manage-entreprises/manage-entreprises.component';
+import { EntrepriseComponent } from './dialog/entreprise/entreprise.component';
+import { FactureComponent } from './facture/facture.component';
+import { ClientInfoComponent } from './facture/client-info/client-info.component';
+import { FactureFooterComponent } from './facture/facture-footer/facture-footer.component';
+import { FactureHeaderComponent } from './facture/facture-header/facture-header.component';
+import { FactureSummaryComponent } from './facture/facture-summary/facture-summary.component';
+import { FactureItemsComponent } from './facture/facture-items/facture-items.component';
+import { FacturePrintComponent } from './facture/facture-print/facture-print.component';
 
 
 @NgModule({
@@ -52,6 +62,7 @@ import { SearchLivraisonsComponent } from './manage-livraisons/search-livraisons
     HeaderComponent,
     SidebarComponent,
     ManageUsersComponent,
+    UserComponent,
     ManageArticlesComponent,
     ManageCategoryComponent,
     ManageSousCategoryComponent,
@@ -83,6 +94,15 @@ import { SearchLivraisonsComponent } from './manage-livraisons/search-livraisons
     SingleCommandeClientComponent,
     ManageLivraisonsComponent,
     SearchLivraisonsComponent,
+    ManageEntreprisesComponent,
+    EntrepriseComponent,
+    FactureComponent,
+    ClientInfoComponent,
+    FactureFooterComponent,
+    FactureHeaderComponent,
+    FactureSummaryComponent,
+    FactureItemsComponent,
+    FacturePrintComponent,
   ],
   imports: [
     CommonModule,
@@ -92,9 +112,8 @@ import { SearchLivraisonsComponent } from './manage-livraisons/search-livraisons
     FormsModule,
     ReactiveFormsModule,
     FlexLayoutModule,
-    CdkTableModule,
-
-  ],
+    CdkTableModule
+    ],
 
 })
 export class DashboardModule { }

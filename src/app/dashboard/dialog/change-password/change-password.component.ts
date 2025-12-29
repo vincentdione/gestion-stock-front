@@ -1,11 +1,11 @@
-import { GlobalConstants } from './../../../shared/global-constants';
-import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { MatDialogRef } from '@angular/material/dialog';
-import { SnackbarService } from './../../../services/snackbar.service';
-import { UserService } from './../../../services/user.service';
-import { Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { UtilisateursEntreprisesService } from 'src/app/api';
+
+import { SnackbarService } from './../../../services/snackbar.service';
 
 @Component({
   selector: 'app-change-password',
@@ -18,7 +18,7 @@ export class ChangePasswordComponent implements OnInit {
   responseMessage : any ;
 
   constructor(private formBuilder : FormBuilder,private router: Router,
-    private userService : UserService,
+    private userService : UtilisateursEntreprisesService,
     private snackbarService : SnackbarService,
     private dialogRef : MatDialogRef<ChangePasswordComponent>, private ngxService: NgxUiLoaderService) { }
 
@@ -48,22 +48,22 @@ export class ChangePasswordComponent implements OnInit {
       confirmPassword : formData.confirmPassword,
     }
 
-    this.userService.changePassword(data).subscribe((res:any) => {
-      this.ngxService.stop();
-      this.dialogRef.close();
-      console.log(res)
-      this.responseMessage = res?.message
-      this.snackbarService.openSnackbar(this.responseMessage,"success")
-  },(error)=>{
-    this.ngxService.stop();
-    if(error.error?.message){
-        this.responseMessage = error.error?.message
-    }
-    else {
-      this.responseMessage = GlobalConstants.genericErrorMessage
-    }
-    this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
-  })
+  //   this.userService.changePassword(data).subscribe((res:any) => {
+  //     this.ngxService.stop();
+  //     this.dialogRef.close();
+  //     console.log(res)
+  //     this.responseMessage = res?.message
+  //     this.snackbarService.openSnackbar(this.responseMessage,"success")
+  // },(error)=>{
+  //   this.ngxService.stop();
+  //   if(error.error?.message){
+  //       this.responseMessage = error.error?.message
+  //   }
+  //   else {
+  //     this.responseMessage = GlobalConstants.genericErrorMessage
+  //   }
+  //   this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
+  // })
 
   }
 

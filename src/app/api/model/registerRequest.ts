@@ -21,9 +21,10 @@ export interface RegisterRequest {
     entrepriseId?: number;
 }
 export namespace RegisterRequest {
-    export type RoleEnum = 'USER' | 'LIVREUR' | 'ADMIN' | 'MANAGER';
+    export type RoleEnum = 'USER' | 'SUPER_ADMIN' | 'LIVREUR' | 'ADMIN' | 'MANAGER';
     export const RoleEnum = {
         User: 'USER' as RoleEnum,
+        SuperAdmin: 'SUPER_ADMIN' as RoleEnum,
         Livreur: 'LIVREUR' as RoleEnum,
         Admin: 'ADMIN' as RoleEnum,
         Manager: 'MANAGER' as RoleEnum

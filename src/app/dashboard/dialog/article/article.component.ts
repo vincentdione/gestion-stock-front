@@ -45,11 +45,8 @@ export class ArticleComponent {
       // unite :[null,[Validators.required,]],
     })
 
-    if(this.dialogData.action === "Modifier"){
-      this.dialogAction = "Modifier"
-      this.action = "Modifier"
-      this.articleForm.patchValue(this.dialogData.data)
-    }
+    this.getAllSousCategories();
+    this.getAllUnites();
 
     this.articleForm.controls['prixUnitaireHt']?.valueChanges.subscribe(() => {
       this.calculerTTC();
@@ -59,25 +56,42 @@ export class ArticleComponent {
       this.calculerTTC();
     });
 
-    this.getAllSousCategories()
-    this.getAllUnites()
+
 
   }
 
+  getAllSousCategories() {
+    this.sousCategorieService.getAllSousCategorys().subscribe(
+      (res) => {
+        this.listeSousCategories = res;
 
-  getAllSousCategories(){
-    this.sousCategorieService.getAllSousCategorys().subscribe((res)=>{
-       this.listeSousCategories = res
-    },(error=>{
-      if(error.error?.message){
-        this.responseMessage = error.error?.message
-        console.log(this.responseMessage)
-    }
-    else {
-      this.responseMessage = GlobalConstants.genericErrorMessage
-      console.log(this.responseMessage)
-    }
-    }))
+        if (this.dialogData.action === "Modifier") {
+          this.dialogAction = "Modifier";
+          this.action = "Modifier";
+
+          const selectedSousCategory = this.listeSousCategories.find(
+            sc => sc.id === this.dialogData.data.sousCategoryDto?.id
+          );
+
+          this.articleForm.patchValue({
+            ...this.dialogData.data,
+            sous_Category: selectedSousCategory
+          });
+        }
+      },
+      (error) => {
+        if (error.error?.message) {
+          this.responseMessage = error.error?.message;
+        } else {
+          this.responseMessage = GlobalConstants.genericErrorMessage;
+        }
+        this.snackbarService.openSnackbar(this.responseMessage, GlobalConstants.error);
+      }
+    );
+}
+
+  compareSousCategories(sousCat1: SousCategoryDto, sousCat2: SousCategoryDto): boolean {
+    return sousCat1 && sousCat2 ? sousCat1.id === sousCat2.id : sousCat1 === sousCat2;
   }
 
   getAllUnites(){

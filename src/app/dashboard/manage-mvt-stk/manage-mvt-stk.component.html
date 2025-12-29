@@ -1,84 +1,272 @@
+<div class="modern-mvt-container">
+  <!-- En-tête modernisée -->
+  <div class="modern-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="title-icon">trending_up</mat-icon>
+        <div>
+          <h1 class="page-title">Gestion des mouvements de stock</h1>
+          <p class="page-subtitle">Suivez l'historique des entrées et sorties de stock</p>
+        </div>
+      </div>
+      <!-- <button mat-flat-button color="primary" class="add-btn" (click)="handleAdd()">
+        <mat-icon>add</mat-icon>
+        Nouveau mouvement
+      </button> -->
+    </div>
+  </div>
 
-<!-- //routerLink="/workspace/dashboard/addCategory" -->
-<mat-card>
-  <b> <span>Gestion des mouvements stocks</span> </b>
-  <!-- <button mat-flat-button  color="primary" (click)="handleAdd()" >Ajouter une unité</button> -->
+ <!-- Section de filtres -->
+ <mat-card class="filter-card">
+  <div class="filter-header">
+    <mat-icon>filter_alt</mat-icon>
+    <h3>Filtres de recherche</h3>
+  </div>
+
+  <form [formGroup]="filterForm" class="filter-form">
+    <div class="filter-row">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Article</mat-label>
+        <mat-select formControlName="article">
+          <mat-option *ngFor="let u of articles" [value]="u">
+            <div class="article-option">
+              <mat-icon>inventory_2</mat-icon>
+              <div class="option-details">
+                <span class="option-code">{{u.codeArticle}}</span>
+                <span class="option-name">{{u.designation}}</span>
+              </div>
+            </div>
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <div class="filter-actions">
+        <button mat-stroked-button type="button" (click)="resetFilter()" class="reset-btn">
+          <mat-icon>refresh</mat-icon>
+          Réinitialiser
+        </button>
+        <button mat-flat-button color="primary" (click)="onSearch()" class="search-btn">
+          <mat-icon>search</mat-icon>
+          Rechercher
+        </button>
+      </div>
+    </div>
+  </form>
 </mat-card>
-<hr>
-<form [formGroup]="filterForm">
-  <mat-card>
-    <mat-form-field class="filter-field" appearance="fill"  fxFlex >
-      <mat-label>Article</mat-label>
-      <mat-select formControlName="article"  [(ngModel)]="selectedArticle">
-        <mat-option *ngFor="let u of articles" [value]="u"> {{u.codeArticle}}</mat-option>
-    </mat-select>
-    </mat-form-field>
 
+  <!-- Cartes de statistiques -->
+  <div class="stats-cards" *ngIf="dataSource.data && dataSource.data.length > 0">
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon">swap_vert</mat-icon>
+        <div class="stat-text">
+          <span class="stat-value">{{getTotalMovements()}}</span>
+          <span class="stat-label">Mouvements totaux</span>
+        </div>
+      </div>
+    </mat-card>
 
-    <div class="button-container">
-      <button mat-raised-button color="primary" (click)="onSearch()" >Rechercher</button>
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon" style="color: #4CAF50;">arrow_upward</mat-icon>
+        <div class="stat-text">
+          <span class="stat-value">{{getEntreeCount()}}</span>
+          <span class="stat-label">Entrées</span>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon class="stat-icon" style="color: #F44336;">arrow_downward</mat-icon>
+        <div class="stat-text">
+          <span class="stat-value">{{getSortieCount()}}</span>
+          <span class="stat-label">Sorties</span>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Tableau modernisé -->
+  <mat-card class="table-card">
+    <div class="table-header">
+      <div class="header-left">
+        <mat-icon>list_alt</mat-icon>
+        <h3>Historique des mouvements</h3>
+        <span class="count-badge">{{dataSource?.data?.length || 0}}</span>
+      </div>
+      <div class="header-right">
+        <button mat-icon-button matTooltip="Actualiser" (click)="tableData()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- État vide -->
+    <div *ngIf="!dataSource?.data?.length" class="empty-state">
+      <mat-icon class="empty-icon">inventory</mat-icon>
+      <h4>Aucun mouvement trouvé</h4>
+      <p>Aucun mouvement de stock n'a été enregistré</p>
+    </div>
+
+    <!-- Tableau -->
+    <div *ngIf="dataSource.data && dataSource.data.length > 0" class="table-container">
+      <div class="responsive-table">
+        <!-- Version desktop -->
+        <div class="desktop-view">
+          <table mat-table [dataSource]="dataSource" class="modern-table" matSort>
+
+            <!-- Article Column -->
+            <ng-container matColumnDef="article">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Article</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="cell-article">
+                  <mat-icon class="cell-icon">inventory_2</mat-icon>
+                  <div class="article-info">
+                    <span class="article-code">{{element.article?.codeArticle}}</span>
+                    <span class="article-name">{{element.article?.designation}}</span>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Unité Column -->
+            <ng-container matColumnDef="unite">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Unité</th>
+              <td mat-cell *matCellDef="let element">
+                <span class="unit-badge">{{element.unite}}</span>
+              </td>
+            </ng-container>
+
+            <!-- Type Mvt Column -->
+            <ng-container matColumnDef="typeMvtStk">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="type-container">
+                  <mat-icon class="type-icon"
+                    [ngClass]="{'entree-icon': element.typeMvtStk === 'ENTREE', 'sortie-icon': element.typeMvtStk === 'SORTIE'}">
+                    {{element.typeMvtStk === 'ENTREE' ? 'arrow_upward' : 'arrow_downward'}}
+                  </mat-icon>
+                  <span class="type-chip"
+                    [ngClass]="{'entree-chip': element.typeMvtStk === 'ENTREE', 'sortie-chip': element.typeMvtStk === 'SORTIE'}">
+                    {{element.typeMvtStk}}
+                  </span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Source Mvt Column -->
+            <ng-container matColumnDef="sourceMvt">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Source</th>
+              <td mat-cell *matCellDef="let element">
+                <span class="source-badge">{{element.sourceMvt}}</span>
+              </td>
+            </ng-container>
+
+            <!-- Quantité Column -->
+            <ng-container matColumnDef="quantite">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Quantité</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="quantity-container">
+                  <span class="quantity-value"
+                    [ngClass]="{'entree-quantity': element.typeMvtStk === 'ENTREE', 'sortie-quantity': element.typeMvtStk === 'SORTIE'}">
+                    {{element.typeMvtStk === 'ENTREE' ? '+' : '-'}}{{element.quantite}}
+                  </span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Date Mvt Column -->
+            <ng-container matColumnDef="dateMvt">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="date-container">
+                  <mat-icon class="date-icon">calendar_today</mat-icon>
+                  <span class="date-value">{{element.dateMvt | date: 'dd/MM/yyyy HH:mm'}}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="actions-container">
+                  <button mat-icon-button color="primary" matTooltip="Modifier" class="action-btn">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Header row -->
+            <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+            <!-- Data rows -->
+            <tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
+          </table>
+        </div>
+
+        <!-- Version mobile (cartes) -->
+        <div class="mobile-view">
+          <div class="movement-cards">
+            <mat-card *ngFor="let mouvement of dataSource.filteredData" class="movement-card">
+              <mat-card-header>
+                <div class="movement-header">
+                  <div class="movement-type" [ngClass]="{'entree-bg': mouvement.typeMvtStk === 'ENTREE', 'sortie-bg': mouvement.typeMvtStk === 'SORTIE'}">
+                    <mat-icon>{{mouvement.typeMvtStk === 'ENTREE' ? 'arrow_upward' : 'arrow_downward'}}</mat-icon>
+                  </div>
+                  <div class="header-content">
+                    <mat-card-title>{{mouvement.article?.codeArticle}}</mat-card-title>
+                    <mat-card-subtitle>{{mouvement.article?.designation}}</mat-card-subtitle>
+                  </div>
+                </div>
+              </mat-card-header>
+
+              <mat-card-content>
+                <div class="movement-details">
+                  <div class="detail-row">
+                    <div class="detail-item">
+                      <mat-icon>straighten</mat-icon>
+                      <span>{{mouvement.unite}}</span>
+                    </div>
+                    <div class="detail-item">
+                      <mat-icon>source</mat-icon>
+                      <span>{{mouvement.sourceMvt}}</span>
+                    </div>
+                  </div>
+
+                  <div class="detail-row">
+                    <div class="detail-item quantity-item"
+                         [ngClass]="{'entree-text': mouvement.typeMvtStk === 'ENTREE', 'sortie-text': mouvement.typeMvtStk === 'SORTIE'}">
+                      <mat-icon>scale</mat-icon>
+                      <span>{{mouvement.typeMvtStk === 'ENTREE' ? '+' : '-'}}{{mouvement.quantite}}</span>
+                    </div>
+                    <div class="detail-item">
+                      <mat-icon>calendar_today</mat-icon>
+                      <span>{{mouvement.dateMvt | date: 'dd/MM/yyyy HH:mm'}}</span>
+                    </div>
+                  </div>
+                </div>
+              </mat-card-content>
+
+              <mat-card-actions class="card-actions">
+                <button mat-button color="primary">
+                  <mat-icon>edit</mat-icon>
+                  Modifier
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"
+                     [pageSize]="10"
+                     showFirstLastButtons
+                     class="modern-paginator">
+      </mat-paginator>
     </div>
   </mat-card>
-  </form>
-<hr>
-
-<div class="responsive_table">
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-      <ng-container matColumnDef="article">
-       <th mat-header-cell *matHeaderCellDef>Article</th>
-       <td mat-cell *matCellDef="let element">{{element.article?.codeArticle}}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="unite">
-        <th mat-header-cell *matHeaderCellDef>Unité</th>
-        <td mat-cell *matCellDef="let element">{{element.unite}}</td>
-       </ng-container>
-
-       <ng-container matColumnDef="typeMvtStk">
-        <th mat-header-cell *matHeaderCellDef>Type Mvt</th>
-        <td mat-cell *matCellDef="let element">
-          <mat-chip [ngStyle]="{ 'background-color': element.typeMvtStk === 'ENTREE' ? 'green' : 'red' }">
-            {{ element.typeMvtStk }}
-          </mat-chip>
-        </td>
-      </ng-container>
-
-       <ng-container matColumnDef="sourceMvt">
-        <th mat-header-cell *matHeaderCellDef>Source Mvt</th>
-        <td mat-cell *matCellDef="let element">
-          <mat-chip color="primary" >{{element.sourceMvt}}</mat-chip>
-        </td>
-
-
-       </ng-container>
-
-       <ng-container matColumnDef="quantite">
-        <th mat-header-cell *matHeaderCellDef>Quantité</th>
-        <td mat-cell *matCellDef="let element">{{element.quantite}}</td>
-       </ng-container>
-
-       <ng-container matColumnDef="dateMvt">
-        <th mat-header-cell *matHeaderCellDef>Date Mvt</th>
-        <td mat-cell *matCellDef="let element">{{element.dateMvt | date: 'dd/MM/yyyy' }}</td>
-       </ng-container>
-
-
-      <ng-container matColumnDef="action">
-       <th mat-header-cell *matHeaderCellDef>Action</th>
-       <td mat-cell *matCellDef="let element" class="action-link" >
-         <button mat-icon-button color="primary" matTooltip="Modifier" >
-           <mat-icon>edit</mat-icon>
-         </button>
-         <!-- <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
-           <mat-icon>delete</mat-icon>
-         </button> -->
-<!--          <mat-slide-toggle (change)="onChange($event.checked,element.id)" matTooltip="Activer ou desactiver" [checked]="element.status" ></mat-slide-toggle>
- -->       </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
-      <tr mat-row *matRowDef="let row;columns:displayColumns"></tr>
-  </table>
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
-
 </div>
-

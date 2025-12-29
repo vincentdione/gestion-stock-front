@@ -1,31 +1,753 @@
-.float-right {
-  float: right;
-  color: white;
-  background-color: teal;
+// Variables de couleurs
+$primary-color: #008080; // Teal
+$primary-dark: #006666;
+$primary-light: #00a0a0;
+$accent-color: #ff5722;
+$success-color: #4caf50;
+$warning-color: #ff9800;
+$danger-color: #f44336;
+$light-bg: #f8f9fa;
+$dark-bg: #2c3e50;
+$text-color: #333;
+$text-light: #666;
+$border-color: #e0e0e0;
+
+// Mixins
+@mixin card-shadow {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  }
 }
 
-mat-card {
-   padding: 20px;
-   display: flex;
-   flex-direction: row;
-   justify-content: space-between;
+@mixin gradient-bg {
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
 }
 
-mat-form-field{
-  width: 100%;
-  margin: 4px;
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-table {
-  width: 100%;
+@mixin responsive-grid($columns) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Styles principaux
+.vente-container {
+  padding: 24px;
+  background: $light-bg;
+  min-height: 100vh;
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+}
+
+// Header section
+.header-section {
+  margin-bottom: 30px;
+
+  .header-content {
+    @include gradient-bg;
+    border-radius: 16px;
+    padding: 30px;
+    color: white;
+
+    .title-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+
+      .title-icon {
+        font-size: 40px;
+        width: 40px;
+        height: 40px;
+      }
+
+      .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        margin: 0;
+        color: white;
+      }
+    }
+
+    .stats-cards {
+      @include responsive-grid(2);
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+
+        .stat-content {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          padding: 20px;
+
+          .stat-icon {
+            font-size: 36px;
+            width: 36px;
+            height: 36px;
+            color: rgba(255, 255, 255, 0.9);
+          }
+
+          .stat-info {
+            display: flex;
+            flex-direction: column;
+
+            .stat-value {
+              font-size: 32px;
+              font-weight: 700;
+              line-height: 1;
+            }
+
+            .stat-label {
+              font-size: 14px;
+              opacity: 0.9;
+              margin-top: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Form section
+.form-section {
+  margin-bottom: 30px;
+
+  .form-card {
+    @include card-shadow;
+    border-radius: 16px;
+    overflow: hidden;
+
+    .card-header {
+      padding: 25px 30px;
+      background: linear-gradient(to right, $light-bg, white);
+      border-bottom: 1px solid $border-color;
+
+      h2 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        color: $dark-bg;
+        margin: 0 0 8px 0;
+
+        mat-icon {
+          color: $primary-color;
+        }
+      }
+
+      p {
+        color: $text-light;
+        margin: 0;
+        font-size: 14px;
+      }
+    }
+
+    .vente-form {
+      padding: 30px;
+
+      .form-row {
+        margin-bottom: 25px;
+
+        .form-field {
+          width: 100%;
+
+          ::ng-deep .mat-form-field-outline {
+            background: $light-bg;
+            border-radius: 10px;
+          }
+
+          ::ng-deep .mat-form-field-outline-thick {
+            color: $primary-color;
+          }
+        }
+      }
+
+      .ligne-vente-section {
+        .section-title {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 25px;
+
+          h3 {
+            font-size: 18px;
+            color: $dark-bg;
+            margin: 0;
+          }
+
+          mat-icon {
+            color: $primary-color;
+          }
+        }
+
+        .form-grid {
+          @include responsive-grid(4);
+
+          .form-field {
+            margin-bottom: 0;
+
+            .article-option {
+              display: flex;
+              flex-direction: column;
+
+              .article-code {
+                font-weight: 600;
+                color: $dark-bg;
+              }
+
+              .article-name {
+                font-size: 12px;
+                color: $text-light;
+                margin-top: 2px;
+              }
+            }
+          }
+
+          .add-button-container {
+            @include flex-center;
+            flex-direction: column;
+            gap: 8px;
+
+            .add-button {
+              width: 56px;
+              height: 56px;
+              @include gradient-bg;
+
+              mat-icon {
+                font-size: 24px;
+              }
+
+              &:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+              }
+            }
+
+            .button-label {
+              font-size: 12px;
+              color: $text-light;
+              font-weight: 500;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Table section
+.table-section {
+  margin-bottom: 30px;
+
+  .table-card {
+    @include card-shadow;
+    border-radius: 16px;
+    overflow: hidden;
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 25px 30px;
+      background: $light-bg;
+      border-bottom: 1px solid $border-color;
+
+      h2 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        color: $dark-bg;
+        margin: 0;
+
+        mat-icon {
+          color: $primary-color;
+        }
+      }
+
+      .badge {
+        background: $primary-color;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+
+    .table-container {
+      padding: 0;
+      overflow: hidden;
+
+      .vente-table {
+        width: 100%;
+        border-collapse: collapse;
+
+        .table-header {
+          background: $light-bg;
+          color: $dark-bg;
+          font-weight: 600;
+          font-size: 14px;
+          padding: 20px 16px;
+          border-bottom: 2px solid $primary-color;
+
+          mat-icon {
+            margin-right: 8px;
+            vertical-align: middle;
+            font-size: 18px;
+            color: $primary-color;
+          }
+        }
+
+        .table-cell {
+          padding: 16px;
+          border-bottom: 1px solid $border-color;
+          color: $text-color;
+
+          &.code-cell {
+            .code-content {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+
+              .cell-icon {
+                color: $text-light;
+                font-size: 18px;
+              }
+            }
+          }
+
+          .unite-badge {
+            background: $light-bg;
+            color: $primary-color;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+          }
+
+          .quantite-cell {
+            .quantite-value {
+              display: inline-block;
+              min-width: 30px;
+              text-align: center;
+              font-weight: 600;
+              color: $primary-color;
+            }
+          }
+
+          &.price-cell, &.total-cell {
+            font-weight: 600;
+            color: $success-color;
+          }
+
+          &.actions-cell {
+            text-align: right;
+
+            .action-button {
+              transition: transform 0.2s;
+
+              &:hover {
+                transform: scale(1.1);
+              }
+            }
+          }
+        }
+
+        .table-row {
+          transition: background-color 0.2s;
+
+          &:hover {
+            background-color: rgba($primary-color, 0.04);
+          }
+
+          &:last-child {
+            .table-cell {
+              border-bottom: none;
+            }
+          }
+        }
+      }
+
+      .custom-paginator {
+        padding: 20px;
+        border-top: 1px solid $border-color;
+
+        ::ng-deep .mat-paginator-container {
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+
+// Summary section
+.summary-section {
+  margin-bottom: 40px;
+
+  .summary-card {
+    @include gradient-bg;
+    border-radius: 16px;
+    color: white;
+
+    .summary-content {
+      padding: 30px;
+
+      .total-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+
+        .total-label {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+
+          h3 {
+            font-size: 22px;
+            margin: 0;
+            font-weight: 600;
+          }
+
+          mat-icon {
+            font-size: 32px;
+          }
+        }
+
+        .total-value {
+          text-align: right;
+
+          .total-amount {
+            display: block;
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1;
+          }
+
+          .total-text {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+          }
+        }
+      }
+
+      .summary-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 20px;
+
+        .cancel-button, .validate-button {
+          padding: 12px 30px;
+          border-radius: 10px;
+          font-weight: 500;
+          font-size: 16px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          transition: all 0.3s;
+
+          mat-icon {
+            font-size: 20px;
+          }
+        }
+
+        .cancel-button {
+          background: rgba(255, 255, 255, 0.1);
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          color: white;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.2);
+          }
+        }
+
+        .validate-button {
+          background: white;
+          color: $primary-color;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+          }
+        }
+      }
+    }
+  }
+}
+
+// History section
+.history-section {
+  .history-card {
+    @include card-shadow;
+    border-radius: 16px;
+    overflow: hidden;
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 25px 30px;
+      background: $light-bg;
+      border-bottom: 1px solid $border-color;
+
+      h2 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        color: $dark-bg;
+        margin: 0;
+
+        mat-icon {
+          color: $primary-color;
+        }
+      }
+
+      .view-all-button {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+    }
+
+    .vente-accordion {
+      .vente-panel {
+        margin: 0;
+        border-bottom: 1px solid $border-color;
+        border-radius: 0;
+        box-shadow: none;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .panel-header {
+          padding: 20px 24px;
+
+          .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            mat-icon {
+              color: $primary-color;
+            }
+
+            .vente-info {
+              display: flex;
+              flex-direction: column;
+
+              .vente-code {
+                font-weight: 600;
+                color: $dark-bg;
+              }
+
+              .vente-date {
+                font-size: 13px;
+                color: $text-light;
+                margin-top: 2px;
+              }
+            }
+          }
+
+          .panel-actions {
+            .panel-action-button {
+              margin-left: 8px;
+              transition: transform 0.2s;
+
+              &:hover {
+                transform: scale(1.1);
+              }
+            }
+          }
+        }
+
+        .panel-content {
+          padding: 20px;
+          background: $light-bg;
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .vente-container {
+    padding: 16px;
+  }
+
+  .header-section {
+    .header-content {
+      padding: 20px;
+
+      .title-section {
+        .page-title {
+          font-size: 24px;
+        }
+      }
+    }
+  }
+
+  .form-section, .table-section, .history-section {
+    .form-card, .table-card, .history-card {
+      .card-header, .vente-form, .table-container, .panel-content {
+        padding: 20px;
+      }
+    }
+  }
+
+  .summary-section {
+    .summary-card {
+      .summary-content {
+        padding: 20px;
+
+        .total-info {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 20px;
+
+          .total-value {
+            text-align: left;
+          }
+        }
+
+        .summary-actions {
+          flex-direction: column;
+
+          .cancel-button, .validate-button {
+            width: 100%;
+            justify-content: center;
+          }
+        }
+      }
+    }
+  }
+
+  .form-grid {
+    gap: 15px !important;
+  }
+}
+
+// Animation pour les nouveaux éléments
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-card, .table-card, .summary-card, .history-card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+// Scrollbar personnalisée
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $light-bg;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $primary-color;
+  border-radius: 4px;
+
+  &:hover {
+    background: $primary-dark;
+  }
 }
 
 
-.btnRond{
-  border-radius: 50%;
-  height: 60px;
+.empty-state {
+  text-align: center;
+  padding: 60px 30px;
+
+  .empty-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #ccc;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    color: #666;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  p {
+    color: #999;
+    margin: 0;
+  }
 }
 
-.btn{
-  background: teal;
+.vente-info {
+  display: flex;
+  flex-direction: column;
+
+  .vente-total {
+    font-size: 12px;
+    color: #008080;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+}
+
+// Assurez-vous que les champs sont accessibles
+.form-field {
+  ::ng-deep .mat-select-value {
+    color: #333 !important;
+  }
+
+  ::ng-deep .mat-select-arrow {
+    color: #008080 !important;
+  }
+}
+
+// Pour les petits écrans
+@media (max-width: 768px) {
+  .form-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+
+    .form-field {
+      width: 100% !important;
+    }
+
+    .add-button-container {
+      align-self: center !important;
+      margin-top: 10px;
+    }
+  }
 }

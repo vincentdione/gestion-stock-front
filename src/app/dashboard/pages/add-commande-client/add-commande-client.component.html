@@ -1,143 +1,342 @@
-
-<mat-card class="top">
-  <b> <span>Nouvelle commande {{origin}}</span> </b>
-</mat-card>
-<hr>
-
-<mat-card>
-  <div fxFlex fxLayout="column">
-
-   <form [formGroup]="comClientForm">
-    <div fxLayout="row wrap">
-
-        <!-- <mat-form-field appearance="fill"  fxFlex >
-          <mat-label>Code</mat-label>
-          <input matInput formControlName="code" required>
-          <mat-error *ngIf="comClientForm.controls.code.touched && comClientForm.controls.code.invalid">
-            <span *ngIf="comClientForm.controls.code.errors.required" >This field is mandatory</span>
-          </mat-error>
-        </mat-form-field> -->
-
-        <mat-form-field appearance="fill"  fxFlex *ngIf="origin === 'client'" >
-        <mat-label>client</mat-label>
-        <mat-select formControlName="clientDto"  [(ngModel)]="selectedClient">
-          <mat-option *ngFor="let c of dataClients" [value]="c"> {{c.prenom}} - {{c.nom}}  </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill"  fxFlex *ngIf="origin === 'fournisseur'" >
-        <mat-label>Fournisseur</mat-label>
-        <mat-select formControlName="clientDto"  [(ngModel)]="selectedFournisseur">
-          <mat-option *ngFor="let c of dataClients" [value]="c"> {{c.prenom}} - {{c.nom}}  </mat-option>
-        </mat-select>
-      </mat-form-field>
-
+<div class="modern-commande-container">
+  <!-- En-tête -->
+  <div class="commande-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="title-icon">add_shopping_cart</mat-icon>
+        <h1 class="page-title">Nouvelle commande {{origin}}</h1>
+        <p class="page-subtitle">Remplissez les informations pour créer une nouvelle commande</p>
+      </div>
     </div>
-   </form>
-
   </div>
-</mat-card>
-<hr>
-<mat-card>
-  <div fxFlex fxLayout="column">
 
-   <form [formGroup]="comClientForm">
-    <div fxLayout="row wrap" formGroupName="ligneCommandeClients"  >
-      <mat-form-field appearance="fill" fxFlex>
-        <mat-label>Article</mat-label>
-        <mat-select formControlName="article" (selectionChange)="onChange($event.value)">
-          <mat-option *ngFor="let c of dataConditions" [value]="c"> {{c.article.codeArticle}} </mat-option>
-        </mat-select>
-        <!-- Rest of your code... -->
-      </mat-form-field>
+  <!-- Section Client/Fournisseur -->
+  <mat-card class="commande-card">
+    <div class="card-header">
+      <mat-icon>person</mat-icon>
+      <h3>{{origin === 'client' ? 'Sélection du client' : 'Sélection du fournisseur'}}</h3>
+    </div>
 
-      <mat-form-field appearance="fill" fxFlex>
-        <mat-label>Unite</mat-label>
-        <mat-select formControlName="unite" (selectionChange)="onUniteSelected($event.value)">
-          <mat-option *ngFor="let c of dataUnites" [value]="c"> {{c.nom}} </mat-option>
-        </mat-select>
-        <!-- Rest of your code... -->
-      </mat-form-field>
+    <div class="card-content">
+      <form [formGroup]="comClientForm">
+        <div class="form-grid">
+          <!-- Client -->
+          <mat-form-field appearance="outline" *ngIf="origin === 'client'">
+            <mat-label>Client</mat-label>
+            <mat-select formControlName="clientDto" [(ngModel)]="selectedClient">
+              <!-- Template pour afficher la valeur sélectionnée -->
+              <mat-select-trigger>
+                <div *ngIf="comClientForm.get('clientDto')?.value" class="selected-value">
+                  <mat-icon class="trigger-icon">person_outline</mat-icon>
+                  <span class="trigger-text">
+                    {{comClientForm.get('clientDto')?.value?.prenom}} {{comClientForm.get('clientDto')?.value?.nom}}
+                  </span>
+                </div>
+              </mat-select-trigger>
 
-        <mat-form-field appearance="fill"  fxFlex >
-          <mat-label>Quantité</mat-label>
-          <input matInput formControlName="quantite" required>
-          <mat-error *ngIf="comClientForm.controls.ligneCommandeClients.controls.quantite.touched && comClientForm.controls.ligneCommandeClients.controls.quantite.invalid">
-            <span *ngIf="comClientForm.controls.ligneCommandeClients.controls.quantite.errors.required" >This field is mandatory</span>
-          </mat-error>
-        </mat-form-field>
+              <mat-option *ngFor="let c of dataClients" [value]="c">
+                <div class="option-content">
+                  <mat-icon>person_outline</mat-icon>
+                  <span>{{c.prenom}} {{c.nom}}</span>
+                  <span class="option-email">{{c.email}}</span>
+                </div>
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="comClientForm.controls.clientDto.touched && comClientForm.controls.clientDto.invalid">
+              Ce champ est obligatoire
+            </mat-error>
+          </mat-form-field>
 
-        <mat-form-field appearance="fill"  fxFlex >
-          <mat-label>Prix Unitaire</mat-label>
-          <input matInput formControlName="prixUnitaire">
-          <mat-error *ngIf="comClientForm.controls.ligneCommandeClients.controls.prixUnitaire.touched && comClientForm.controls.ligneCommandeClients.controls.prixUnitaire.invalid">
-            <span *ngIf="comClientForm.controls.ligneCommandeClients.controls.prixUnitaire.errors.required" >This field is mandatory</span>
-          </mat-error>
-        </mat-form-field>
+          <!-- Fournisseur -->
+          <mat-form-field appearance="outline" *ngIf="origin === 'fournisseur'">
+            <mat-label>Fournisseur</mat-label>
+            <mat-select formControlName="clientDto" [(ngModel)]="selectedFournisseur">
+              <!-- Template pour afficher la valeur sélectionnée -->
+              <mat-select-trigger>
+                <div *ngIf="comClientForm.get('clientDto')?.value" class="selected-value">
+                  <mat-icon class="trigger-icon">business</mat-icon>
+                  <span class="trigger-text">
+                    {{comClientForm.get('clientDto')?.value?.prenom}} {{comClientForm.get('clientDto')?.value?.nom}}
+                  </span>
+                </div>
+              </mat-select-trigger>
 
-          <button mat-raised-button color="primary" class="btnRond" (click)="ajouterLigneCommande()"  mat-dialog-close>
-            <div>
-              <mat-icon class="mat-icon-lg" style="font-size: 54px;display: flex;justify-content: center;align-items: center;" >add</mat-icon>
+              <mat-option *ngFor="let c of dataClients" [value]="c">
+                <div class="option-content">
+                  <mat-icon>business</mat-icon>
+                  <span>{{c.prenom}} {{c.nom}}</span>
+                  <span class="option-email">{{c.email}}</span>
+                </div>
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="comClientForm.controls.clientDto.touched && comClientForm.controls.clientDto.invalid">
+              Ce champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </form>
+    </div>
+  </mat-card>
+
+  <!-- Section Lignes de commande -->
+  <mat-card class="commande-card">
+    <div class="card-header">
+      <mat-icon>list_alt</mat-icon>
+      <h3>Articles de la commande</h3>
+    </div>
+
+    <div class="card-content">
+      <form [formGroup]="comClientForm">
+        <div class="form-grid" formGroupName="ligneCommandeClients">
+          <!-- Article -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Article</mat-label>
+            <mat-select formControlName="article" (selectionChange)="onChange($event.value)">
+              <!-- Template pour afficher la valeur sélectionnée -->
+              <mat-select-trigger>
+                <div *ngIf="comClientForm.get('ligneCommandeClients.article')?.value" class="selected-value">
+                  <mat-icon class="trigger-icon">inventory_2</mat-icon>
+                  <span class="trigger-text">
+                    {{comClientForm.get('ligneCommandeClients.article')?.value?.article?.codeArticle}}
+                  </span>
+                </div>
+              </mat-select-trigger>
+
+              <mat-option *ngFor="let c of dataConditions" [value]="c">
+                <div class="option-content">
+                  <mat-icon>inventory_2</mat-icon>
+                  <div class="option-text">
+                    <span class="option-main">{{c.article.codeArticle}}</span>
+                    <span class="option-secondary">{{c.article.designation}}</span>
+                  </div>
+                </div>
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="comClientForm.controls.ligneCommandeClients.controls.article.touched &&
+                             comClientForm.controls.ligneCommandeClients.controls.article.invalid">
+              Ce champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Unité -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Unité</mat-label>
+            <mat-select formControlName="unite" (selectionChange)="onUniteSelected($event.value)">
+              <!-- Template pour afficher la valeur sélectionnée -->
+              <mat-select-trigger>
+                <div *ngIf="comClientForm.get('ligneCommandeClients.unite')?.value" class="selected-value">
+                  <mat-icon class="trigger-icon">straighten</mat-icon>
+                  <span class="trigger-text">
+                    {{comClientForm.get('ligneCommandeClients.unite')?.value?.nom}}
+                  </span>
+                </div>
+              </mat-select-trigger>
+
+              <mat-option *ngFor="let c of dataUnites" [value]="c">
+                <div class="option-content">
+                  <mat-icon>straighten</mat-icon>
+                  <span>{{c.nom}}</span>
+                </div>
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="comClientForm.controls.ligneCommandeClients.controls.unite.touched &&
+                             comClientForm.controls.ligneCommandeClients.controls.unite.invalid">
+              Ce champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Quantité -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Quantité</mat-label>
+            <input matInput type="number" formControlName="quantite" min="1" required>
+            <mat-icon matPrefix>numbers</mat-icon>
+            <mat-error *ngIf="comClientForm.controls.ligneCommandeClients.controls.quantite.touched &&
+                             comClientForm.controls.ligneCommandeClients.controls.quantite.invalid">
+              Ce champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Prix Unitaire -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Prix Unitaire</mat-label>
+            <input matInput type="number" formControlName="prixUnitaire" readonly>
+            <mat-icon matPrefix>attach_money</mat-icon>
+            <span matSuffix>€</span>
+          </mat-form-field>
+
+          <!-- Bouton Ajouter -->
+          <div class="add-button-container">
+            <button mat-fab color="primary" class="add-button" (click)="ajouterLigneCommande()"
+                    [disabled]="!comClientForm.get('ligneCommandeClients')?.valid">
+              <mat-icon>add</mat-icon>
+            </button>
+            <span class="add-button-label">Ajouter à la commande</span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </mat-card>
+
+  <!-- Tableau des lignes ajoutées -->
+  <mat-card class="commande-card" *ngIf="lignesCommande.length > 0">
+    <div class="card-header">
+      <mat-icon>receipt_long</mat-icon>
+      <h3>Lignes ajoutées ({{lignesCommande.length}})</h3>
+    </div>
+
+    <div class="card-content">
+      <div class="modern-table-container">
+        <table mat-table [dataSource]="dataSource" class="modern-table">
+          <!-- Code Article Column -->
+          <ng-container matColumnDef="code">
+            <th mat-header-cell *matHeaderCellDef class="table-header">
+              <div class="header-content">
+                <mat-icon>qr_code</mat-icon>
+                <span>Code Article</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element" class="table-cell">
+              <div class="cell-content">
+                <mat-icon class="cell-icon">inventory</mat-icon>
+                <span class="cell-text">{{element.article?.codeArticle}}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Unité Column -->
+          <ng-container matColumnDef="unite">
+            <th mat-header-cell *matHeaderCellDef class="table-header">
+              <div class="header-content">
+                <mat-icon>straighten</mat-icon>
+                <span>Unité</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element" class="table-cell">
+              <div class="cell-content">
+                <span class="cell-badge">{{element.unite}}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Quantité Column -->
+          <ng-container matColumnDef="quantite">
+            <th mat-header-cell *matHeaderCellDef class="table-header">
+              <div class="header-content">
+                <mat-icon>scale</mat-icon>
+                <span>Quantité</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element" class="table-cell">
+              <div class="cell-content">
+                <span class="cell-value">{{element.quantite}}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Prix Unitaire Column -->
+          <ng-container matColumnDef="prixUnitaire">
+            <th mat-header-cell *matHeaderCellDef class="table-header">
+              <div class="header-content">
+                <mat-icon>euro</mat-icon>
+                <span>Prix Unitaire</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element" class="table-cell">
+              <div class="cell-content">
+                <span class="cell-price">{{element.prixUnitaire | number:'1.2-2'}} €</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Total Ligne Column -->
+          <ng-container matColumnDef="totalLigne">
+            <th mat-header-cell *matHeaderCellDef class="table-header">
+              <div class="header-content">
+                <mat-icon>calculate</mat-icon>
+                <span>Total</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element" class="table-cell">
+              <div class="cell-content">
+                <span class="cell-total">{{(element.prixUnitaire * element.quantite) | number:'1.2-2'}} €</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Action Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef class="table-header">
+              <div class="header-content">
+                <mat-icon>settings</mat-icon>
+                <span>Actions</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element" class="table-cell actions-cell">
+              <button mat-icon-button color="warn" matTooltip="Supprimer"
+                      (click)="handleDelete(element)">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayColumnsWithTotal" class="table-header-row"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayColumnsWithTotal;" class="table-row"></tr>
+        </table>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Résumé et Validation -->
+  <mat-card class="commande-card resume-card" *ngIf="lignesCommande.length > 0">
+    <div class="card-content">
+      <div class="resume-content">
+        <div class="resume-details">
+          <div class="resume-item">
+            <mat-icon class="resume-icon">receipt</mat-icon>
+            <div class="resume-text">
+              <span class="resume-label">Nombre d'articles</span>
+              <span class="resume-value">{{lignesCommande.length}}</span>
             </div>
+          </div>
+
+          <div class="resume-item">
+            <mat-icon class="resume-icon">shopping_cart</mat-icon>
+            <div class="resume-text">
+              <span class="resume-label">Quantité totale</span>
+              <span class="resume-value">{{getTotalQuantity()}}</span>
+            </div>
+          </div>
+
+          <div class="resume-item total-item">
+            <mat-icon class="resume-icon">payments</mat-icon>
+            <div class="resume-text">
+              <span class="resume-label">Montant total</span>
+              <span class="resume-total">{{totalCommande | number:'1.2-2'}} €</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="validation-actions">
+          <button mat-stroked-button color="primary" routerLink="/workspace/dashboard/{{origin === 'client' ? 'commandeClients' : 'commandeFournisseurs'}}">
+            <mat-icon>arrow_back</mat-icon>
+            Annuler
           </button>
-
-
+          <button mat-flat-button color="primary" class="validate-button"
+                  (click)="onAdd()" [disabled]="lignesCommande.length === 0 || !comClientForm.controls.clientDto.value">
+            <mat-icon>check_circle</mat-icon>
+            Valider la commande
+          </button>
+        </div>
+      </div>
     </div>
-   </form>
-   <div class="responsive_table">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-        <ng-container matColumnDef="code">
-         <th mat-header-cell *matHeaderCellDef>Code</th>
-         <td mat-cell *matCellDef="let element">{{element.article?.codeArticle}}</td>
-        </ng-container>
-        <ng-container matColumnDef="unite">
-         <th mat-header-cell *matHeaderCellDef>Unité</th>
-         <td mat-cell *matCellDef="let element">{{element.unite}}</td>
-        </ng-container>
-        <ng-container matColumnDef="quantite">
-         <th mat-header-cell *matHeaderCellDef>Quantite</th>
-         <td mat-cell *matCellDef="let element">{{element.quantite}}</td>
-        </ng-container>
-        <ng-container matColumnDef="prixUnitaire">
-          <th mat-header-cell *matHeaderCellDef>Prix Unitaire</th>
-          <td mat-cell *matCellDef="let element">{{element.prixUnitaire}}</td>
-         </ng-container>
+  </mat-card>
 
-        <ng-container matColumnDef="action">
-         <th mat-header-cell *matHeaderCellDef>Action</th>
-         <td mat-cell *matCellDef="let element" class="action-link" >
-
-           <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
-            <mat-icon>delete</mat-icon>
-           </button>
-         </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
-        <tr mat-row *matRowDef="let row;columns:displayColumns"></tr>
-    </table>
-    <mat-paginator [pageSizeOptions]="[5, 10, 20]"
-                  showFirstLastButtons
-                  aria-label="commandes">
-   </mat-paginator>
- </div>
- <hr>
- <mat-card fxFlex fxLayout="column">
-          <mat-card-title  >Total : {{totalCommande}}</mat-card-title>
-  <button mat-raised-button class="btn"  color="primary" (click)="onAdd()" mat-dialog-close>Enregistrer</button>
-</mat-card>
-  </div>
-
-
-
-</mat-card>
-
-<hr>
-
-
-      <!-- <mat-form-field appearance="fill"  fxFlex >
-        <mat-label>Etat</mat-label>
-        <mat-select formControlName="etat" (selectionChange)="onChange($event.value)">
-          <mat-option  [value]="false"> EN_COURS  </mat-option>
-          <mat-option  [value]="true"> TERMINE  </mat-option>
-        </mat-select>
-      </mat-form-field> -->
+  <!-- État vide -->
+  <mat-card class="commande-card empty-state" *ngIf="lignesCommande.length === 0">
+    <div class="card-content">
+      <mat-icon class="empty-icon">add_shopping_cart</mat-icon>
+      <h4>Commande vide</h4>
+      <p>Commencez par ajouter des articles à votre commande</p>
+    </div>
+  </mat-card>
+</div>

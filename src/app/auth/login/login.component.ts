@@ -19,7 +19,7 @@ export class LoginComponent {
   responseMessage : any;
 
   authenticationRequest : AuthenticationRequest = {}
-
+  hidePassword: boolean = true;
 
   constructor(private formBuilder : FormBuilder,private router: Router,
     private userService : UserService,

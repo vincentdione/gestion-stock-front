@@ -24,40 +24,70 @@ export class ManageClientsComponent {
   dataClients : any;
   filterForm:any = FormGroup;
 
+  uniqueCities: number = 0;
+uniqueCountries: number = 0;
+hasFilters: boolean = false;
+
   constructor(private clientService: ClientsService,
     private ngxService:NgxUiLoaderService, private formBuilder: FormBuilder,
     private snackbarService: SnackbarService,private router:Router, private dialog : MatDialog) { }
 
 
 
-  ngOnInit(): void {
-    this.ngxService.start()
-    this.tableData()
+    ngOnInit(): void {
+      this.ngxService.start()
+      this.tableData()
 
-    this.filterForm = this.formBuilder.group({
-      nom: [''], // Définissez les valeurs par défaut si nécessaire
-      email: [''],
-      numTel: ['']
-    });
-  }
+      this.filterForm = this.formBuilder.group({
+        nom: [''],
+        email: [''],
+        numTel: ['']
+      });
 
-  tableData(){
-      this.clientService.searchClients().subscribe((res:any) => {
-         this.ngxService.stop()
-         this.dataSource = new MatTableDataSource(res)
-         this.dataClients = res
-      },(error:any)=>{
-        this.ngxService.stop()
-        if(error.error?.message){
-          this.responseMessage = error.error?.message
-      }
-      else {
-        this.responseMessage = GlobalConstants.genericErrorMessage
-      }
-      this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
-      })
+      // Surveiller les changements de formulaire
+      this.filterForm.valueChanges.subscribe(() => {
+        this.hasFilters = Object.values(this.filterForm.value).some(val => val !== '');
+      });
     }
 
+    // Méthode pour calculer les statistiques
+calculateStats(clients: any[]): void {
+  const cities = new Set();
+  const countries = new Set();
+
+  clients.forEach(client => {
+    if (client.adresse?.ville) cities.add(client.adresse.ville);
+    if (client.adresse?.pays) countries.add(client.adresse.pays);
+  });
+
+  this.uniqueCities = cities.size;
+  this.uniqueCountries = countries.size;
+}
+
+// Modifier tableData pour inclure les stats
+tableData(){
+  this.clientService.searchClients().subscribe((res:any) => {
+    this.ngxService.stop()
+    this.dataSource = new MatTableDataSource(res)
+    this.dataClients = res
+    this.calculateStats(res);
+  },(error:any)=>{
+    this.ngxService.stop()
+    if(error.error?.message){
+      this.responseMessage = error.error?.message
+    }
+    else {
+      this.responseMessage = GlobalConstants.genericErrorMessage
+    }
+    this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
+  })
+}
+
+// Méthode pour réinitialiser les filtres
+resetFilters(): void {
+  this.filterForm.reset();
+  this.tableData();
+}
     applyFilter(event:Event){
        const filterValue = (event.target as HTMLInputElement).value;
        this.dataSource.filter = filterValue.trim().toLowerCase()

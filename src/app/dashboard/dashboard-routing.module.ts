@@ -22,6 +22,10 @@ import { SingleVenteComponent } from './manage-ventes/single-vente/single-vente.
 import { SingleCommandeClientComponent } from './pages/single-commande-client/single-commande-client.component';
 import { ManageLivraisonsComponent } from './manage-livraisons/manage-livraisons.component';
 import { SearchLivraisonsComponent } from './manage-livraisons/search-livraisons/search-livraisons.component';
+import { ManageEntreprisesComponent } from './manage-entreprises/manage-entreprises.component';
+import { AuthGardService } from '../services/guard/auth-gard.service';
+import { FactureComponent } from './facture/facture.component';
+
 
 const routes: Routes = [
   {
@@ -30,63 +34,89 @@ const routes: Routes = [
     children: [
       { path: '', component: DefaultDashboardComponent },
       { path: 'dashboard', component: DefaultDashboardComponent },
-      { path: 'users', component: ManageUsersComponent },
-      { path: 'article', component: ManageArticlesComponent },
-      { path: 'category', component: ManageCategoryComponent },
-      { path: 'unite', component: ManageUniteComponent },
-      { path: 'condition', component: ManageConditionComponent },
-      { path: 'modePayement', component: ManageModePayementComponent },
-      { path: 'addCategory', component: AddCategoryComponent },
-      { path: 'sousCategory', component: ManageSousCategoryComponent },
-      { path: 'clients', component: ManageClientsComponent },
-      { path: 'fournisseurs', component: ManageFournisseursComponent },
-      { path: 'commandeClients',
-          component: ManageCommandeClientsComponent,
-          data: {
-            origin: 'client'
-          }
-    },
-    { path: 'commandeClients/:id',
-     component: SingleCommandeClientComponent,
-     data: {
-       origin: 'client'
-     }
-    },
-      { path: 'addcommandeClient',
-      component: AddCommandeClientComponent,
-      data: {
-        origin: 'client'
-      }
-     },
-     { path: 'addcommandeFournisseur',
-      component: AddCommandeClientComponent,
-      data: {
-        origin: 'fournisseur'
-      }
-     },
-     {
-      path: 'commandeFournisseurs',
-      component: ManageCommandeClientsComponent,
-      data: {
-        origin: 'fournisseur'
-      }
-    },
-     { path: 'commandeFournisseurs/:id',
-     component: SingleCommandeClientComponent,
-     data: {
-       origin: 'fournisseur'
-     }
-    },
 
-      { path: 'ventes', component: ManageVentesComponent },
-      { path: 'ventes/:id', component: SingleVenteComponent },
-      { path: 'mouvements', component: ManageMvtStkComponent },
-      { path: 'search-stock', component: SearchStockComponent },
-      { path: 'livraisons', component: ManageLivraisonsComponent },
-      { path: 'search-livraisons', component: SearchLivraisonsComponent },
-    ],
-  },
+      { path: 'users', component: ManageUsersComponent, canActivate: [AuthGardService], data: { expectedRole: 'ROLE_ADMIN' } },
+      { path: 'entreprises', component: ManageEntreprisesComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_SUPER_ADMIN','ROLE_ADMIN'] } },
+      { path: 'facture', component: FactureComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
+
+      { path: 'article', component: ManageArticlesComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
+      { path: 'category', component: ManageCategoryComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
+      { path: 'unite', component: ManageUniteComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
+      { path: 'condition', component: ManageConditionComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
+      { path: 'modePayement', component: ManageModePayementComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
+      { path: 'addCategory', component: AddCategoryComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
+      { path: 'sousCategory', component: ManageSousCategoryComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
+
+      { path: 'clients', component: ManageClientsComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
+      { path: 'fournisseurs', component: ManageFournisseursComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
+
+      {
+        path: 'commandeClients',
+        component: ManageCommandeClientsComponent,
+        canActivate: [AuthGardService],
+        data: {
+          expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'],
+          origin: 'client'
+        }
+      },
+      {
+        path: 'commandeClients/:id',
+        component: SingleCommandeClientComponent,
+        canActivate: [AuthGardService],
+        data: {
+          expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'],
+          origin: 'client'
+        }
+      },
+      {
+        path: 'addcommandeClient',
+        component: AddCommandeClientComponent,
+        canActivate: [AuthGardService],
+        data: {
+          expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'],
+          origin: 'client'
+        }
+      },
+      {
+        path: 'addcommandeFournisseur',
+        component: AddCommandeClientComponent,
+        canActivate: [AuthGardService],
+        data: {
+          expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'],
+          origin: 'fournisseur'
+        }
+      },
+      {
+        path: 'commandeFournisseurs',
+        component: ManageCommandeClientsComponent,
+        canActivate: [AuthGardService],
+        data: {
+          expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'],
+          origin: 'fournisseur'
+        }
+      },
+      {
+        path: 'commandeFournisseurs/:id',
+        component: SingleCommandeClientComponent,
+        canActivate: [AuthGardService],
+        data: {
+          expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'],
+          origin: 'fournisseur'
+        }
+      },
+
+      { path: 'ventes', component: ManageVentesComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_LIVREUR','ROLE_ADMIN','ROLE_MANAGER']} },
+      { path: 'ventes/:id', component: SingleVenteComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_LIVREUR','ROLE_ADMIN','ROLE_MANAGER']} },
+
+      { path: 'mouvements', component: ManageMvtStkComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
+      { path: 'search-stock', component: SearchStockComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
+
+      { path: 'livraisons', component: ManageLivraisonsComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_LIVREUR','ROLE_ADMIN','ROLE_MANAGER'] } },
+      { path: 'search-livraisons', component: SearchLivraisonsComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_LIVREUR','ROLE_ADMIN','ROLE_MANAGER']} },
+    ]
+  }
 ];
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

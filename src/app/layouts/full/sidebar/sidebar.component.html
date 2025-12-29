@@ -1,13 +1,63 @@
-<mat-nav-list  appAccordion>
-  <mat-list-item appAccordionLink *ngFor="let menuitem of menuItems.getMenuItems()"  routerLinkActive="selected" #rla="routerLinkActive" group="{{menuitem.state}}" >
-     <a [ngStyle]="{'background':rla.isActive ? '#026467' : ''}" appAccordionToggle [routerLink]="['/workspace',menuitem.state]"  >
-       <mat-icon>{{menuitem.icon}}</mat-icon>
-       <span>{{menuitem.name}}</span>
-       <span fxFlex></span>
-     </a>
-  </mat-list-item>
-</mat-nav-list>
+<div class="sidebar-modern">
+  <!-- Carte profil -->
+  <div class="profile-card">
+    <div class="profile-header">
+      <div class="avatar-container">
+        <div class="avatar-circle">
+          <span class="avatar-initial">{{ getUserName() | slice:0:1 }}</span>
+        </div>
+        <div class="online-status"></div>
+      </div>
+      <div class="profile-info">
+        <h3 class="profile-name">{{ getUserName() }}</h3>
+        <div class="profile-role">
+          <span class="role-badge">{{ getUserRole() }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<p>side bar</p>
+  <!-- Navigation en cartes -->
+  <div class="nav-section">
+    <div class="nav-grid">
+      <a *ngFor="let menuitem of menuItems.getMenuItems()"
+         class="nav-card"
+         [routerLink]="['/workspace', menuitem.state]"
+         routerLinkActive="active"
+         #rla="routerLinkActive"
+         [class.active]="rla.isActive">
+        <div class="card-content">
+          <div class="card-icon" [class.active]="rla.isActive">
+            <mat-icon>{{menuitem.icon}}</mat-icon>
+          </div>
+          <span class="card-label">{{menuitem.name}}</span>
+        </div>
+        <div class="card-badge" *ngIf="rla.isActive">
+          <div class="badge-dot"></div>
+        </div>
+      </a>
+    </div>
+  </div>
 
-<!-- *ngIf="(menuitem.role === ''||menuitem.role === tokenPayload.role[0])" -->
+  <!-- Footer avec gradient -->
+  <div class="sidebar-footer">
+    <div class="footer-card">
+      <div class="time-section">
+        <div class="time-icon-circle">
+          <mat-icon>access_time</mat-icon>
+        </div>
+        <div class="time-info">
+          <div class="current-time">{{currentTime | date:'HH:mm'}}</div>
+          <div class="current-date">{{currentTime | date:'dd MMM'}}</div>
+        </div>
+      </div>
+      <button mat-mini-fab
+              color="primary"
+              class="logout-fab"
+              matTooltip="Déconnexion"
+              (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

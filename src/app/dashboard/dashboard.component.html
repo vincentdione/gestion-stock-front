@@ -1,30 +1,115 @@
+<div class="modern-dashboard">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-left">
+      <button mat-icon-button class="sidebar-toggle" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+        <mat-icon>menu</mat-icon>
+      </button>
 
-<div class="main-container">
-  <mat-toolbar color="primary" class="topbar telative">
-      <div class="navbar-header">
-          <button mat-icon-button (click)="snav.toggle()" value="sidebarclosed" style="vertical-align: bottom;">
-              <mat-icon>menu</mat-icon>
-          </button><b>
-              <span style="vertical-align: middle;">
-                  <mat-icon>storefront</mat-icon>
-              </span>
-          </b>
-          <span fxShow="false" fxShow.gt-xs>
-             Gestion de {{entrepriseNom?.toUpperCase()}}
-          </span>
+      <div class="brand-section">
+        <div class="brand-logo">
+          <mat-icon class="logo-icon">storefront</mat-icon>
+          <span class="logo-text">SN-STOCK</span>
+        </div>
+
+        <div class="company-badge" *ngIf="entrepriseNom">
+          <span class="company-label">Entreprise</span>
+          <span class="company-value">{{entrepriseNom.toUpperCase()}}</span>
+        </div>
       </div>
-      <span fxFlex></span>
-       <app-header></app-header>
-  </mat-toolbar>
-  <mat-sidenav-container class="example-sidenav-container">
-    <mat-sidenav #snav id="snav" id="snav" class="dark-sidebar pl-xs" [mode]="mobileQuery.matches ? 'side' : 'over'"
-    fixedTopGap="0" [opened]="mobileQuery.matches" [disableClose]="mobileQuery.matches" >
-      <app-sidebar></app-sidebar>
- </mat-sidenav>
-      <mat-sidenav-content class="page-wrapper">
-          <div class="page-content">
-              <router-outlet></router-outlet>
+    </div>
+
+    <div class="header-center" fxHide.lt-md>
+      <div class="quick-actions">
+        <button mat-stroked-button class="quick-action-btn" routerLink="/dashboard">
+          <mat-icon>dashboard</mat-icon>
+          <span>Tableau de Bord</span>
+        </button>
+        <button mat-stroked-button class="quick-action-btn">
+          <mat-icon>trending_up</mat-icon>
+          <span>Analytics</span>
+        </button>
+        <button mat-stroked-button class="quick-action-btn">
+          <mat-icon>notifications</mat-icon>
+          <span>Alertes</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="search-container" fxHide.lt-sm>
+        <mat-icon class="search-icon">search</mat-icon>
+        <input type="text" class="search-input" placeholder="Rechercher...">
+      </div>
+
+      <button mat-icon-button class="header-action" matTooltip="Notifications">
+        <mat-icon>notifications</mat-icon>
+        <span class="notification-badge">3</span>
+      </button>
+
+      <button mat-icon-button class="header-action" matTooltip="Aide">
+        <mat-icon>help_outline</mat-icon>
+      </button>
+
+      <!-- App Header Component -->
+      <div class="user-section">
+        <app-header></app-header>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <mat-sidenav-container class="sidenav-container">
+      <mat-sidenav #snav
+                   [mode]="mobileQuery.matches ? 'side' : 'over'"
+                   [opened]="mobileQuery.matches"
+                   [disableClose]="mobileQuery.matches"
+                   class="modern-sidenav"
+                   fixedTopGap="64">
+        <app-sidebar></app-sidebar>
+      </mat-sidenav>
+
+      <mat-sidenav-content class="main-content" [style.margin-left.px]="mobileQuery.matches && isSidebarOpen ? 280 : 0">
+        <div class="page-content-container">
+          <div class="content-area">
+            <router-outlet></router-outlet>
           </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+          <div class="footer-content">
+            <div class="footer-left">
+              <span class="copyright">© {{currentYear}} SN-STOCK. Tous droits réservés.</span>
+              <span class="version">Version 2.0</span>
+            </div>
+            <div class="footer-right">
+              <button mat-icon-button class="footer-action">
+                <mat-icon>settings</mat-icon>
+              </button>
+              <button mat-icon-button class="footer-action">
+                <mat-icon>help</mat-icon>
+              </button>
+            </div>
+          </div>
+        </footer>
       </mat-sidenav-content>
-  </mat-sidenav-container>
+    </mat-sidenav-container>
+  </main>
+
+  <!-- Mobile Quick Actions -->
+  <div class="mobile-actions" fxShow fxHide.gt-sm>
+    <div class="mobile-actions-container">
+      <button mat-fab color="primary" class="mobile-fab" (click)="toggleSidebar()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <div class="mobile-stats">
+        <div class="mobile-stat" *ngFor="let stat of quickStats.slice(0, 3)">
+          <mat-icon>{{stat.icon}}</mat-icon>
+          <span>{{stat.value}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

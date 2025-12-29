@@ -1,0 +1,37 @@
+<div class="overflow-x-auto">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead>
+      <tr class="bg-gray-50">
+        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Description
+        </th>
+        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Quantité
+        </th>
+        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+          prix Unitaire
+        </th>
+        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Montant
+        </th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <tr *ngFor="let item of items" class="hover:bg-gray-50 transition-colors">
+        <td class="px-4 py-4 text-sm text-gray-900">
+          <div class="font-medium">{{ item.description }}</div>
+          <div *ngIf="item.details" class="text-gray-500 text-xs mt-1">{{ item.details }}</div>
+        </td>
+        <td class="px-4 py-4 text-sm text-gray-900 text-right">
+          {{ item.quantity }}
+        </td>
+        <td class="px-4 py-4 text-sm text-gray-900 text-right">
+          {{ format(item.unitPrice, item.currency) }}
+        </td>
+        <td class="px-4 py-4 text-sm font-medium text-gray-900 text-right">
+          {{ format(getTotal(item), item.currency) }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,134 +1,271 @@
-
-<!-- //routerLink="/workspace/dashboard/addCategory" -->
-<mat-card>
-  <b> <span>Gestion des clients</span> </b>
-  <button mat-flat-button  color="primary" (click)="handleAdd()" >Ajouter un client</button>
-</mat-card>
-<hr>
-<form [formGroup]="filterForm">
-  <mat-card>
-    <mat-form-field class="filter-field" appearance="fill" fxFlex>
-      <mat-label>Nom ou Prénom</mat-label>
-      <input
-        type="text"
-        matInput
-        formControlName="nom"
-        [matAutocomplete]="autoNomPrenom"
-      />
-      <mat-autocomplete #autoNomPrenom="matAutocomplete">
-        <mat-option
-          *ngFor="let u of dataClients"
-          [value]="u.nom"
-        >
-          {{ u.nom }} {{ u.prenom }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-
-    <mat-form-field class="filter-field" appearance="fill" fxFlex>
-      <mat-label>Email</mat-label>
-      <input
-        type="text"
-        matInput
-        formControlName="email"
-        [matAutocomplete]="autoEmail"
-      />
-      <mat-autocomplete #autoEmail="matAutocomplete">
-        <mat-option
-          *ngFor="let u of dataClients"
-          [value]="u.email"
-        >
-          {{ u.email }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-
-    <mat-form-field class="filter-field" appearance="fill" fxFlex>
-      <mat-label>Téléphone</mat-label>
-      <input
-        type="text"
-        matInput
-        formControlName="numTel"
-      />
-    </mat-form-field>
-
-    <div class="button-container">
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="onSearch()"
-      >
-        Rechercher
-      </button>
+<div class="clients-container">
+  <!-- Header section -->
+  <div class="header-section">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="title-icon">group</mat-icon>
+        <h1 class="page-title">Gestion des Clients</h1>
+      </div>
+      <p class="page-subtitle">Gérez vos contacts clients et leurs informations</p>
     </div>
-  </mat-card>
-</form>
 
-<!-- <mat-card>
-  <mat-form-field appearance="fill" >
-    <mat-label>Filtrer</mat-label>
-    <input matInput (keyup)="applyFilter($event)" #input>
-  </mat-form-field>
-</mat-card> -->
-<hr>
+    <button mat-flat-button color="primary" class="add-client-btn" (click)="handleAdd()">
+      <mat-icon>person_add</mat-icon>
+      Ajouter un client
+    </button>
+  </div>
 
-<div class="responsive_table">
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-      <ng-container matColumnDef="nom">
-       <th mat-header-cell *matHeaderCellDef>Nom</th>
-       <td mat-cell *matCellDef="let element">{{element.nom}}</td>
-      </ng-container>
+  <!-- Filter section -->
+  <div class="filter-section">
+    <mat-card class="filter-card">
+      <div class="card-header">
+        <h3><mat-icon>search</mat-icon> Recherche avancée</h3>
+        <button mat-button color="primary" (click)="resetFilters()">
+          <mat-icon>refresh</mat-icon>
+          Réinitialiser
+        </button>
+      </div>
 
-      <ng-container matColumnDef="prenom">
-        <th mat-header-cell *matHeaderCellDef>Prenom</th>
-        <td mat-cell *matCellDef="let element">{{element.prenom}}</td>
-       </ng-container>
+      <form [formGroup]="filterForm" class="filter-form">
+        <div class="filter-grid">
+          <!-- Nom ou Prénom -->
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Nom ou Prénom</mat-label>
+            <input type="text" matInput formControlName="nom"
+                   [matAutocomplete]="autoNomPrenom" placeholder="Rechercher un client...">
+            <mat-icon matPrefix>person_search</mat-icon>
+            <mat-autocomplete #autoNomPrenom="matAutocomplete">
+              <mat-option *ngFor="let client of dataClients" [value]="client.nom">
+                <div class="client-option">
+                  <mat-icon>person</mat-icon>
+                  <span>{{ client.nom }} {{ client.prenom }}</span>
+                  <span class="client-email">{{ client.email }}</span>
+                </div>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
 
-       <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>Email</th>
-        <td mat-cell *matCellDef="let element">{{element.email}}</td>
-       </ng-container>
+          <!-- Email -->
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Email</mat-label>
+            <input type="text" matInput formControlName="email"
+                   [matAutocomplete]="autoEmail">
+            <mat-icon matPrefix>email</mat-icon>
+            <mat-autocomplete #autoEmail="matAutocomplete">
+              <mat-option *ngFor="let client of dataClients" [value]="client.email">
+                <div class="client-option">
+                  <mat-icon>mail</mat-icon>
+                  <span>{{ client.email }}</span>
+                </div>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
 
-       <ng-container matColumnDef="telephone">
-         <th mat-header-cell *matHeaderCellDef>Telephone</th>
-         <td mat-cell *matCellDef="let element">{{element.numTel}}</td>
-        </ng-container>
+          <!-- Téléphone -->
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Téléphone</mat-label>
+            <input type="text" matInput formControlName="numTel">
+            <mat-icon matPrefix>phone</mat-icon>
+          </mat-form-field>
 
-        <ng-container matColumnDef="adresse">
-          <th mat-header-cell *matHeaderCellDef>Adresse</th>
-          <td mat-cell *matCellDef="let element">{{element.adresse?.adresse1}}</td>
-         </ng-container>
+          <!-- Bouton Recherche -->
+          <div class="search-btn-container">
+            <button mat-raised-button color="primary" class="search-btn" (click)="onSearch()">
+              <mat-icon>search</mat-icon>
+              Rechercher
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-card>
+  </div>
+  <!-- Stats section -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <mat-card class="stat-card">
+        <div class="stat-content">
+          <mat-icon class="stat-icon">people</mat-icon>
+          <div class="stat-info">
+            <span class="stat-value">{{dataSource?.data?.length || 0}}</span>
+            <span class="stat-label">Clients total</span>
+          </div>
+        </div>
+      </mat-card>
 
-         <ng-container matColumnDef="ville">
-           <th mat-header-cell *matHeaderCellDef>Ville</th>
-           <td mat-cell *matCellDef="let element">{{element.adresse?.ville}}</td>
+      <mat-card class="stat-card">
+        <div class="stat-content">
+          <mat-icon class="stat-icon">location_on</mat-icon>
+          <div class="stat-info">
+            <span class="stat-value">{{uniqueCities}}</span>
+            <span class="stat-label">Villes</span>
+          </div>
+        </div>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <div class="stat-content">
+          <mat-icon class="stat-icon">flag</mat-icon>
+          <div class="stat-info">
+            <span class="stat-value">{{uniqueCountries}}</span>
+            <span class="stat-label">Pays</span>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Table section -->
+  <div class="table-section">
+    <mat-card class="table-card">
+      <div class="card-header">
+        <div class="header-content">
+          <h2><mat-icon>list_alt</mat-icon> Liste des clients</h2>
+          <span class="badge">{{dataSource?.data?.length || 0}} client(s)</span>
+        </div>
+
+        <div class="table-actions">
+          <button mat-icon-button color="primary" matTooltip="Exporter">
+            <mat-icon>download</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Imprimer">
+            <mat-icon>print</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="table-container" *ngIf="dataSource?.data?.length > 0; else noClients">
+        <table mat-table [dataSource]="dataSource" class="clients-table">
+          <!-- Colonne Nom -->
+          <ng-container matColumnDef="nom">
+            <th mat-header-cell *matHeaderCellDef class="table-header">
+              <div class="header-content">
+                <mat-icon>person</mat-icon>
+                <span>Client</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element" class="table-cell client-cell">
+              <div class="client-info">
+                <div class="client-avatar">
+                  <mat-icon>account_circle</mat-icon>
+                </div>
+                <div class="client-details">
+                  <span class="client-name">{{element.nom}} {{element.prenom}}</span>
+                  <span class="client-email">{{element.email}}</span>
+                </div>
+              </div>
+            </td>
           </ng-container>
 
-          <ng-container matColumnDef="codepostal">
-            <th mat-header-cell *matHeaderCellDef>C.Postal</th>
-            <td mat-cell *matCellDef="let element">{{element.adresse?.codePostal}}</td>
-           </ng-container>
+          <!-- Colonne Contact -->
+          <ng-container matColumnDef="contact">
+            <th mat-header-cell *matHeaderCellDef class="table-header">
+              <div class="header-content">
+                <mat-icon>contact_phone</mat-icon>
+                <span>Contact</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element" class="table-cell">
+              <div class="contact-info">
+                <div class="phone-info">
+                  <mat-icon class="contact-icon">phone</mat-icon>
+                  <span>{{element.numTel || 'Non renseigné'}}</span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
 
+          <!-- Colonne Adresse -->
+          <ng-container matColumnDef="adresse">
+            <th mat-header-cell *matHeaderCellDef class="table-header">
+              <div class="header-content">
+                <mat-icon>location_on</mat-icon>
+                <span>Adresse</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element" class="table-cell">
+              <div class="address-info">
+                <div *ngIf="element.adresse?.adresse1" class="address-line">
+                  {{element.adresse?.adresse1}}
+                </div>
+                <div class="address-details">
+                  <span *ngIf="element.adresse?.ville" class="city-badge">{{element.adresse?.ville}}</span>
+                  <span *ngIf="element.adresse?.codePostal" class="postal-code">{{element.adresse?.codePostal}}</span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Pays -->
           <ng-container matColumnDef="pays">
-            <th mat-header-cell *matHeaderCellDef>Pays</th>
-            <td mat-cell *matCellDef="let element">{{element.adresse?.pays}}</td>
-           </ng-container>
+            <th mat-header-cell *matHeaderCellDef class="table-header">
+              <div class="header-content">
+                <mat-icon>flag</mat-icon>
+                <span>Pays</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element" class="table-cell">
+              <span class="country-badge">{{element.adresse?.pays || 'Non spécifié'}}</span>
+            </td>
+          </ng-container>
 
+          <!-- Colonne Actions -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="table-header actions-header">
+              <div class="header-content">
+                <mat-icon>settings</mat-icon>
+                <span>Actions</span>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let element" class="table-cell actions-cell">
+              <div class="actions-container">
+                <button mat-icon-button color="primary"
+                        matTooltip="Modifier"
+                        (click)="handleEdit(element)"
+                        class="action-button">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn"
+                        matTooltip="Supprimer"
+                        (click)="handleDelete(element)"
+                        class="action-button">
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <button mat-icon-button color="accent"
+                        matTooltip="Voir détails"
+                        class="action-button">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
 
-      <ng-container matColumnDef="action">
-       <th mat-header-cell *matHeaderCellDef>Action</th>
-       <td mat-cell *matCellDef="let element" class="action-link" >
-         <button mat-icon-button color="primary" matTooltip="Modifier" (click)="handleEdit(element)" >
-           <mat-icon>edit</mat-icon>
-         </button>
-         <button mat-icon-button color="accent" matTooltip="Supprimer" (click)="handleDelete(element)" >
-           <mat-icon>delete</mat-icon>
-         </button>
-<!--          <mat-slide-toggle (change)="onChange($event.checked,element.id)" matTooltip="Activer ou desactiver" [checked]="element.status" ></mat-slide-toggle>
- -->       </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayColumns;sticky:true"></tr>
-      <tr mat-row *matRowDef="let row;columns:displayColumns"></tr>
-  </table>
+          <tr mat-header-row *matHeaderRowDef="['nom', 'contact', 'adresse', 'pays', 'actions']"
+              class="table-header-row"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['nom', 'contact', 'adresse', 'pays', 'actions']"
+              class="table-row"></tr>
+        </table>
+
+        <!-- Pagination -->
+        <div class="pagination-container">
+          <mat-paginator [pageSizeOptions]="[10, 25, 50]"
+                        showFirstLastButtons
+                        class="custom-paginator">
+          </mat-paginator>
+        </div>
+      </div>
+
+      <ng-template #noClients>
+        <div class="empty-state">
+          <mat-icon class="empty-icon">people</mat-icon>
+          <h3>Aucun client trouvé</h3>
+          <p *ngIf="hasFilters">Aucun client ne correspond à vos critères de recherche</p>
+          <p *ngIf="!hasFilters">Commencez par ajouter votre premier client</p>
+          <button mat-flat-button color="primary" class="add-btn" (click)="handleAdd()">
+            <mat-icon>person_add</mat-icon>
+            Ajouter un client
+          </button>
+        </div>
+      </ng-template>
+    </mat-card>
+  </div>
 </div>
-

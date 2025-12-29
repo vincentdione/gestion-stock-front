@@ -1,0 +1,21 @@
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+  <div class="flex items-center">
+    <!-- <ng-container *ngIf="company?.logo; else noLogo">
+      <img [src]="company.logo" [alt]="company.name + ' logo'" class="h-16 w-auto" />
+    </ng-container> -->
+
+    <ng-template #noLogo>
+      <div class="h-16 w-16 bg-blue-600 text-white rounded flex items-center justify-center">
+        <!-- Icône d'exemple si tu n'utilises pas lucide-react -->
+        <mat-icon>description</mat-icon>
+      </div>
+    </ng-template>
+
+    <div class="ml-4">
+      <h1 class="text-xl font-bold text-gray-900">{{ entreprise?.nom }}</h1>
+      <p class="text-sm text-gray-600">{{ entreprise?.adresse }}</p>
+      <p class="text-sm text-gray-600">{{ entreprise?.numTel }}</p>
+      <p class="text-sm text-gray-600">{{ entreprise?.email }}</p>
+    </div>
+  </div>
+</div>

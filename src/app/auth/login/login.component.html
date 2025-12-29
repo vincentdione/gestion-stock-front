@@ -1,61 +1,155 @@
-<mat-toolbar color="primary">
-  <h3 class="page-title">Se connecter</h3>
-</mat-toolbar>
+<div class="login-page">
+  <!-- Section gauche avec l'illustration et le slogan -->
+  <div class="left-section">
+    <div class="brand-container">
+      <div class="brand-logo">
+        <mat-icon class="logo-icon">inventory</mat-icon>
+        <h1 class="brand-name">SN-STOCK</h1>
+      </div>
+      <h2 class="brand-tagline">Gestion de Stock Intelligente</h2>
+      <p class="brand-description">
+        Optimisez votre inventaire, simplifiez vos opérations et maximisez votre productivité.
+      </p>
+    </div>
 
-<div class="login-container">
-  <mat-dialog-content class="form-container">
-    <!-- <img class="avatar" src="assets/images/avatar.png" alt="Avatar"> -->
-    <mat-icon class="mat-icon-48" color="primary">person</mat-icon>
-    <!-- <form [formGroup]="loginForm" >
-      <div fxFlex fxLayout="column">
-       <mat-form-field appearance="fill"  fxFlex >
-         <mat-label>Username</mat-label>
-         <input matInput formControlName="username" required>
-         <mat-error *ngIf="loginForm.controls.username.touched && loginForm.controls.username.invalid">
-           <span *ngIf="loginForm.controls.username.errors.required" >This field is mandatory</span>
-           <span *ngIf="loginForm.controls.username.errors.pattern" >This field is invalid</span>
-         </mat-error>
-       </mat-form-field>
+    <div class="illustration-container">
+      <mat-icon class="illustration-icon">trending_up</mat-icon>
+      <div class="features-list">
+        <div class="feature-item">
+          <mat-icon class="feature-icon">check_circle</mat-icon>
+          <span>Suivi en temps réel</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon class="feature-icon">check_circle</mat-icon>
+          <span>Rapports détaillés</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon class="feature-icon">check_circle</mat-icon>
+          <span>Gestion multi-entrepôt</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-
-
-       <mat-form-field appearance="fill"  fxFlex >
-         <mat-label>Password </mat-label>
-         <input matInput formControlName="password" type="password" required>
-         <mat-error *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
-           <span *ngIf="loginForm.controls.password.errors.required" >This field is mandatory</span>
-           <span *ngIf="loginForm.controls.password.errors.pattern" >This field is invalid</span>
-         </mat-error>
-       </mat-form-field>
-
-       <div class="button-container">
-        <button mat-button routerLink="/register">S'inscrire</button>
-        <button mat-raised-button color="primary">Valider</button>
+  <!-- Section droite avec le formulaire -->
+  <div class="right-section">
+    <div class="login-card">
+      <div class="card-header">
+        <div class="welcome-container">
+          <mat-icon class="welcome-icon">lock</mat-icon>
+          <h2 class="welcome-title">Bienvenue</h2>
+        </div>
+        <p class="welcome-subtitle">Connectez-vous pour accéder à votre espace de gestion</p>
       </div>
 
-      </div>
+      <mat-dialog-content class="form-container">
+        <form [formGroup]="loginForm" (ngSubmit)="handleSubmit()">
 
-   </form> -->
+          <!-- Champ Username avec icône -->
+          <div class="form-field">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>
+                <mat-icon class="input-icon">person_outline</mat-icon>
+                Nom d'utilisateur
+              </mat-label>
+              <input matInput
+                     formControlName="username"
+                     required
+                     placeholder="Entrez votre nom d'utilisateur">
+              <mat-error *ngIf="loginForm.controls.username.touched && loginForm.controls.username.invalid">
+                <span *ngIf="loginForm.controls.username.errors?.required">
+                  Ce champ est obligatoire
+                </span>
+                <span *ngIf="loginForm.controls.username.errors?.pattern">
+                  Format invalide
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
 
-    <form [formGroup]="loginForm">
-      <mat-form-field appearance="fill">
-        <input matInput formControlName="username" required>
-         <mat-error *ngIf="loginForm.controls.username.touched && loginForm.controls.username.invalid">
-           <span *ngIf="loginForm.controls.username.errors.required" >This field is mandatory</span>
-           <span *ngIf="loginForm.controls.username.errors.pattern" >This field is invalid</span>
-         </mat-error>
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <input matInput formControlName="password" type="password" required>
-        <mat-error *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
-          <span *ngIf="loginForm.controls.password.errors.required" >This field is mandatory</span>
-          <span *ngIf="loginForm.controls.password.errors.pattern" >This field is invalid</span>
-        </mat-error>
-      </mat-form-field>
-      <div class="button-container">
-        <button mat-raised-button color="warn" routerLink="/register">S'inscrire</button>
-        <button  mat-raised-button color="primary" type="submit" (click)="handleSubmit()" [disabled]="!(loginForm.valid && loginForm.dirty)">Valider</button>
+          <!-- Champ Password avec icône -->
+          <div class="form-field">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>
+                <mat-icon class="input-icon">lock_outline</mat-icon>
+                Mot de passe
+              </mat-label>
+              <input matInput
+                     [type]="hidePassword ? 'password' : 'text'"
+                     formControlName="password"
+                     required
+                     placeholder="Entrez votre mot de passe">
+              <button mat-icon-button
+                      matSuffix
+                      type="button"
+                      (click)="hidePassword = !hidePassword"
+                      [attr.aria-label]="'Hide password'"
+                      [attr.aria-pressed]="hidePassword">
+                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+              <mat-error *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
+                <span *ngIf="loginForm.controls.password.errors?.required">
+                  Ce champ est obligatoire
+                </span>
+                <span *ngIf="loginForm.controls.password.errors?.pattern">
+                  Format invalide
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Options supplémentaires -->
+          <div class="form-options">
+            <mat-checkbox color="primary">Se souvenir de moi</mat-checkbox>
+            <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+          </div>
+
+          <!-- Bouton de connexion -->
+          <div class="form-actions">
+            <button mat-raised-button
+                    color="primary"
+                    type="submit"
+                    [disabled]="!(loginForm.valid && loginForm.dirty)"
+                    class="login-button">
+              <mat-icon class="button-icon">login</mat-icon>
+              Se connecter
+            </button>
+          </div>
+
+          <!-- Séparateur -->
+          <div class="separator">
+            <span class="separator-text">ou</span>
+          </div>
+
+          <!-- Lien d'inscription -->
+          <div class="register-section">
+            <p class="register-text">Vous n'avez pas de compte ?</p>
+            <button mat-stroked-button
+                    color="primary"
+                    routerLink="/register"
+                    class="register-button">
+              <mat-icon class="button-icon">person_add</mat-icon>
+              Créer un compte
+            </button>
+          </div>
+
+        </form>
+      </mat-dialog-content>
+
+      <!-- Footer du card -->
+      <div class="card-footer">
+        <p class="copyright">
+          © 2024 SN-STOCK. Tous droits réservés.
+        </p>
+        <div class="social-links">
+          <button mat-icon-button color="primary">
+            <mat-icon>help_outline</mat-icon>
+          </button>
+          <button mat-icon-button color="primary">
+            <mat-icon>mail_outline</mat-icon>
+          </button>
+        </div>
       </div>
-    </form>
-  </mat-dialog-content>
+    </div>
+  </div>
 </div>

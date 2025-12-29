@@ -132,5 +132,45 @@ export class ManageFournisseursComponent {
     }
 
 
+    // Méthodes pour les statistiques
+    getUniqueCities(): number {
+      if (!this.dataSource?.data) return 0;
+      const cities = this.dataSource.data
+        .map((supplier: any) => supplier.adresseDto?.ville)
+        .filter((city: any) => city);
+      return new Set(cities).size;
+    }
+
+    getUniqueCountries(): number {
+      if (!this.dataSource?.data) return 0;
+      const countries = this.dataSource.data
+        .map((supplier: any) => supplier.adresseDto?.pays)
+        .filter((country: any) => country);
+      return new Set(countries).size;
+    }
+
+getCountryFlag(country: string): string {
+  // Fonction simple pour afficher des drapeaux (vous pouvez l'améliorer)
+  if (!country) return '🏳️';
+  const flags: { [key: string]: string } = {
+    'France': '🇫🇷',
+    'Espagne': '🇪🇸',
+    'Allemagne': '🇩🇪',
+    'Italie': '🇮🇹',
+    'Maroc': '🇲🇦',
+    'Tunisie': '🇹🇳',
+    'Belgique': '🇧🇪',
+    'Suisse': '🇨🇭',
+    'Canada': '🇨🇦',
+    'USA': '🇺🇸',
+  };
+  return flags[country] || '🏳️';
+}
+
+// Méthode pour effacer le filtre
+clearFilter(input: HTMLInputElement): void {
+  this.dataSource.filter = '';
+  input.value = '';
+}
 
 }

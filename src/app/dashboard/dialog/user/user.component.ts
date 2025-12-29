@@ -1,11 +1,12 @@
-import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { HopitalService } from './../../../services/hopital.service';
-import { GlobalConstants } from './../../../shared/global-constants';
-import { SnackbarService } from './../../../services/snackbar.service';
+import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Component, OnInit, EventEmitter, Inject } from '@angular/core';
-import { UserService } from 'src/app/services/user.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { AuthentificationService, EntreprisesService, UtilisateursEntreprisesService } from 'src/app/api';
+
+import { SnackbarService } from './../../../services/snackbar.service';
+import { GlobalConstants } from 'src/app/shared/GlobalConstants';
+import { Role, RoleLabel } from '../../models/role.enum';
 
 @Component({
   selector: 'app-user',
@@ -24,10 +25,12 @@ export class UserComponent implements OnInit {
   hospitals : any [] = [];
   onRole : any
   role : any
+  roles = Object.values(Role);         // ['USER', 'LIVREUR', 'ADMIN', 'MANAGER']
+  roleLabels = RoleLabel;
 
   constructor(@Inject(MAT_DIALOG_DATA) public dialogData: any,
   private formBuilder : FormBuilder,
-  private userService:UserService,private hopitalService: HopitalService,
+  private utilisateurService:UtilisateursEntreprisesService,private entrepriseService: EntreprisesService, private authenticationService: AuthentificationService,
   private dialogRef: MatDialogRef<UserComponent>,private snackbarService: SnackbarService,private ngxService:NgxUiLoaderService) { }
 
   ngOnInit(): void {
@@ -40,14 +43,9 @@ export class UserComponent implements OnInit {
       nom :[null,[Validators.required]],
       prenom :[null,[Validators.required]],
       username :[null,[Validators.required]],
-      adresse :[null],
-      telephone :[null,[Validators.required,Validators.pattern(GlobalConstants.contactNumberRegex)]],
-      telephone2 :[null],
       email :[null,[Validators.required,Validators.pattern(GlobalConstants.emailRegex)]],
       password :[null,[Validators.required]],
-      dateNaissance :[null],
       roles :[null],
-      hopitalId:[null,[Validators.required]],
     })
 
     if(this.dialogData.action === "Modifier"){
@@ -55,38 +53,12 @@ export class UserComponent implements OnInit {
       this.action = "Modifier"
       this.userForm.patchValue(this.dialogData.data)
     }
-    this.getRoles()
-    this.getHopitals()
+
   }
 
 
-  getRoles(){
-    this.userService.getRoles().subscribe((res:any)=>{
-      this.userRoles = res
-    },(error)=>{
-      if(error.error?.message){
-          this.responseMessage = error.error?.message
-      }
-      else {
-        this.responseMessage = GlobalConstants.genericErrorMessage
-      }
-      this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
-    })
-  }
 
-  getHopitals(){
-    this.hopitalService.getHospitals().subscribe((res:any)=>{
-      this.hospitals = res
-    },(error)=>{
-      if(error.error?.message){
-          this.responseMessage = error.error?.message
-      }
-      else {
-        this.responseMessage = GlobalConstants.genericErrorMessage
-      }
-      this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
-    })
-  }
+
 
 
   handleUserSubmit(){
@@ -110,22 +82,18 @@ export class UserComponent implements OnInit {
       nom :formData.nom,
       prenom :formData.prenom,
       username :formData.username,
-      adresse :formData.adresse,
-      telephone :formData.telephone,
-      telephone2 :formData.telephone2,
       email :formData.email,
       password :formData.password,
-      dateNaissance :formData.dateNaissance,
-      roles : formData.roles,
-      hopitalId:formData.hopitalId,
+      role : formData.roles,
     }
 
-    this.userService.addUser(data).subscribe((res:any)=>{
+    this.utilisateurService.saveUser1(data).subscribe((res:any)=>{
       this.ngxService.stop()
        this.dialogRef.close()
        this.onAddUser.emit();
        this.responseMessage = res.message
-       this.snackbarService.openSnackbar(this.responseMessage,"success")
+       this.snackbarService.openSnackbar("utilisateur ajouté avec success","success")
+
     },(error)=>{
       this.ngxService.stop()
       this.dialogRef.close();
@@ -143,29 +111,21 @@ export class UserComponent implements OnInit {
   edit(){
 
     var formData = this.userForm.value;
-    console.log(" edit form data")
-    console.log(formData)
-    console.log(" edit form data")
-
     var data = {
       id : this.dialogData.data.id,
       nom :formData.nom,
       prenom :formData.prenom,
       username :formData.username,
-      adresse :formData.adresse,
-      telephone :formData.telephone,
-      telephone2 :formData.telephone2,
       email :formData.email,
-      dateNaissance :formData.dateNaissance,
-      roles : formData.roles,
-      hopitalId:formData.hopitalId,
+      role : formData.roles,
+      password: formData.password,
     }
 
     console.log("Update user")
     console.log(data)
 
 
-    this.userService.updateUser(data).subscribe((res:any)=>{
+    this.utilisateurService.saveUser1(data).subscribe((res:any)=>{
        this.dialogRef.close()
        this.onUpdateUser.emit();
        this.responseMessage = res.message
@@ -187,11 +147,11 @@ export class UserComponent implements OnInit {
     /*  this.radioForm.addControl('hop_prix',[value.hop])
      this.radioForm.controls['hopitalId'].id.setValue(value.id)
      this.radioForm.controls['hopitalId'].id.setValue(value.id) */
-     this.userService.getOneRole(value).subscribe((res:any) => {
-         console.log(res)
-     },(error)=>{
-       console.log("error"+error)
-     })
+    //  this.utilisateurService.getOneRole(value).subscribe((res:any) => {
+    //      console.log(res)
+    //  },(error)=>{
+    //    console.log("error"+error)
+    //  })
  }
 
 
