@@ -6,7 +6,7 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { MatPaginator } from '@angular/material/paginator';
 import { GlobalConstants } from 'src/app/shared/GlobalConstants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
-import { ArticlesService } from 'src/app/api';
+import { ArticlesImportService, ArticlesService } from 'src/app/api';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { ArticleComponent } from '../dialog/article/article.component';
 import { ArticleApiServiceService } from 'src/app/services/article-api-service.service';
@@ -27,6 +27,7 @@ export class ManageArticlesComponent implements AfterViewInit {
 
   constructor(
     private articleService: ArticlesService,
+    private articleImportService: ArticlesImportService,
     private ngxService: NgxUiLoaderService,
     private articleApi: ArticleApiServiceService,
     private snackbarService: SnackbarService,
@@ -172,32 +173,72 @@ export class ManageArticlesComponent implements AfterViewInit {
     console.log('Export Excel');
   }
 
-  // Méthodes existantes à conserver
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
     if (file) {
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
       this.ngxService.start();
 
-      this.articleApi.importCsv(file).subscribe(
-        (res: any) => {
-          this.ngxService.stop();
-          this.responseMessage = res?.message || 'Importation réussie';
-          this.snackbarService.openSnackbar(this.responseMessage, "success");
-          this.tableData();
-          event.target.value = '';
-        },
-        (error: any) => {
-          this.ngxService.stop();
-          if (error.error?.message) {
-            this.responseMessage = error.error?.message;
-          } else {
-            this.responseMessage = GlobalConstants.genericErrorMessage;
-          }
-          this.snackbarService.openSnackbar(this.responseMessage, GlobalConstants.error);
-          event.target.value = '';
-        }
-      );
+      if (fileExtension === 'csv') {
+        this.importCsvFile(file, event);
+      } else if (fileExtension === 'xlsx' || fileExtension === 'xls') {
+        this.importExcelFile(file, event);
+      } else {
+        this.ngxService.stop();
+        this.snackbarService.openSnackbar(
+          'Format de fichier non supporté. Utilisez CSV ou Excel.',
+          GlobalConstants.error
+        );
+        event.target.value = '';
+      }
     }
+  }
+
+  private importCsvFile(file: File, event: any): void {
+    this.articleImportService.importArticleCsv(file).subscribe(
+      (res: any) => {
+        this.ngxService.stop();
+        this.responseMessage = res?.message || 'Importation CSV réussie';
+        this.snackbarService.openSnackbar(this.responseMessage, "success");
+        this.tableData();
+        event.target.value = '';
+      },
+      (error: any) => {
+        this.ngxService.stop();
+        this.handleImportError(error);
+        event.target.value = '';
+      }
+    );
+  }
+
+  private importExcelFile(file: File, event: any): void {
+    this.articleApi.importExcel(file).subscribe(
+      (res: any) => {
+        this.ngxService.stop();
+        this.responseMessage = res?.message || 'Importation Excel réussie';
+        this.snackbarService.openSnackbar(this.responseMessage, "success");
+        this.tableData();
+        event.target.value = '';
+      },
+      (error: any) => {
+        this.ngxService.stop();
+        this.handleImportError(error);
+        event.target.value = '';
+      }
+    );
+  }
+
+  private handleImportError(error: any): void {
+    if (error.error?.message) {
+      this.responseMessage = error.error?.message;
+    } else if (error.status === 400) {
+      this.responseMessage = 'Format de fichier invalide';
+    } else if (error.status === 409) {
+      this.responseMessage = 'Certains articles existent déjà ou ont des doublons';
+    } else {
+      this.responseMessage = GlobalConstants.genericErrorMessage;
+    }
+    this.snackbarService.openSnackbar(this.responseMessage, GlobalConstants.error);
   }
 
   handleAddCat(): void {

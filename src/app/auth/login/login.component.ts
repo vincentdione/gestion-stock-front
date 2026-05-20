@@ -89,12 +89,8 @@ export class LoginComponent {
   }
 
   getUserByUsername(): void {
-    console.log("---------------------------")
     this.userService.getUserByUsername(this.authenticationRequest?.username)
     .subscribe(user => {
-      console.log("---------------------------")
-      console.log(user)
-      console.log("---------------------------")
       this.userService.setConnectedUser(user);
     },(error:any)=>{
       console.log(error)

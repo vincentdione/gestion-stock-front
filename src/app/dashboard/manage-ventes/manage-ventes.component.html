@@ -1,6 +1,6 @@
 <div class="vente-container">
   <!-- Header avec titre et statistiques -->
-  <div class="header-section">
+  <!-- <div class="header-section">
     <div class="header-content">
       <div class="title-section">
         <mat-icon class="title-icon">point_of_sale</mat-icon>
@@ -27,94 +27,131 @@
         </mat-card>
       </div>
     </div>
-  </div>
+  </div> -->
 
-  <!-- Section formulaire d'ajout -->
-  <div class="form-section">
-    <mat-card class="form-card">
-      <div class="card-header">
-        <h2><mat-icon>add_circle</mat-icon> Nouvelle vente</h2>
-        <p>Ajoutez des articles à la commande en cours</p>
-      </div>
-
-      <form [formGroup]="comVenteForm" class="vente-form">
-        <!-- Mode de paiement -->
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Mode de paiement</mat-label>
-            <mat-select formControlName="mode">
-              <mat-option *ngFor="let mode of dataModePayement" [value]="mode">
-                {{mode.code}}
-              </mat-option>
-            </mat-select>
-            <mat-icon matSuffix>payment</mat-icon>
-          </mat-form-field>
-        </div>
-
-        <!-- Section lignes de vente -->
-        <div class="ligne-vente-section">
-          <div class="section-title">
-            <mat-icon>list_alt</mat-icon>
-            <h3>Ajouter un article</h3>
-          </div>
-
-          <div class="form-grid">
-            <!-- Article -->
-            <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Article</mat-label>
-              <mat-select formControlName="article" (selectionChange)="onArticleSelected($event.value)">
-                <mat-option *ngFor="let condition of dataConditions" [value]="condition">
-                  {{condition.article?.codeArticle}} - {{condition.article?.designation}}
-                </mat-option>
-              </mat-select>
-              <mat-icon matPrefix>inventory_2</mat-icon>
-            </mat-form-field>
-
-            <!-- Unité -->
-            <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Unité</mat-label>
-              <mat-select formControlName="unite" (selectionChange)="onUniteSelected($event.value)">
-                <mat-option *ngFor="let unite of dataUnites" [value]="unite">
-                  {{unite.nom}}
-                </mat-option>
-              </mat-select>
-              <mat-icon matPrefix>scale</mat-icon>
-            </mat-form-field>
-
-            <!-- Quantité -->
-            <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Quantité</mat-label>
-              <input matInput formControlName="quantite" type="number" min="1" required>
-              <mat-icon matPrefix>format_list_numbered</mat-icon>
-              <mat-error *ngIf="comVenteForm.get('quantite')?.invalid && comVenteForm.get('quantite')?.touched">
-                La quantité est obligatoire
-              </mat-error>
-            </mat-form-field>
-
-            <!-- Prix unitaire -->
-            <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Prix unitaire</mat-label>
-              <input matInput formControlName="prixUnitaire" type="number" min="0" step="0.01" readonly>
-              <span matPrefix>F&nbsp;</span>
-              <mat-icon matSuffix>attach_money</mat-icon>
-            </mat-form-field>
-
-            <!-- Bouton Ajouter -->
-            <div class="add-button-container">
-              <button mat-fab color="primary" class="add-button"
-                      (click)="addLigneVente()"
-                      [disabled]="!comVenteForm.get('article')?.value ||
-                                  !comVenteForm.get('quantite')?.value ||
-                                  !comVenteForm.get('unite')?.value">
-                <mat-icon>add</mat-icon>
-              </button>
-              <span class="button-label">Ajouter</span>
+    <!-- Section formulaire d'ajout -->
+    <div class="form-section">
+      <mat-card class="form-card">
+        <!-- En-tête compact -->
+        <div class="card-header">
+          <div class="header-main">
+            <div class="title-group">
+              <mat-icon class="title-icon">add_circle</mat-icon>
+              <div>
+                <h2 class="card-title">Nouvelle Vente</h2>
+                <p class="card-subtitle">Ajouter des articles à la commande</p>
+              </div>
             </div>
+            <button mat-icon-button class="toggle-btn" (click)="toggleClientInfo()" matTooltip="Informations client">
+              <mat-icon>{{showClientInfo ? 'person_off' : 'person_add'}}</mat-icon>
+            </button>
           </div>
         </div>
-      </form>
-    </mat-card>
-  </div>
+
+        <!-- Contenu du formulaire -->
+        <div class="form-content">
+          <!-- Barre d'informations client (affichée conditionnellement) -->
+          <div class="client-info-bar" *ngIf="showClientInfo" @slideInOut>
+            <div class="client-bar-header">
+              <mat-icon>person</mat-icon>
+              <span>Client</span>
+              <button mat-icon-button class="close-client" (click)="toggleClientInfo()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+
+            <!-- Formulaire principal avec tous les champs -->
+            <form [formGroup]="comVenteForm" class="vente-form">
+              <!-- Champs client -->
+              <div class="client-fields-row">
+                <mat-form-field appearance="outline" class="compact-field">
+                  <mat-label>Nom</mat-label>
+                  <input matInput formControlName="nomClient" placeholder="Dupont">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="compact-field">
+                  <mat-label>Prénom</mat-label>
+                  <input matInput formControlName="prenomClient" placeholder="Jean">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="compact-field">
+                  <mat-label>Téléphone</mat-label>
+                  <input matInput formControlName="telephone" placeholder="01 23 45 67 89">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="compact-field">
+                  <mat-label>Adresse</mat-label>
+                  <input matInput formControlName="adresse" placeholder="Paris">
+                </mat-form-field>
+              </div>
+
+              <!-- Formulaire principal en une seule ligne -->
+              <div class="form-main-row">
+                <!-- Mode de paiement -->
+                <mat-form-field appearance="outline" class="form-field payment-field">
+                  <mat-label>Paiement</mat-label>
+                  <mat-select formControlName="mode">
+                    <mat-option *ngFor="let mode of dataModePayement" [value]="mode">
+                      {{mode.code}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-icon matSuffix>payment</mat-icon>
+                </mat-form-field>
+
+                <!-- Article -->
+                <mat-form-field appearance="outline" class="form-field article-field">
+                  <mat-label>Article</mat-label>
+                  <mat-select formControlName="article" (selectionChange)="onArticleSelected($event.value)">
+                    <mat-option *ngFor="let condition of dataConditions" [value]="condition">
+                      <div class="article-option">
+                        <span class="code">{{condition.article?.codeArticle}}</span> -
+                        <span class="name">{{condition.article?.designation}}</span>
+                      </div>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <!-- Unité -->
+                <mat-form-field appearance="outline" class="form-field unit-field">
+                  <mat-label>Unité</mat-label>
+                  <mat-select formControlName="unite" (selectionChange)="onUniteSelected($event.value)">
+                    <mat-option *ngFor="let unite of dataUnites" [value]="unite">
+                      {{unite.nom}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <!-- Quantité -->
+                <mat-form-field appearance="outline" class="form-field quantity-field">
+                  <mat-label>Qté</mat-label>
+                  <input matInput formControlName="quantite" type="number" min="1" required>
+                  <mat-error *ngIf="comVenteForm.get('quantite')?.invalid">
+                    Qté requise
+                  </mat-error>
+                </mat-form-field>
+
+                <!-- Prix -->
+                <div class="price-display">
+                  <div class="price-label">Prix unitaire</div>
+                  <div class="price-value">{{comVenteForm.get('prixUnitaire')?.value | currency:'F':'symbol':'1.0-0'}}</div>
+                </div>
+
+                <!-- Bouton Ajouter -->
+                <button mat-raised-button
+                        color="primary"
+                        class="add-button"
+                        (click)="addLigneVente()"
+                        [disabled]="!canAddArticle()"
+                        matTooltip="Ajouter l'article à la commande">
+                  <mat-icon>add</mat-icon>
+                  Ajouter
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </mat-card>
+    </div>
 
   <!-- Tableau des articles ajoutés -->
   <div class="table-section" *ngIf="lignesCommande.length > 0">
@@ -240,7 +277,8 @@
     <mat-card class="history-card">
       <div class="card-header">
         <h2><mat-icon>history</mat-icon> Historique des ventes</h2>
-        <button mat-button color="primary" class="view-all-button">
+        <button mat-button color="primary" class="view-all-button"
+        routerLink="/workspace/dashboard/all-ventes">
           Voir tout <mat-icon>arrow_forward</mat-icon>
         </button>
       </div>
@@ -254,7 +292,7 @@
                 <div class="vente-info">
                   <span class="vente-code">{{element.code || 'Vente #' + element.id}}</span>
                   <span class="vente-date">{{element.dateVente | date: 'dd/MM/yyyy' }}</span>
-                  <span class="vente-total">{{element.total | currency:'F':'symbol':'1.0-0'}}</span>
+                  <!-- <span class="vente-total">{{element.total | currency:'F':'symbol':'1.0-0'}}</span> -->
                 </div>
               </mat-panel-title>
               <mat-panel-description class="panel-actions">

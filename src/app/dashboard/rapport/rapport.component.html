@@ -1,0 +1,216 @@
+<div class="rapport-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-left">
+      <h1 class="header-title">Tableau de Rapport</h1>
+      <p class="header-subtitle">
+        Vue d'ensemble de vos performances commerciales
+      </p>
+      <div class="date-display">
+        <mat-icon>today</mat-icon>
+        <span>{{ today | date:'EEEE d MMMM y' }}</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="exporterRapport('excel')">
+        <mat-icon>description</mat-icon>
+        Excel
+      </button>
+      <button mat-raised-button color="accent" (click)="exporterRapport('pdf')">
+        <mat-icon>picture_as_pdf</mat-icon>
+        PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtres Période -->
+  <div class="period-filter" *ngIf="!isLoading">
+    <mat-button-toggle-group [(value)]="periodeActuelle">
+      <mat-button-toggle *ngFor="let periode of periodes"
+                         [value]="periode.id"
+                         (click)="chargerRapport(periode.id)">
+        {{ periode.label }}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  <!-- Statistiques Principales -->
+  <div class="main-stats-grid" *ngIf="rapport && !isLoading">
+    <div *ngFor="let card of statCards"
+         class="stat-card"
+         [class]="card.color">
+      <div class="stat-card-header">
+        <div class="stat-icon">
+          <mat-icon>{{ card.icon }}</mat-icon>
+        </div>
+        <div class="stat-title">
+          <h3>{{ card.title }}</h3>
+          <p>{{ card.subtitle }}</p>
+        </div>
+      </div>
+
+      <div class="stat-value">
+        {{ formaterValeur(card) }}
+      </div>
+
+      <div class="stat-details" *ngIf="card.details">
+        <mat-icon>info</mat-icon>
+        <span>{{ card.details }}</span>
+      </div>
+
+      <div class="stat-actions">
+        <button mat-button (click)="voirDetailsVentes()" *ngIf="card.title.includes('CA') || card.title.includes('Ventes')">
+          <mat-icon>arrow_forward</mat-icon>
+          Voir détails
+        </button>
+        <button mat-button (click)="voirDetailsArticles()" *ngIf="card.title.includes('Articles')">
+          <mat-icon>arrow_forward</mat-icon>
+          Voir produits
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiques Détail -->
+  <div class="detailed-stats" *ngIf="rapport && !isLoading">
+    <h3>Statistiques Détail</h3>
+    <div class="detailed-grid">
+      <div *ngFor="let stat of getDetailedStats()" class="detail-card">
+        <div class="detail-icon">
+          <mat-icon>{{ stat.icon }}</mat-icon>
+        </div>
+        <div class="detail-content">
+          <h4>{{ stat.title }}</h4>
+          <p class="detail-value">
+            {{ stat.format === 'currency' ? formaterMontant(stat.value) : formaterNombre(stat.value) }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau Articles Vendus -->
+  <div class="articles-table-section" *ngIf="(articlesPlusVendus || []).length > 0 && !isLoading">
+    <div class="section-header">
+      <h3>Top Articles Vendus</h3>
+      <button mat-button color="primary" (click)="voirDetailsArticles()">
+        <mat-icon>list</mat-icon>
+        Voir tous
+      </button>
+    </div>
+
+    <mat-card class="table-card">
+      <mat-list>
+        <mat-list-item *ngFor="let article of articlesPlusVendus; let i = index"
+                       class="article-item">
+          <div matListItemIcon class="rank-badge">
+            {{ i + 1 }}
+          </div>
+          <div matListItemTitle>{{ article.nom || 'Nom non disponible' }}</div>
+          <div matListItemLine>
+            Quantité: {{ article.quantiteVendue || 0 }} |
+            Total: {{ formaterMontant(article.montantTotalVendu || 0) }}
+          </div>
+          <div matListItemMeta class="percentage-badge">
+            {{ (article.pourcentageCA || 0).toFixed(1) }}%
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+  </div>
+
+  <!-- Activités Récentes -->
+  <div class="recent-activities" *ngIf="!isLoading">
+    <h3>Activités Récentes</h3>
+    <mat-card>
+      <mat-list>
+        <mat-list-item *ngFor="let activite of activitesRecent" class="activity-item">
+          <mat-icon matListItemIcon
+                   [class]="activite.type">
+            {{ activite.type === 'sale' ? 'shopping_cart' :
+               activite.type === 'order' ? 'inventory' :
+               activite.type === 'stock' ? 'warehouse' :
+               activite.type === 'alert' ? 'warning' : 'info' }}
+          </mat-icon>
+          <div matListItemTitle>{{ activite.text }}</div>
+          <div matListItemLine>{{ activite.time }}</div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+  </div>
+
+  <!-- Filtres Avancés -->
+  <div class="advanced-filters" *ngIf="!isLoading">
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>tune</mat-icon>
+          <span>Filtres Avancés</span>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <form [formGroup]="rapportForm">
+        <div class="filter-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Date Début</mat-label>
+            <input matInput [matDatepicker]="picker1" formControlName="dateDebut">
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Date Fin</mat-label>
+            <input matInput [matDatepicker]="picker2" formControlName="dateFin">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Nombre d'articles</mat-label>
+            <mat-select formControlName="limitArticles">
+              <mat-option [value]="5">Top 5</mat-option>
+              <mat-option [value]="10">Top 10</mat-option>
+              <mat-option [value]="15">Top 15</mat-option>
+              <mat-option [value]="20">Top 20</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="filter-actions">
+          <mat-checkbox formControlName="avecDetails">
+            Inclure les détails détaillés
+          </mat-checkbox>
+
+          <div class="action-buttons">
+            <button mat-stroked-button type="button" (click)="initForm()">
+              <mat-icon>restart_alt</mat-icon>
+              Réinitialiser
+            </button>
+            <button mat-raised-button color="primary"
+                    type="button"
+                    (click)="chargerRapportPersonnalise()"
+                    [disabled]="isLoading">
+              <mat-icon>analytics</mat-icon>
+              Générer Rapport
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-expansion-panel>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="loading-content">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Chargement des données...</p>
+    </div>
+  </div>
+
+  <!-- Message si pas de données -->
+  <div *ngIf="!isLoading && !rapport" class="no-data">
+    <mat-icon>info</mat-icon>
+    <h3>Aucune donnée disponible</h3>
+    <p>Sélectionnez une période ou appliquez des filtres pour générer un rapport</p>
+  </div>
+</div>

@@ -1,9 +1,8 @@
-import { Observable } from 'rxjs';
-import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
-import { AuthenticationResponse } from 'src/app/api';
-import {tap} from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -17,36 +16,63 @@ export class TokenInterceptorService implements HttpInterceptor {
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // Démarrer le loader
     this.loaderService.start();
-    let authenticationResponse: AuthenticationResponse = {};
+    console.log('Loader démarré pour:', req.url);
+
+    // Vérifier si c'est une requête d'upload de fichier
+    const isFileUpload = req.url.includes('/import/csv') || req.url.includes('/import/excel');
+
+    let headers = req.headers;
+
+    // Ajouter le token d'authentification s'il existe
     if (localStorage.getItem('accessToken')) {
       const token = localStorage.getItem('accessToken') as string;
-
-      const authReq = req.clone({
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          Authorization: 'Bearer ' + token
-        })
-      });
-      return this.handleRequest(authReq, next);
+      headers = headers.set('Authorization', 'Bearer ' + token);
     }
-    return this.handleRequest(req, next);
-  }
 
-  handleRequest(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(req)
-      .pipe(tap((event: HttpEvent<any>) => {
+    if (isFileUpload) {
+      // Pour les uploads de fichiers, ne pas toucher au Content-Type
+      // Le navigateur le définira automatiquement comme multipart/form-data
+    } else {
+      // Pour les autres requêtes, définir Content-Type si pas déjà présent
+      if (!headers.has('Content-Type')) {
+        headers = headers.set('Content-Type', 'application/json');
+      }
+    }
+
+    // TOUJOURS définir Accept: application/json pour éviter les Blobs
+    if (!headers.has('Accept')) {
+      headers = headers.set('Accept', 'application/json');
+    }
+
+    // Cloner la requête avec les nouveaux headers
+    const authReq = req.clone({ headers });
+
+    return next.handle(authReq).pipe(
+      tap(event => {
         if (event instanceof HttpResponse) {
-          this.loaderService.stop();
+          console.log('Requête réussie:', event.url, event.status);
         }
-      }, (err: any) => {
-        if (err.status === 401) {
-          // Le token a expiré, déconnectez l'utilisateur et redirigez-le vers la page de connexion
+      }),
+      catchError(error => {
+        console.error('Erreur HTTP:', error.status, error.message, req.url);
+
+        if (error.status === 401) {
+          console.log('Token expiré, redirection vers login');
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('user');
           this.router.navigate(['/login']);
-          this.loaderService.stop();
         }
-          this.loaderService.stop();
-      }));
+
+        // Propager l'erreur
+        return throwError(() => error);
+      }),
+      finalize(() => {
+        // Cette méthode est appelée TOUJOURS, que la requête réussisse ou échoue
+        console.log('Loader arrêté pour:', req.url);
+        this.loaderService.stop();
+      })
+    );
   }
 }

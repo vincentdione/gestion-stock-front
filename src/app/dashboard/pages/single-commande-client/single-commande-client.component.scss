@@ -1,31 +1,437 @@
-.float-right {
-  float: right;
-  color: white;
-  background-color: teal;
+.single-commande-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-mat-card {
-   padding: 20px;
-   display: flex;
-   flex-direction: row;
-   justify-content: space-between;
+// En-tête
+.command-header {
+  margin-bottom: 30px;
+
+  .header-background {
+    background: linear-gradient(135deg, #008080 0%, #006666 100%);
+    border-radius: 12px;
+    padding: 30px;
+    color: white;
+    box-shadow: 0 4px 20px rgba(0, 128, 128, 0.2);
+
+    .header-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+
+      .back-button {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        margin-top: 8px;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
+      }
+
+      .header-info {
+        flex: 1;
+
+        .command-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: rgba(255, 255, 255, 0.2);
+          padding: 6px 16px;
+          border-radius: 20px;
+          margin-bottom: 15px;
+          backdrop-filter: blur(10px);
+
+          mat-icon {
+            font-size: 18px;
+          }
+
+          span {
+            font-size: 14px;
+            font-weight: 500;
+          }
+
+          &.client {
+            background: rgba(76, 175, 80, 0.3);
+          }
+
+          &.fournisseur {
+            background: rgba(33, 150, 243, 0.3);
+          }
+        }
+
+        .command-title {
+          margin: 0 0 10px 0;
+          font-size: 28px;
+          font-weight: 600;
+          color: white;
+        }
+
+        .command-meta {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 25px;
+          margin-top: 15px;
+
+          .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 8px;
+
+            mat-icon {
+              font-size: 18px;
+              opacity: 0.9;
+            }
+
+            span {
+              font-size: 14px;
+              color: rgba(255, 255, 255, 0.95);
+
+              strong {
+                font-weight: 600;
+                margin-right: 4px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
-mat-form-field{
-  width: 100%;
-  margin: 4px;
+// Cartes d'information
+.info-cards-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+
+  .info-card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    mat-card-header {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 20px;
+      border-bottom: 1px solid #e0e0e0;
+
+      mat-card-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #2c3e50;
+
+        mat-icon {
+          color: teal;
+        }
+      }
+    }
+
+    mat-card-content {
+      padding: 20px;
+    }
+  }
+
+  .contact-card {
+    .contact-info {
+      .contact-name {
+        margin-bottom: 15px;
+
+        h3 {
+          margin: 0;
+          color: #2c3e50;
+          font-size: 20px;
+          font-weight: 600;
+        }
+      }
+
+      .contact-details {
+        .detail-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 12px;
+          padding: 8px 0;
+
+          mat-icon {
+            color: teal;
+            font-size: 20px;
+            opacity: 0.8;
+          }
+
+          span {
+            color: #546e7a;
+            font-size: 14px;
+            line-height: 1.4;
+          }
+        }
+      }
+    }
+
+    .no-contact-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      color: #90a4ae;
+
+      mat-icon {
+        font-size: 48px;
+        margin-bottom: 10px;
+        opacity: 0.5;
+      }
+
+      p {
+        margin: 0;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .amount-card {
+    .amount-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+
+      .amount-item {
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
+        border-radius: 8px;
+        background: #f8f9fa;
+
+        .amount-label {
+          font-size: 12px;
+          color: #546e7a;
+          text-transform: uppercase;
+          font-weight: 600;
+          margin-bottom: 4px;
+        }
+
+        .amount-value {
+          font-size: 18px;
+          font-weight: 600;
+          color: #2c3e50;
+        }
+
+        &.total {
+          background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+          border-left: 4px solid #2196f3;
+        }
+
+        &.net-total {
+          grid-column: span 2;
+          background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+          border-left: 4px solid teal;
+
+          .amount-value {
+            color: teal;
+            font-size: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  .actions-card {
+    .quick-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+
+      .action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px;
+        font-size: 13px;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+
+        mat-icon {
+          font-size: 18px;
+        }
+
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
 }
 
-table {
-  width: 100%;
+// Section lignes de commande
+.command-lines-section {
+  margin-bottom: 30px;
+
+  .command-lines-card {
+    border-radius: 12px;
+    overflow: hidden;
+
+    mat-card-header {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 20px;
+      border-bottom: 1px solid #e0e0e0;
+
+      mat-card-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #2c3e50;
+
+        mat-icon {
+          color: teal;
+        }
+
+        .items-count {
+          font-size: 14px;
+          color: #546e7a;
+          font-weight: normal;
+          margin-left: 8px;
+        }
+      }
+    }
+  }
 }
 
+// Notes
+.notes-section {
+  .notes-card {
+    border-radius: 12px;
 
-.btnRond{
-  border-radius: 50%;
-  height: 60px;
+    mat-card-header {
+      background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+      padding: 20px;
+      border-bottom: 1px solid #ffe082;
+
+      mat-card-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #5d4037;
+
+        mat-icon {
+          color: #ff9800;
+        }
+      }
+    }
+
+    mat-card-content {
+      padding: 20px;
+
+      .notes-content {
+        background: #fffdf6;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #ff9800;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #5d4037;
+        white-space: pre-wrap;
+      }
+    }
+  }
 }
 
-.btn{
-  background: teal;
+// Responsive
+@media (max-width: 768px) {
+  .single-commande-container {
+    padding: 10px;
+  }
+
+  .command-header {
+    .header-background {
+      padding: 20px;
+
+      .header-content {
+        .header-info {
+          .command-title {
+            font-size: 22px;
+          }
+
+          .command-meta {
+            flex-direction: column;
+            gap: 10px;
+
+            .meta-item {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .info-cards-section {
+    grid-template-columns: 1fr;
+  }
+
+  .amount-card {
+    .amount-grid {
+      grid-template-columns: 1fr;
+
+      .amount-item.net-total {
+        grid-column: span 1;
+      }
+    }
+  }
+
+  .actions-card {
+    .quick-actions {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// Animation
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.single-commande-container > * {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.command-header {
+  animation-delay: 0.1s;
+}
+
+.info-cards-section {
+  animation-delay: 0.2s;
+}
+
+.command-lines-section {
+  animation-delay: 0.3s;
+}
+
+.notes-section {
+  animation-delay: 0.4s;
 }

@@ -1,0 +1,308 @@
+<!-- all-ventes.component.html -->
+<div class="all-ventes-container">
+
+  <!-- <div class="header-section">
+    <div class="header-content">
+      <div class="title-section">
+        <div class="title-with-back">
+          <button mat-icon-button class="back-button" (click)="router.navigate(['/workspace/dashboard/ventes'])">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+          <div>
+            <h1 class="page-title">Toutes les Ventes</h1>
+            <p class="page-subtitle">Recherche et analyse complète des ventes</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button mat-raised-button color="primary" (click)="exporterCSV()">
+            <mat-icon>download</mat-icon>
+            Exporter CSV
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-overview">
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <mat-icon>shopping_cart</mat-icon>
+          </div>
+          <div class="stat-details">
+            <span class="stat-value">{{totalVentes}}</span>
+            <span class="stat-label">Ventes filtrées</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <mat-icon>payments</mat-icon>
+          </div>
+          <div class="stat-details">
+            <span class="stat-value">{{totalCA | currency:'F':'symbol':'1.0-0'}}</span>
+            <span class="stat-label">Chiffre d'affaires</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <mat-icon>trending_up</mat-icon>
+          </div>
+          <div class="stat-details">
+            <span class="stat-value">{{moyennePanier | currency:'F':'symbol':'1.0-0'}}</span>
+            <span class="stat-label">Moyenne panier</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <mat-card class="filters-card">
+    <div class="filters-header">
+      <button mat-icon-button class="back-button" (click)="router.navigate(['/workspace/dashboard/ventes'])">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h3><mat-icon>filter_list</mat-icon> Filtres de recherche</h3>
+      <button mat-button color="warn" (click)="resetFilters()">
+        <mat-icon>refresh</mat-icon>
+        Réinitialiser
+      </button>
+    </div>
+
+    <form [formGroup]="searchForm" class="filters-form">
+      <div class="filters-grid">
+        <!-- Ligne 1 -->
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Code vente</mat-label>
+          <input matInput formControlName="code" placeholder="CMD-VEN0001">
+          <mat-icon matPrefix>tag</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Nom client</mat-label>
+          <input matInput formControlName="nomClient" placeholder="Dupont">
+          <mat-icon matPrefix>person</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Prénom client</mat-label>
+          <input matInput formControlName="prenomClient" placeholder="Jean">
+          <mat-icon matPrefix>person_outline</mat-icon>
+        </mat-form-field>
+
+        <!-- Ligne 2 -->
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Téléphone</mat-label>
+          <input matInput formControlName="telephone" placeholder="0123456789">
+          <mat-icon matPrefix>phone</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Mode paiement</mat-label>
+          <mat-select formControlName="modePayement">
+            <mat-option value="">Tous</mat-option>
+            <mat-option *ngFor="let mode of dataModePayement" [value]="mode.code">
+              {{mode.code}}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>payment</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Statut</mat-label>
+          <mat-select formControlName="statut">
+            <mat-option *ngFor="let statut of statuts" [value]="statut.value">
+              {{statut.label}}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>flag</mat-icon>
+        </mat-form-field>
+
+        <!-- Ligne 3 - Date range -->
+        <div class="date-range-field">
+          <mat-label class="date-range-label">Période</mat-label>
+          <div class="date-inputs">
+            <mat-form-field appearance="outline" class="date-field">
+              <mat-label>Du</mat-label>
+              <input matInput [matDatepicker]="pickerStart" formControlName="start">
+              <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+              <mat-datepicker #pickerStart></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="date-field">
+              <mat-label>Au</mat-label>
+              <input matInput [matDatepicker]="pickerEnd" formControlName="end">
+              <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+              <mat-datepicker #pickerEnd></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="filters-actions">
+        <button mat-raised-button color="primary" class="search-button" (click)="applyFilters()">
+          <mat-icon>search</mat-icon>
+          Rechercher ({{filteredVentes.length}} résultats)
+        </button>
+      </div>
+    </form>
+  </mat-card>
+
+  <!-- Tableau des résultats -->
+  <mat-card class="results-card">
+    <div class="results-header">
+      <h3><mat-icon>table_chart</mat-icon> Résultats des ventes</h3>
+      <span class="results-count">{{filteredVentes.length}} ventes trouvées</span>
+    </div>
+
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="ventes-table">
+        <!-- Colonne Code -->
+        <ng-container matColumnDef="code">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">
+            <div class="header-cell">
+              <mat-icon>qr_code</mat-icon>
+              <span>Code</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell code-cell">
+            <div class="code-content">
+              <mat-icon class="cell-icon">receipt</mat-icon>
+              <div class="code-info">
+                <span class="code-value">{{row.code || 'N/A'}}</span>
+                <span class="code-date">{{row.dateVente | date: 'dd/MM/yy'}}</span>
+              </div>
+              </div>
+            </td>
+        </ng-container>
+
+        <!-- Colonne Date -->
+        <ng-container matColumnDef="dateVente">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">
+            <div class="header-cell">
+              <mat-icon>calendar_today</mat-icon>
+              <span>Date</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell">
+            {{row.dateVente | date: 'dd/MM/yyyy HH:mm'}}
+          </td>
+        </ng-container>
+
+        <!-- Colonne Client -->
+        <ng-container matColumnDef="nomClient">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">
+            <div class="header-cell">
+              <mat-icon>person</mat-icon>
+              <span>Client</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell client-cell">
+            <div *ngIf="row.nomClient || row.prenomClient; else noClient">
+              <div class="client-name">
+                <strong>{{row.nomClient}} {{row.prenomClient}}</strong>
+              </div>
+              <div class="client-contact" *ngIf="row.numero">
+                <mat-icon class="contact-icon">phone</mat-icon>
+                {{row.numero}}
+              </div>
+            </div>
+            <ng-template #noClient>
+              <span class="no-client">Client non renseigné</span>
+            </ng-template>
+          </td>
+        </ng-container>
+
+        <!-- Colonne Mode Paiement -->
+        <ng-container matColumnDef="modePayement">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">
+            <div class="header-cell">
+              <mat-icon>payment</mat-icon>
+              <span>Paiement</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell">
+            <span class="payment-badge" [ngClass]="row.modePayement?.code?.toLowerCase()">
+              {{row.modePayement?.code || 'Non spécifié'}}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Colonne Montant Total -->
+        <ng-container matColumnDef="montantTotal">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">
+            <div class="header-cell">
+              <mat-icon>attach_money</mat-icon>
+              <span>Montant</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell amount-cell">
+            <div class="amount-content">
+              <!-- <span class="amount-value">{{calculerMontantVente(row) | currency:'F':'symbol':'1.0-0'}}</span> -->
+              <span class="amount-value">{{row.montantTotal}}</span>
+              <span class="amount-items" *ngIf="row.ligneVentes">
+                {{row.ligneVentes.length}} article(s)
+              </span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Colonne Statut -->
+        <ng-container matColumnDef="statut">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">
+            <div class="header-cell">
+              <mat-icon>flag</mat-icon>
+              <span>Statut</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell">
+            <span class="status-badge" [ngClass]="getStatutColor(getStatutVente(row))">
+              {{getStatutVente(row)}}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Colonne Actions -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef class="table-header actions-header">
+            <div class="header-cell">
+              <mat-icon>settings</mat-icon>
+              <span>Actions</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell actions-cell">
+            <div class="action-buttons">
+              <button mat-icon-button color="primary"
+                      matTooltip="Voir détails"
+                      (click)="handleView(row)"
+                      class="action-button">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button mat-icon-button color="warn"
+                      matTooltip="Supprimer"
+                      (click)="handleDelete(row)"
+                      class="action-button">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayColumns" class="table-header-row"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayColumns" class="table-row"></tr>
+      </table>
+
+      <!-- Pagination -->
+      <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"
+                     showFirstLastButtons
+                     aria-label="Select page of ventes"
+                     class="custom-paginator">
+      </mat-paginator>
+    </div>
+
+    <!-- État vide -->
+    <div *ngIf="filteredVentes.length === 0" class="empty-state">
+      <mat-icon class="empty-icon">inventory</mat-icon>
+      <h3>Aucune vente trouvée</h3>
+      <p>Essayez de modifier vos critères de recherche</p>
+    </div>
+  </mat-card>
+</div>

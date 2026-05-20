@@ -1,7 +1,189 @@
-<mat-card>
-  <b> <span>{{detailCommande}} {{commande.code}} </span> </b>
-</mat-card>
+<div class="single-commande-container">
+  <!-- En-tête moderne -->
+  <div class="command-header">
+    <div class="header-background">
+      <div class="header-content">
+        <button mat-icon-button class="back-button" [routerLink]="getBackLink()" matTooltip="Retour">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
 
-<hr/>
+        <div class="header-info">
+          <div class="command-badge" [ngClass]="origin">
+            <mat-icon>{{getOriginIcon()}}</mat-icon>
+            <span>{{getOriginLabel()}}</span>
+          </div>
 
-<app-details-lignes-commandes [idCommande]="commande?.id" [origin]="origin" ></app-details-lignes-commandes>
+          <h1 class="command-title">{{detailCommande}}</h1>
+
+          <div class="command-meta">
+            <div class="meta-item">
+              <mat-icon>qr_code</mat-icon>
+              <span><strong>Code:</strong> {{commande?.code || 'N/A'}}</span>
+            </div>
+
+            <div class="meta-item" *ngIf="commande?.dateCommande">
+              <mat-icon>calendar_today</mat-icon>
+              <span><strong>Date:</strong> {{commande?.dateCommande | date:'dd/MM/yyyy HH:mm'}}</span>
+            </div>
+
+            <!-- Correction : état différent pour client vs fournisseur -->
+            <div class="meta-item" *ngIf="origin === 'client' && commande?.etat">
+              <mat-icon>flag</mat-icon>
+              <span><strong>Statut:</strong> {{commande?.etat}}</span>
+            </div>
+            <div class="meta-item" *ngIf="origin === 'fournisseur' && commande?.etatCommande">
+              <mat-icon>flag</mat-icon>
+              <span><strong>Statut:</strong> {{commande?.etatCommande}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cartes d'information -->
+  <div class="info-cards-section">
+    <!-- Carte Client/Fournisseur -->
+    <mat-card class="info-card contact-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>person</mat-icon>
+          {{origin === 'client' ? 'Client' : 'Fournisseur'}}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="contact-info" *ngIf="(origin === 'client' && commande?.clientDto) || (origin === 'fournisseur' && commande?.fournisseurDto); else noContact">
+          <div class="contact-name">
+            <h3>{{getContactName()}}</h3>
+          </div>
+
+          <div class="contact-details">
+            <div class="detail-item" *ngIf="getContactEmail()">
+              <mat-icon>email</mat-icon>
+              <span>{{getContactEmail()}}</span>
+            </div>
+
+            <div class="detail-item" *ngIf="getContactPhone()">
+              <mat-icon>phone</mat-icon>
+              <span>{{getContactPhone()}}</span>
+            </div>
+
+            <div class="detail-item" *ngIf="getContactAddress()">
+              <mat-icon>location_on</mat-icon>
+              <span>{{getContactAddress()}}</span>
+            </div>
+          </div>
+        </div>
+        <ng-template #noContact>
+          <div class="no-contact-info">
+            <mat-icon>person_off</mat-icon>
+            <p>Information non disponible</p>
+          </div>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Carte Montants -->
+    <mat-card class="info-card amount-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>payments</mat-icon>
+          Montants
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="amount-grid">
+          <div class="amount-item total">
+            <span class="amount-label">Total HT</span>
+            <span class="amount-value">{{getTotalHT() | currency:'F':'symbol':'1.0-0'}}</span>
+          </div>
+
+          <div class="amount-item">
+            <span class="amount-label">Remise</span>
+            <span class="amount-value">{{getRemise() | currency:'F':'symbol':'1.0-0'}}</span>
+          </div>
+
+          <div class="amount-item">
+            <span class="amount-label">TVA</span>
+            <span class="amount-value">{{getTVA() | currency:'F':'symbol':'1.0-0'}}</span>
+          </div>
+
+          <div class="amount-item net-total">
+            <span class="amount-label">Total Net</span>
+            <span class="amount-value">{{getTotalNet() | currency:'F':'symbol':'1.0-0'}}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Carte Actions rapides -->
+    <mat-card class="info-card actions-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>bolt</mat-icon>
+          Actions rapides
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="quick-actions">
+          <button mat-raised-button color="primary" class="action-btn" matTooltip="Modifier la commande">
+            <mat-icon>edit</mat-icon>
+            Modifier
+          </button>
+
+          <button mat-raised-button color="accent" class="action-btn" matTooltip="Générer la facture PDF"
+              (click)="generateFacture()">
+          <mat-icon>picture_as_pdf</mat-icon>
+          Facture
+          </button>
+
+          <button mat-raised-button color="warn" class="action-btn" matTooltip="Annuler la commande">
+            <mat-icon>cancel</mat-icon>
+            Annuler
+          </button>
+
+          <button mat-raised-button class="action-btn" matTooltip="Imprimer">
+            <mat-icon>print</mat-icon>
+            Imprimer
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Section des lignes de commande -->
+  <div class="command-lines-section">
+    <mat-card class="command-lines-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>list_alt</mat-icon>
+          Articles commandés
+          <span class="items-count">({{getItemsCount()}} article(s))</span>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-details-lignes-commandes
+          [idCommande]="commande?.id"
+          [origin]="origin">
+        </app-details-lignes-commandes>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Notes/Commentaires -->
+  <div class="notes-section" *ngIf="commande?.commentaire">
+    <mat-card class="notes-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>note</mat-icon>
+          Notes
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="notes-content">
+          {{commande?.commentaire}}
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

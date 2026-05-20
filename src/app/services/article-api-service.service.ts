@@ -11,14 +11,25 @@ export class ArticleApiServiceService {
 
   constructor(private http: HttpClient) { }
 
+  // Import CSV
   importCsv(file: File): Observable<any> {
-    const formData: FormData = new FormData();
+    const formData = new FormData();
     formData.append('file', file);
-    return this.http.post(`${this.baseUrl}/import/csv`, formData, { responseType: 'text' });
+
+    return this.http.post(`${this.baseUrl}/import/csv`, formData, {
+      reportProgress: true,
+      responseType: 'json'
+    });
   }
 
-  private handleError(error: HttpErrorResponse) {
-    // Gestion simple de l’erreur
-    return throwError(() => error);
+  // Import Excel (optionnel)
+  importExcel(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post(`${this.baseUrl}/import/excel`, formData, {
+      reportProgress: true,
+      responseType: 'json'
+    });
   }
 }

@@ -1,42 +1,189 @@
-<div class="min-h-screen bg-gray-50 p-4 md:p-8 flex justify-center">
-  <div class="bg-white max-w-4xl w-full mx-auto shadow-lg rounded-lg overflow-hidden print:shadow-none print:rounded-none">
-    <div class="p-6 md:p-10 space-y-8">
-      <app-facture-header [entreprise]="entreprise"></app-facture-header>
+<div class="invoice-container">
+  <!-- Barre d'action -->
+  <div class="action-bar">
+    <div class="action-buttons">
+      <button mat-stroked-button (click)="downloadPDF()" class="action-btn pdf-btn">
+        <mat-icon>picture_as_pdf</mat-icon>
+        Télécharger PDF
+      </button>
+      <button mat-stroked-button (click)="printInvoice()" class="action-btn print-btn">
+        <mat-icon>print</mat-icon>
+        Imprimer
+      </button>
+      <button mat-stroked-button [routerLink]="getBackLink()" class="action-btn back-btn">
+        <mat-icon>arrow_back</mat-icon>
+        Retour
+      </button>
+    </div>
+  </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <app-client-info [customer]="myCustomer"></app-client-info>
-
-        <div class="flex flex-col items-end justify-end">
-          <h2 class="text-2xl font-bold text-blue-800">FACTURE</h2>
-          <div class="mt-2 space-y-1">
-            <p class="text-sm text-gray-600">
-              <span class="font-medium">Numéro de facture:</span> F2024-001
+  <!-- Contenu de la facture -->
+  <div class="invoice-wrapper" id="invoice-content">
+    <!-- En-tête -->
+    <div class="invoice-header">
+      <!-- Section entreprise -->
+      <div class="company-section">
+        <div class="company-info">
+          <h1 class="company-name">{{entreprise?.nom || 'Entreprise'}}</h1>
+          <div class="company-details">
+            <p *ngIf="entreprise?.adresse">
+              <mat-icon>location_on</mat-icon>
+              <span *ngIf="entreprise?.adresse?.adresse1">{{entreprise?.adresse?.adresse1}}</span>
+              <span *ngIf="entreprise?.adresse?.adresse2">, {{entreprise?.adresse?.adresse2}}</span>
+              <span *ngIf="entreprise?.adresse?.ville">, {{entreprise?.adresse?.ville}}</span>
             </p>
-            <p class="text-sm text-gray-600">
-              <span class="font-medium">Date:</span> 2024-05-01
+            <p *ngIf="entreprise?.numTel">
+              <mat-icon>phone</mat-icon> {{entreprise?.numTel}}
             </p>
-            <p class="text-sm text-gray-600">
-              <span class="font-medium">Date d'échéance:</span> 2024-05-31
+            <p *ngIf="entreprise?.email">
+              <mat-icon>email</mat-icon> {{entreprise?.email}}
+            </p>
+            <p *ngIf="entreprise?.siteWeb">
+              <mat-icon>language</mat-icon> {{entreprise?.siteWeb}}
             </p>
           </div>
         </div>
       </div>
 
-      <app-facture-items *ngIf="myInvoiceItems.length > 0" [items]="myInvoiceItems"></app-facture-items>
+      <!-- Section facture -->
+      <div class="invoice-title-section">
+        <h2 class="invoice-title">FACTURE</h2>
+        <div class="invoice-meta">
+          <div class="meta-row">
+            <span class="meta-label">N° Facture:</span>
+            <span class="meta-value">{{factureNumber}}</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Date:</span>
+            <span class="meta-value">{{factureDate | date: 'dd/MM/yyyy'}}</span>
+          </div>
+          <div class="meta-row" *ngIf="getModePaiement()">
+            <span class="meta-label">Mode Paiement:</span>
+            <span class="meta-value">{{getModePaiement()}}</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Échéance:</span>
+            <span class="meta-value">{{dueDate | date: 'dd/MM/yyyy'}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <app-facture-summary
-      [subtotal]="subtotal"
-      [taxAmount]="taxAmount"
-      [total]="total"
-      currency="EUR">
-    </app-facture-summary>
+    <!-- Informations client -->
+    <div class="client-section" *ngIf="hasClientInfo()">
+      <div class="section-header">
+        <mat-icon>person</mat-icon>
+        <h3>FACTURÉ À</h3>
+      </div>
 
+      <div class="client-info">
+        <div class="client-details">
+          <div class="client-name" *ngIf="getClientName()">
+            <span class="client-label">Client:</span>
+            <span class="client-value">{{getClientName()}}</span>
+          </div>
 
-      <app-facture-footer
-        [paymentTerms]="'Net 30 days'"
-        [paymentMethods]="['Credit Card', 'Bank Transfer']"
-        [notes]="'Please make sure to include the invoice number in your payment reference.'">
-      </app-facture-footer>
+          <div *ngIf="getClientPhone()" class="client-row">
+            <mat-icon>phone</mat-icon>
+            <span>{{getClientPhone()}}</span>
+          </div>
+
+          <div *ngIf="getClientAddress()" class="client-row">
+            <mat-icon>location_on</mat-icon>
+            <span>{{getClientAddress()}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau des articles -->
+    <div class="items-section">
+      <div class="section-header">
+        <mat-icon>list_alt</mat-icon>
+        <h3>DÉTAILS DES ARTICLES</h3>
+      </div>
+
+      <div class="items-table" *ngIf="myInvoiceItems.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-description">DESCRIPTION</th>
+              <th class="col-code">CODE</th>
+              <th class="col-quantity">QUANTITÉ</th>
+              <th class="col-unit">PRIX UNITAIRE</th>
+              <th class="col-total">TOTAL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of myInvoiceItems; let i = index">
+              <td class="col-description">
+                <div class="item-description">
+                  <span class="item-name">{{item.description}}</span>
+                  <span *ngIf="item.details" class="item-details">{{item.details}}</span>
+                </div>
+              </td>
+              <td class="col-code">{{item.code || 'N/A'}}</td>
+              <td class="col-quantity">{{item.quantity | number}}</td>
+              <td class="col-unit">{{item.unitPrice | currency:'F':'symbol':'1.0-0'}}</td>
+              <td class="col-total">{{getItemTotal(item) | currency:'F':'symbol':'1.0-0'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Résumé -->
+    <div class="summary-section">
+      <div class="summary-wrapper">
+        <div class="summary-content">
+          <div class="summary-row">
+            <span class="summary-label">Sous-total:</span>
+            <span class="summary-value">{{formatCurrency(subtotal)}}</span>
+          </div>
+
+          <div class="summary-row" *ngIf="taxAmount > 0">
+            <span class="summary-label">TVA ({{taxRate}}%):</span>
+            <span class="summary-value">{{formatCurrency(taxAmount)}}</span>
+          </div>
+
+          <div class="summary-row total-row">
+            <span class="summary-label">TOTAL À PAYER:</span>
+            <span class="summary-value total-amount">{{formatCurrency(total)}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Commentaires et mentions -->
+    <div class="footer-section">
+      <div class="footer-content">
+        <div class="footer-col" *ngIf="getCommentaire()">
+          <h4><mat-icon>comment</mat-icon> REMARQUES</h4>
+          <p>{{getCommentaire()}}</p>
+        </div>
+
+        <div class="footer-col" *ngIf="getModePaiement()">
+          <h4><mat-icon>payment</mat-icon> MODE DE PAIEMENT</h4>
+          <p>{{getModePaiement()}}</p>
+        </div>
+
+        <!-- <div class="footer-col" *ngIf="entreprise">
+          <h4><mat-icon>info</mat-icon> INFORMATIONS</h4>
+          <p *ngIf="entreprise?.codeFiscal">N° Fiscal: {{entreprise?.codeFiscal}}</p>
+          <p *ngIf="entreprise?.email">Email: {{entreprise?.email}}</p>
+          <p *ngIf="entreprise?.siteWeb">Site Web: {{entreprise?.siteWeb}}</p>
+        </div> -->
+      </div>
+
+      <div class="footer-signature">
+        <div class="signature-line"></div>
+        <p class="signature-text">Signature et cachet</p>
+      </div>
+
+      <div class="footer-copyright">
+        <p>Merci pour votre confiance</p>
+        <p class="copyright">© {{currentYear}} {{entreprise?.nom || 'Entreprise'}}</p>
+      </div>
     </div>
   </div>
 </div>

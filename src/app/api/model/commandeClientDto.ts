@@ -26,11 +26,12 @@ export interface CommandeClientDto {
     commandeLivree?: boolean;
 }
 export namespace CommandeClientDto {
-    export type EtatEnum = 'EN_PREPARATION' | 'VALIDEE' | 'LIVREE';
+    export type EtatEnum = 'EN_PREPARATION' | 'VALIDEE' | 'LIVREE' | 'ANNULEE';
     export const EtatEnum = {
         EnPreparation: 'EN_PREPARATION' as EtatEnum,
         Validee: 'VALIDEE' as EtatEnum,
-        Livree: 'LIVREE' as EtatEnum
+        Livree: 'LIVREE' as EtatEnum,
+        Annulee: 'ANNULEE' as EtatEnum
     };
 }
 

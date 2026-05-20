@@ -25,6 +25,8 @@ import { SearchLivraisonsComponent } from './manage-livraisons/search-livraisons
 import { ManageEntreprisesComponent } from './manage-entreprises/manage-entreprises.component';
 import { AuthGardService } from '../services/guard/auth-gard.service';
 import { FactureComponent } from './facture/facture.component';
+import { AllVentesComponent } from './manage-ventes/all-ventes/all-ventes.component';
+import { RapportComponent } from './rapport/rapport.component';
 
 
 const routes: Routes = [
@@ -35,6 +37,7 @@ const routes: Routes = [
       { path: '', component: DefaultDashboardComponent },
       { path: 'dashboard', component: DefaultDashboardComponent },
 
+      { path: 'rapports', component: RapportComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
       { path: 'users', component: ManageUsersComponent, canActivate: [AuthGardService], data: { expectedRole: 'ROLE_ADMIN' } },
       { path: 'entreprises', component: ManageEntreprisesComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_SUPER_ADMIN','ROLE_ADMIN'] } },
       { path: 'facture', component: FactureComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
@@ -107,6 +110,12 @@ const routes: Routes = [
 
       { path: 'ventes', component: ManageVentesComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_LIVREUR','ROLE_ADMIN','ROLE_MANAGER']} },
       { path: 'ventes/:id', component: SingleVenteComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_LIVREUR','ROLE_ADMIN','ROLE_MANAGER']} },
+      {
+        path: 'all-ventes',
+        component: AllVentesComponent,
+        canActivate: [AuthGardService],
+        data: { expectedRole: ['ROLE_LIVREUR','ROLE_ADMIN','ROLE_MANAGER'] }
+      },
 
       { path: 'mouvements', component: ManageMvtStkComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },
       { path: 'search-stock', component: SearchStockComponent, canActivate: [AuthGardService], data: { expectedRole: ['ROLE_ADMIN','ROLE_MANAGER'] } },

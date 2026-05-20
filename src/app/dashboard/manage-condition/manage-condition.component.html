@@ -9,10 +9,15 @@
           <p class="page-subtitle">Configurez vos tarifs et conditions commerciales</p>
         </div>
       </div>
-      <button mat-flat-button color="primary" class="add-btn" (click)="handleAdd()">
-        <mat-icon>add_circle</mat-icon>
-        Ajouter une condition
-      </button>
+        <button mat-flat-button color="primary" class="add-btn"  (click)="fileInput.click()" class="empty-action-btn">
+          <mat-icon>upload</mat-icon>
+          Importer CSV
+        </button>
+        <button mat-flat-button color="primary" class="add-btn" (click)="handleAdd()">
+          <mat-icon>add_circle</mat-icon>
+          Ajouter une condition
+        </button>
+        <input hidden #fileInput type="file" accept=".csv" (change)="onFileSelected($event)">
     </div>
   </div>
 

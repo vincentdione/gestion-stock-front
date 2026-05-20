@@ -18,8 +18,13 @@ export interface VenteDto {
     code?: string;
     dateVente?: string;
     commentaire?: string;
+    nomClient?: string;
+    prenomClient?: string;
+    adresse?: string;
+    numero?: string;
     ligneVentes?: Array<LigneVenteDto>;
     idEntreprise?: number;
     modePayement?: ModePayementDto;
+    montantTotal?: number;
 }
 

@@ -53,7 +53,9 @@ export class ManageLivraisonsComponent {
       (res: any) => {
         this.ngxService.stop();
         this.dataSource = new MatTableDataSource(res);
-
+        console.log("res")
+        console.log(res)
+        console.log("res")
         // Ajout d'un setTimeout pour s'assurer que le paginator est disponible
         setTimeout(() => {
           if (this.paginator) {

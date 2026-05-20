@@ -16,6 +16,7 @@ import {FormsModule,ReactiveFormsModule} from '@angular/forms'
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TokenInterceptorService } from './services/interceptor/token-interceptor.service';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { AllVentesComponent } from './dashboard/manage-ventes/all-ventes/all-ventes.component';
 
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
@@ -40,7 +41,8 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     RegisterComponent,
     FullComponent,
     SidebarComponent,
-    HeaderComponent
+    HeaderComponent,
+    AllVentesComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +57,10 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
     DashboardModule,
   ],
-  providers: [    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptorService, multi: true },
+  providers: [    {
+    provide: HTTP_INTERCEPTORS,
+    useClass: TokenInterceptorService,
+    multi: true }
   ],
   bootstrap: [AppComponent]
 })

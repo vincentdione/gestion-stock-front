@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { GlobalConstants } from 'src/app/shared/GlobalConstants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { ClientsService } from 'src/app/api';
+import { ClientSearchCriteria, ClientsService } from 'src/app/api';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { Router } from '@angular/router';
@@ -25,8 +25,10 @@ export class ManageClientsComponent {
   filterForm:any = FormGroup;
 
   uniqueCities: number = 0;
-uniqueCountries: number = 0;
-hasFilters: boolean = false;
+  uniqueCountries: number = 0;
+  hasFilters: boolean = false;
+  searchText: string = '';
+  isLoading: boolean = false;
 
   constructor(private clientService: ClientsService,
     private ngxService:NgxUiLoaderService, private formBuilder: FormBuilder,
@@ -50,6 +52,7 @@ hasFilters: boolean = false;
       });
     }
 
+
     // Méthode pour calculer les statistiques
 calculateStats(clients: any[]): void {
   const cities = new Set();
@@ -66,7 +69,7 @@ calculateStats(clients: any[]): void {
 
 // Modifier tableData pour inclure les stats
 tableData(){
-  this.clientService.searchClients().subscribe((res:any) => {
+  this.clientService.getAllClients().subscribe((res:any) => {
     this.ngxService.stop()
     this.dataSource = new MatTableDataSource(res)
     this.dataClients = res
@@ -82,6 +85,101 @@ tableData(){
     this.snackbarService.openSnackbar(this.responseMessage,GlobalConstants.error)
   })
 }
+
+ // Nouvelle méthode de recherche avancée
+ onSearch(): void {
+  this.ngxService.start();
+  this.isLoading = true;
+
+  // Récupérer les valeurs du formulaire
+  const nomValue = this.filterForm.get('nom')?.value?.trim();
+  const prenomValue = this.filterForm.get('prenom')?.value?.trim();
+  const emailValue = this.filterForm.get('email')?.value?.trim();
+  const numTelValue = this.filterForm.get('numTel')?.value?.trim();
+  const villeValue = this.filterForm.get('ville')?.value?.trim();
+  const codePostalValue = this.filterForm.get('codePostal')?.value?.trim();
+
+  // Si seulement le champ "nom" est rempli et contient un espace, séparer nom et prénom
+  let nom = nomValue;
+  let prenom = prenomValue;
+
+  if (nomValue && !prenomValue && nomValue.includes(' ')) {
+    const parts = nomValue.split(' ', 2);
+    nom = parts[0];
+    prenom = parts[1] || '';
+  }
+
+  // Créer les critères de recherche
+  const criteria: ClientSearchCriteria = {
+    nom: nom || undefined,
+    prenom: prenom || undefined,
+    email: emailValue || undefined,
+    numTel: numTelValue || undefined,
+    ville: villeValue || undefined,
+    codePostal: codePostalValue || undefined
+  };
+
+  // Appeler le nouveau service avec les critères
+  this.clientService.searchClientsAvancee(criteria).subscribe(
+    (res: any) => {
+      this.ngxService.stop();
+      this.isLoading = false;
+      this.dataClients = res;
+      this.dataSource.data = res;
+      this.calculateStats(res);
+
+      // Afficher un message si aucun résultat
+      if (res.length === 0 && this.hasFilters) {
+        this.snackbarService.openSnackbar('Aucun client trouvé avec ces critères', 'info');
+      }
+    },
+    (error: any) => {
+      this.ngxService.stop();
+      this.isLoading = false;
+      this.handleError(error);
+    }
+  );
+}
+
+// Recherche rapide par texte
+onQuickSearch(): void {
+  if (!this.searchText.trim()) {
+    this.tableData();
+    return;
+  }
+
+  this.ngxService.start();
+  this.isLoading = true;
+
+  this.clientService.searchClientsByText(this.searchText).subscribe(
+    (res: any) => {
+      this.ngxService.stop();
+      this.isLoading = false;
+      this.dataClients = res;
+      this.dataSource.data = res;
+      this.calculateStats(res);
+
+      // Réinitialiser le formulaire car on utilise la recherche par texte
+      this.filterForm.reset();
+    },
+    (error: any) => {
+      this.ngxService.stop();
+      this.isLoading = false;
+      this.handleError(error);
+    }
+  );
+}
+
+// Gestion des erreurs
+private handleError(error: any): void {
+  if (error.error?.message) {
+    this.responseMessage = error.error?.message;
+  } else {
+    this.responseMessage = GlobalConstants.genericErrorMessage;
+  }
+  this.snackbarService.openSnackbar(this.responseMessage, GlobalConstants.error);
+}
+
 
 // Méthode pour réinitialiser les filtres
 resetFilters(): void {
@@ -167,35 +265,5 @@ resetFilters(): void {
       })
 
     }
-
-
-    onSearch(){
-      const nomValue = this.filterForm.get('nom').value;
-      const emailValue = this.filterForm.get('email').value;
-      let telValue = this.filterForm.get('numTel').value;
-
-      let nom: string = '';
-      let prenom: string = '';
-
-      if (nomValue && nomValue.includes(' ')) {
-        const parts = nomValue.split(' ', 2);
-        nom = parts[0];
-        prenom = parts[1];
-      } else {
-        nom = nomValue;
-      }
-
-
-
-        this.clientService.searchClients(nomValue,emailValue, telValue).subscribe((res:any)=>{
-            this.dataClients = res;
-            this.tableData()
-            console.log(res);
-        }, (err:any)=>{
-
-        });
-
-    }
-
 
 }

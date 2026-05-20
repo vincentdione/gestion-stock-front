@@ -53,6 +53,7 @@ import { FactureHeaderComponent } from './facture/facture-header/facture-header.
 import { FactureSummaryComponent } from './facture/facture-summary/facture-summary.component';
 import { FactureItemsComponent } from './facture/facture-items/facture-items.component';
 import { FacturePrintComponent } from './facture/facture-print/facture-print.component';
+import { RapportComponent } from './rapport/rapport.component';
 
 
 @NgModule({
@@ -103,6 +104,7 @@ import { FacturePrintComponent } from './facture/facture-print/facture-print.com
     FactureSummaryComponent,
     FactureItemsComponent,
     FacturePrintComponent,
+    RapportComponent,
   ],
   imports: [
     CommonModule,

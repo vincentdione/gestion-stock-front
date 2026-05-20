@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { NavigationExtras, Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import {
-  ArticleDto,
   ConditionAVDto,
   ConditionsDeVentesService,
   LigneVenteDto,
@@ -25,15 +24,17 @@ import { ConfirmationComponent } from '../dialog/confirmation/confirmation.compo
   templateUrl: './manage-ventes.component.html',
   styleUrls: ['./manage-ventes.component.scss']
 })
-export class ManageVentesComponent {
+export class ManageVentesComponent implements OnInit {
 
-  displayColumns: string[] = ["code", "dateVente", "commentaire", "action"];
+  displayColumns: string[] = ["code", "dateVente", "nomClient", "montantTotal", "action"];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   responseMessage: any;
   totalCommande = 0;
+  showClientInfo: boolean = true;
+
 
   comVenteForm: FormGroup;
-  dataVentes: any[] = [];
+  dataVentes: VenteDto[] = [];
 
   displayColumnVentes: string[] = ["code", "unite", "quantite", "prixUnitaire", "total", "action"];
   lignesCommande: LigneVenteDto[] = [];
@@ -42,6 +43,11 @@ export class ManageVentesComponent {
   dataConditions: ConditionAVDto[] = [];
   dataUnites: UniteDto[] = [];
   selectedCondition: ConditionAVDto = {};
+
+  // Mode édition
+  isEditMode = false;
+  venteId: number | null = null;
+  isSubmitting = false;
 
   constructor(
     private venteService: VentesService,
@@ -55,7 +61,16 @@ export class ManageVentesComponent {
     private dialog: MatDialog
   ) {
     this.comVenteForm = this.formBuilder.group({
+      // Champs client (optionnels)
+      nomClient: [''],
+      prenomClient: [''],
+      telephone: [''],
+      adresse: [''],
+
+      // Mode de paiement (obligatoire)
       mode: [null, Validators.required],
+
+      // Champs pour ajouter des articles
       article: [null, Validators.required],
       unite: [null, Validators.required],
       quantite: [1, [Validators.required, Validators.min(1)]],
@@ -66,6 +81,21 @@ export class ManageVentesComponent {
   ngOnInit(): void {
     this.ngxService.start();
     this.loadData();
+
+    // Vérifier si on est en mode édition
+    this.checkEditMode();
+  }
+
+  checkEditMode(): void {
+    // Vérifier si on vient d'une page d'édition via le state
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state?.['edit']) {
+      this.isEditMode = true;
+      const vente = navigation.extras.state['vente'];
+      if (vente && vente.id) {
+        this.loadVenteForEdit(vente.id);
+      }
+    }
   }
 
   loadData(): void {
@@ -94,6 +124,42 @@ export class ManageVentesComponent {
         this.handleError(error);
       }
     );
+  }
+
+  loadVenteForEdit(id: number): void {
+    this.ngxService.start();
+    this.venteService.getVenteById(id).subscribe(
+      (res: VenteDto) => {
+        this.ngxService.stop();
+        this.venteId = id;
+        this.patchFormWithVente(res);
+      },
+      (error: any) => {
+        this.ngxService.stop();
+        this.handleError(error);
+      }
+    );
+  }
+
+  toggleClientInfo(): void {
+    this.showClientInfo = !this.showClientInfo;
+  }
+
+  patchFormWithVente(vente: VenteDto): void {
+    // Remplir les champs client
+    this.comVenteForm.patchValue({
+      nomClient: vente.nomClient || '',
+      prenomClient: vente.prenomClient || '',
+      telephone: vente.numero || '',
+      adresse: vente.adresse || '',
+      mode: vente.modePayement
+    });
+
+    // Charger les lignes de vente existantes
+    if (vente.ligneVentes && vente.ligneVentes.length > 0) {
+      this.lignesCommande = vente.ligneVentes;
+      this.calculerTotalCommande();
+    }
   }
 
   onArticleSelected(condition: ConditionAVDto): void {
@@ -139,17 +205,30 @@ export class ManageVentesComponent {
   }
 
   getAllVentes(): void {
-    this.venteService.getAllVentes().subscribe(
+    this.venteService.getLatestVentes().subscribe(
       (res: any) => {
         this.ngxService.stop();
         this.dataVentes = res;
-        this.dataSource.data = res;
+        this.dataSource.data = res.map((vente: VenteDto) => ({
+          ...vente,
+          montantTotal: this.calculerMontantVente(vente),
+          nomComplet: `${vente.nomClient || ''} ${vente.prenomClient || ''}`.trim() || 'Non renseigné'
+        }));
       },
       (error: any) => {
         this.ngxService.stop();
         this.handleError(error);
       }
     );
+  }
+
+  calculerMontantVente(vente: VenteDto): number {
+    if (!vente.ligneVentes || vente.ligneVentes.length === 0) {
+      return 0;
+    }
+    return vente.ligneVentes.reduce((total, ligne) => {
+      return total + (ligne.prixUnitaire || 0) * (ligne.quantite || 0);
+    }, 0);
   }
 
   addLigneVente(): void {
@@ -173,24 +252,36 @@ export class ManageVentesComponent {
         // Mettre à jour la quantité
         this.lignesCommande[existingIndex].quantite =
           (this.lignesCommande[existingIndex].quantite || 0) + ligneCmd.quantite!;
+        this.snackbarService.openSnackbar("Quantité mise à jour", "success");
       } else {
         // Ajouter nouvelle ligne
         this.lignesCommande.push(ligneCmd);
+        this.snackbarService.openSnackbar("Article ajouté à la commande", "success");
       }
 
       this.calculerTotalCommande();
       this.resetLigneForm();
-      this.snackbarService.openSnackbar("Article ajouté à la commande", "success");
     }
   }
 
   removeLigneVente(ligne: LigneVenteDto): void {
-    const index = this.lignesCommande.indexOf(ligne);
-    if (index > -1) {
-      this.lignesCommande.splice(index, 1);
-      this.calculerTotalCommande();
-      this.snackbarService.openSnackbar("Article retiré de la commande", "success");
-    }
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      message: `Supprimer l'article ${ligne.article?.designation || ''} de la commande ?`
+    };
+
+    const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
+    dialogRef.componentInstance.onEmitStatusChange.subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        const index = this.lignesCommande.indexOf(ligne);
+        if (index > -1) {
+          this.lignesCommande.splice(index, 1);
+          this.calculerTotalCommande();
+          this.snackbarService.openSnackbar("Article retiré de la commande", "success");
+        }
+      }
+      dialogRef.close();
+    });
   }
 
   calculerTotalCommande(): void {
@@ -211,20 +302,48 @@ export class ManageVentesComponent {
   }
 
   clearForm(): void {
-    this.lignesCommande = [];
-    this.totalCommande = 0;
-    this.comVenteForm.reset({
-      mode: null,
-      article: null,
-      unite: null,
-      quantite: 1,
-      prixUnitaire: 0
+    if (this.isSubmitting) return;
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      message: this.isEditMode
+        ? 'Annuler les modifications ?'
+        : 'Vider le formulaire ?'
+    };
+
+    const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
+    dialogRef.componentInstance.onEmitStatusChange.subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.lignesCommande = [];
+        this.totalCommande = 0;
+        this.comVenteForm.reset({
+          nomClient: '',
+          prenomClient: '',
+          telephone: '',
+          adresse: '',
+          mode: null,
+          article: null,
+          unite: null,
+          quantite: 1,
+          prixUnitaire: 0
+        });
+        this.dataUnites = [];
+        this.selectedCondition = {};
+        this.isEditMode = false;
+        this.venteId = null;
+
+        this.snackbarService.openSnackbar(
+          this.isEditMode ? 'Modifications annulées' : 'Formulaire réinitialisé',
+          "success"
+        );
+      }
+      dialogRef.close();
     });
-    this.dataUnites = [];
-    this.selectedCondition = {};
   }
 
   handleAdd(): void {
+    if (this.isSubmitting) return;
+
     if (this.comVenteForm.get('mode')?.invalid) {
       this.snackbarService.openSnackbar("Veuillez sélectionner un mode de paiement", "error");
       return;
@@ -235,48 +354,105 @@ export class ManageVentesComponent {
       return;
     }
 
+    this.isSubmitting = true;
     this.ngxService.start();
 
+    // Récupérer les valeurs du formulaire
+    const formValues = this.comVenteForm.value;
+
     const venteDto: VenteDto = {
-      modePayement: this.comVenteForm.get('mode')?.value,
+      nomClient: formValues.nomClient ? formValues.nomClient.trim() : undefined,
+      prenomClient: formValues.prenomClient ? formValues.prenomClient.trim() : undefined,
+      numero: formValues.telephone ? formValues.telephone.trim() : undefined,
+      adresse: formValues.adresse ? formValues.adresse.trim() : undefined,
+      modePayement: formValues.mode,
       dateVente: new Date().toISOString(),
-      ligneVentes: this.lignesCommande
+      ligneVentes: this.lignesCommande.map(ligne => ({
+        ...ligne,
+        article: {
+          id: ligne.article?.id,
+          codeArticle: ligne.article?.codeArticle,
+          designation: ligne.article?.designation
+        }
+      }))
     };
 
+    console.log("Données à envoyer:", venteDto);
+
+    if (this.isEditMode && this.venteId) {
+      // Mode édition
+      venteDto.id = this.venteId;
+      // this.updateVente(venteDto);
+    } else {
+      // Mode création
+      this.createVente(venteDto);
+    }
+  }
+
+  createVente(venteDto: VenteDto): void {
+    console.log("=========================")
+    console.log(venteDto)
+    console.log("=========================")
     this.venteService.saveVente(venteDto).subscribe(
       (res: any) => {
         this.ngxService.stop();
+        this.isSubmitting = false;
         this.snackbarService.openSnackbar("Vente enregistrée avec succès", "success");
-        this.clearForm();
+        this.resetAfterSuccess();
         this.getAllVentes();
       },
       (error: any) => {
         this.ngxService.stop();
+        this.isSubmitting = false;
         this.handleError(error);
       }
     );
   }
 
-  handleDelete(vente: any): void {
+
+
+  resetAfterSuccess(): void {
+    this.lignesCommande = [];
+    this.totalCommande = 0;
+    this.comVenteForm.reset({
+      nomClient: '',
+      prenomClient: '',
+      telephone: '',
+      adresse: '',
+      mode: null,
+      article: null,
+      unite: null,
+      quantite: 1,
+      prixUnitaire: 0
+    });
+    this.dataUnites = [];
+    this.selectedCondition = {};
+    this.isEditMode = false;
+    this.venteId = null;
+  }
+
+  handleDelete(vente: VenteDto): void {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
-      message: `Supprimer la vente ${vente.code || '#' + vente.id}`
+      message: `Supprimer la vente ${vente.code || '#' + vente.id} ?`
     };
 
     const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
-    dialogRef.componentInstance.onEmitStatusChange.subscribe((res: any) => {
-      this.ngxService.start();
-      this.deleteVente(vente.id);
+    dialogRef.componentInstance.onEmitStatusChange.subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.ngxService.start();
+        this.deleteVente(vente.id!);
+      }
       dialogRef.close();
     });
   }
 
-  deleteVente(id: any): void {
+  deleteVente(id: number): void {
     this.venteService.deleteVente(id).subscribe(
       (res: any) => {
         this.ngxService.stop();
         this.getAllVentes();
-        this.snackbarService.openSnackbar(res?.message || "Vente supprimée avec succès", "success");
+        this.snackbarService.openSnackbar("Vente supprimée avec succès", "success");
       },
       (error: any) => {
         this.ngxService.stop();
@@ -285,13 +461,24 @@ export class ManageVentesComponent {
     );
   }
 
-  handleView(vente: any): void {
+  handleView(vente: VenteDto): void {
     const navigationExtras: NavigationExtras = {
       state: {
-        data: vente,
-      },
+        data: vente
+      }
     };
     this.router.navigate(['/workspace/dashboard/ventes', vente.id], navigationExtras);
+   }
+
+  handleEdit(vente: VenteDto): void {
+    // Navigation vers la même page avec mode édition
+    const navigationExtras: NavigationExtras = {
+      state: {
+        edit: true,
+        vente: vente
+      }
+    };
+    this.router.navigate(['/workspace/dashboard/ventes'], navigationExtras);
   }
 
   applyFilter(event: Event): void {
@@ -299,9 +486,23 @@ export class ManageVentesComponent {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  getPageTitle(): string {
+    return this.isEditMode ? 'Modifier la vente' : 'Nouvelle vente';
+  }
+
+  getSubmitButtonText(): string {
+    return this.isEditMode ? 'Modifier la vente' : 'Valider la vente';
+  }
+
+  canAddArticle(): boolean {
+    return !!(this.comVenteForm.get('article')?.value &&
+             this.comVenteForm.get('quantite')?.value &&
+             this.comVenteForm.get('unite')?.value);
+  }
+
   private handleError(error: any): void {
     if (error.error?.message) {
-      this.responseMessage = error.error?.message;
+      this.responseMessage = error.error.message;
     } else {
       this.responseMessage = GlobalConstants.genericErrorMessage;
     }

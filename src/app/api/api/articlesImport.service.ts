@@ -109,12 +109,12 @@ export class ArticlesImportService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public importCsv(file: Blob, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext}): Observable<Array<ArticleDto>>;
-    public importCsv(file: Blob, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext}): Observable<HttpResponse<Array<ArticleDto>>>;
-    public importCsv(file: Blob, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext}): Observable<HttpEvent<Array<ArticleDto>>>;
-    public importCsv(file: Blob, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext}): Observable<any> {
+    public importArticleCsv(file: Blob, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext}): Observable<Array<ArticleDto>>;
+    public importArticleCsv(file: Blob, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext}): Observable<HttpResponse<Array<ArticleDto>>>;
+    public importArticleCsv(file: Blob, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext}): Observable<HttpEvent<Array<ArticleDto>>>;
+    public importArticleCsv(file: Blob, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext}): Observable<any> {
         if (file === null || file === undefined) {
-            throw new Error('Required parameter file was null or undefined when calling importCsv.');
+            throw new Error('Required parameter file was null or undefined when calling importArticleCsv.');
         }
 
         let localVarHeaders = this.defaultHeaders;

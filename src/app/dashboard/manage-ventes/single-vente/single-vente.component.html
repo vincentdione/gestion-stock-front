@@ -1,271 +1,384 @@
 <div class="single-vente-container">
-  <!-- Header avec infos de la vente -->
-  <div class="header-section">
-    <div class="header-content">
-      <div class="vente-info-card">
-        <div class="vente-header">
-          <div class="vente-title">
-            <mat-icon class="title-icon">receipt_long</mat-icon>
-            <div class="title-content">
-              <h1 class="page-title">Détails de la Vente</h1>
-              <div class="vente-code-badge">
-                <mat-icon class="badge-icon">tag</mat-icon>
-                <span class="code-text">{{vente.code || 'Vente #' + vente.id}}</span>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des détails de la vente...</p>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!isLoading && vente">
+    <!-- Header avec infos de la vente -->
+    <div class="header-section">
+      <div class="header-content">
+        <div class="vente-info-card">
+          <div class="vente-header">
+            <div class="vente-title">
+              <mat-icon class="title-icon">receipt_long</mat-icon>
+              <div class="title-content">
+                <h1 class="page-title">Détails de la Vente</h1>
+                <div class="vente-code-badge">
+                  <mat-icon class="badge-icon">tag</mat-icon>
+                  <span class="code-text">{{getVenteCode()}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="vente-meta">
+              <div class="meta-item">
+                <mat-icon class="meta-icon">calendar_today</mat-icon>
+                <div class="meta-content">
+                  <span class="meta-label">Date</span>
+                  <span class="meta-value">{{getDateVente() | date: 'dd/MM/yyyy HH:mm'}}</span>
+                </div>
+              </div>
+              <div class="meta-item">
+                <mat-icon class="meta-icon">payments</mat-icon>
+                <div class="meta-content">
+                  <span class="meta-label">Mode paiement</span>
+                  <span class="meta-value">{{getModePaiement()}}</span>
+                </div>
+              </div>
+              <!-- Nouveau: Montant total depuis le DTO -->
+              <div class="meta-item" *ngIf="vente?.montantTotal">
+                <mat-icon class="meta-icon">monetization_on</mat-icon>
+                <div class="meta-content">
+                  <span class="meta-label">Montant total</span>
+                  <span class="meta-value">{{getMontantTotal() | currency:'F':'symbol':'1.0-0'}}</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="vente-meta">
-            <div class="meta-item">
-              <mat-icon class="meta-icon">calendar_today</mat-icon>
-              <div class="meta-content">
-                <span class="meta-label">Date</span>
-                <span class="meta-value">{{vente.dateVente | date: 'dd/MM/yyyy HH:mm'}}</span>
-              </div>
-            </div>
-            <div class="meta-item">
-              <mat-icon class="meta-icon">payments</mat-icon>
-              <div class="meta-content">
-                <span class="meta-label">Mode paiement</span>
-                <span class="meta-value">{{vente.modePayement?.code || 'Non spécifié'}}</span>
-              </div>
-            </div>
+          <div class="vente-actions">
+            <button mat-flat-button color="primary" class="action-button" (click)="handleFacture()">
+              <mat-icon>download</mat-icon>
+              Télécharger la facture
+            </button>
+            <button mat-stroked-button color="primary" class="action-button" routerLink="/workspace/dashboard/ventes">
+              <mat-icon>arrow_back</mat-icon>
+              Retour aux ventes
+            </button>
           </div>
-        </div>
-
-        <div class="vente-actions">
-          <button mat-flat-button color="primary" class="action-button" (click)="handleFacture()">
-            <mat-icon>download</mat-icon>
-            Télécharger la facture
-          </button>
-          <button mat-stroked-button color="primary" class="action-button" routerLink="/workspace/dashboard/ventes">
-            <mat-icon>arrow_back</mat-icon>
-            Retour aux ventes
-          </button>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Section récapitulative -->
-  <div class="summary-section">
-    <mat-card class="summary-card">
-      <div class="card-header">
-        <h2><mat-icon>summarize</mat-icon> Récapitulatif</h2>
-      </div>
-
-      <div class="summary-content">
-        <div class="summary-stats">
-          <div class="stat-item">
-            <div class="stat-icon-container">
-              <mat-icon class="stat-icon">shopping_basket</mat-icon>
-            </div>
-            <div class="stat-info">
-              <span class="stat-value">{{dataSource?.data?.length || 0}}</span>
-              <span class="stat-label">Articles</span>
-            </div>
-          </div>
-
-          <div class="stat-item">
-            <div class="stat-icon-container">
-              <mat-icon class="stat-icon">monetization_on</mat-icon>
-            </div>
-            <div class="stat-info">
-              <span class="stat-value">{{total | currency:'F':'symbol':'1.0-0'}}</span>
-              <span class="stat-label">Total vente</span>
-            </div>
-          </div>
-
-          <div class="stat-item">
-            <div class="stat-icon-container">
-              <mat-icon class="stat-icon">trending_up</mat-icon>
-            </div>
-            <div class="stat-info">
-              <span class="stat-value">100%</span>
-              <span class="stat-label">Complétée</span>
-            </div>
-          </div>
+    <!-- Section récapitulative -->
+    <div class="summary-section">
+      <mat-card class="summary-card">
+        <div class="card-header">
+          <h2><mat-icon>summarize</mat-icon> Récapitulatif</h2>
         </div>
-      </div>
-    </mat-card>
-  </div>
 
-  <!-- Section des articles -->
-  <div class="articles-section">
-    <mat-card class="articles-card">
-      <div class="card-header">
-        <div class="header-content">
-          <h2><mat-icon>list_alt</mat-icon> Articles vendus</h2>
-          <span class="articles-count">{{dataSource?.data?.length || 0}} article(s)</span>
-        </div>
-      </div>
-
-      <div class="table-container" *ngIf="dataSource?.data?.length > 0; else noArticles">
-        <table mat-table [dataSource]="dataSource" class="articles-table">
-          <!-- Colonne Article -->
-          <ng-container matColumnDef="article">
-            <th mat-header-cell *matHeaderCellDef class="table-header">
-              <div class="header-content">
-                <mat-icon>inventory_2</mat-icon>
-                <span>Article</span>
+        <div class="summary-content">
+          <div class="summary-stats">
+            <div class="stat-item">
+              <div class="stat-icon-container">
+                <mat-icon class="stat-icon">shopping_basket</mat-icon>
               </div>
-            </th>
-            <td mat-cell *matCellDef="let element" class="table-cell article-cell">
-              <div class="article-info">
-                <mat-icon class="article-icon">category</mat-icon>
-                <div class="article-details">
-                  <span class="article-name">{{element.article?.nom}}</span>
-                  <span class="article-code">{{element.article?.codeArticle}}</span>
+              <div class="stat-info">
+                <span class="stat-value">{{getTotalArticles()}}</span>
+                <span class="stat-label">Articles</span>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <div class="stat-icon-container">
+                <mat-icon class="stat-icon">monetization_on</mat-icon>
+              </div>
+              <div class="stat-info">
+                <span class="stat-value">{{total | currency:'F':'symbol':'1.0-0'}}</span>
+                <span class="stat-label">Total vente</span>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <div class="stat-icon-container">
+                <mat-icon class="stat-icon">trending_up</mat-icon>
+              </div>
+              <div class="stat-info">
+                <span class="stat-value">{{getTotalArticles() > 0 ? '100%' : '0%'}}</span>
+                <span class="stat-label">Complétée</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Section des articles -->
+    <div class="articles-section">
+      <mat-card class="articles-card">
+        <div class="card-header">
+          <div class="header-content">
+            <h2><mat-icon>list_alt</mat-icon> Articles vendus</h2>
+            <span class="articles-count">{{getTotalArticles()}} article(s)</span>
+          </div>
+        </div>
+
+        <div class="table-container" *ngIf="getTotalArticles() > 0; else noArticles">
+          <table mat-table [dataSource]="dataSource" class="articles-table">
+            <!-- Colonne Article -->
+            <ng-container matColumnDef="article">
+              <th mat-header-cell *matHeaderCellDef class="table-header">
+                <div class="header-content">
+                  <mat-icon>inventory_2</mat-icon>
+                  <span>Article</span>
                 </div>
-              </div>
-            </td>
-          </ng-container>
+              </th>
+              <td mat-cell *matCellDef="let element" class="table-cell article-cell">
+                <div class="article-info">
+                  <mat-icon class="article-icon">category</mat-icon>
+                  <div class="article-details">
+                    <span class="article-name">{{element.article?.nom || element.article?.designation || 'N/A'}}</span>
+                    <span class="article-code">{{element.article?.codeArticle || 'N/A'}}</span>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
 
-          <!-- Colonne Unité -->
-          <ng-container matColumnDef="unite">
-            <th mat-header-cell *matHeaderCellDef class="table-header">
-              <div class="header-content">
-                <mat-icon>straighten</mat-icon>
-                <span>Unité</span>
-              </div>
-            </th>
-            <td mat-cell *matCellDef="let element" class="table-cell">
-              <span class="unite-badge">{{element.unite || 'unité'}}</span>
-            </td>
-          </ng-container>
+            <!-- Colonne Unité -->
+            <ng-container matColumnDef="unite">
+              <th mat-header-cell *matHeaderCellDef class="table-header">
+                <div class="header-content">
+                  <mat-icon>straighten</mat-icon>
+                  <span>Unité</span>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let element" class="table-cell">
+                <span class="unite-badge">{{element.unite || 'unité'}}</span>
+              </td>
+            </ng-container>
 
-          <!-- Colonne Quantité -->
-          <ng-container matColumnDef="quantite">
-            <th mat-header-cell *matHeaderCellDef class="table-header">
-              <div class="header-content">
-                <mat-icon>numbers</mat-icon>
-                <span>Quantité</span>
-              </div>
-            </th>
-            <td mat-cell *matCellDef="let element" class="table-cell">
-              <div class="quantite-cell">
-                <span class="quantite-value">{{element.quantite}}</span>
-              </div>
-            </td>
-          </ng-container>
+            <!-- Colonne Quantité -->
+            <ng-container matColumnDef="quantite">
+              <th mat-header-cell *matHeaderCellDef class="table-header">
+                <div class="header-content">
+                  <mat-icon>numbers</mat-icon>
+                  <span>Quantité</span>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let element" class="table-cell">
+                <div class="quantite-cell">
+                  <span class="quantite-value">{{element.quantite || 0}}</span>
+                </div>
+              </td>
+            </ng-container>
 
-          <!-- Colonne Prix Unitaire -->
-          <ng-container matColumnDef="prixUnitaire">
-            <th mat-header-cell *matHeaderCellDef class="table-header">
-              <div class="header-content">
-                <mat-icon>price_check</mat-icon>
-                <span>Prix unitaire</span>
-              </div>
-            </th>
-            <td mat-cell *matCellDef="let element" class="table-cell">
-              {{element.prixUnitaire | currency:'F':'symbol':'1.0-0'}}
-            </td>
-          </ng-container>
+            <!-- Colonne Prix Unitaire -->
+            <ng-container matColumnDef="prixUnitaire">
+              <th mat-header-cell *matHeaderCellDef class="table-header">
+                <div class="header-content">
+                  <mat-icon>price_check</mat-icon>
+                  <span>Prix unitaire</span>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let element" class="table-cell">
+                {{(element.prixUnitaire || 0) | currency:'F':'symbol':'1.0-0'}}
+              </td>
+            </ng-container>
 
-          <!-- Colonne Total -->
-          <ng-container matColumnDef="total">
-            <th mat-header-cell *matHeaderCellDef class="table-header">
-              <div class="header-content">
-                <mat-icon>calculate</mat-icon>
-                <span>Total</span>
-              </div>
-            </th>
-            <td mat-cell *matCellDef="let element" class="table-cell total-cell">
-              {{(element.quantite * element.prixUnitaire) | currency:'F':'symbol':'1.0-0'}}
-            </td>
-          </ng-container>
+            <!-- Colonne Total -->
+            <ng-container matColumnDef="total">
+              <th mat-header-cell *matHeaderCellDef class="table-header">
+                <div class="header-content">
+                  <mat-icon>calculate</mat-icon>
+                  <span>Total</span>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let element" class="table-cell total-cell">
+                {{((element.quantite || 0) * (element.prixUnitaire || 0)) | currency:'F':'symbol':'1.0-0'}}
+              </td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="['article', 'unite', 'quantite', 'prixUnitaire', 'total']"
-              class="table-header-row"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['article', 'unite', 'quantite', 'prixUnitaire', 'total']"
-              class="table-row"></tr>
-        </table>
-      </div>
-
-      <ng-template #noArticles>
-        <div class="empty-state">
-          <mat-icon class="empty-icon">inventory</mat-icon>
-          <h3>Aucun article trouvé</h3>
-          <p>Cette vente ne contient aucun article</p>
+            <tr mat-header-row *matHeaderRowDef="['article', 'unite', 'quantite', 'prixUnitaire', 'total']"
+                class="table-header-row"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['article', 'unite', 'quantite', 'prixUnitaire', 'total']"
+                class="table-row"></tr>
+          </table>
         </div>
-      </ng-template>
-    </mat-card>
-  </div>
 
-  <!-- Section total -->
-  <div class="total-section">
-    <mat-card class="total-card">
-      <div class="total-content">
-        <div class="total-info">
-          <mat-icon class="total-icon">summarize</mat-icon>
-          <div class="total-details">
-            <span class="total-label">TOTAL DE LA VENTE</span>
-            <span class="total-amount">{{total | currency:'F':'symbol':'1.0-0'}}</span>
+        <ng-template #noArticles>
+          <div class="empty-state">
+            <mat-icon class="empty-icon">inventory</mat-icon>
+            <h3>Aucun article trouvé</h3>
+            <p>Cette vente ne contient aucun article</p>
+          </div>
+        </ng-template>
+      </mat-card>
+    </div>
+
+    <!-- Section total -->
+    <div class="total-section">
+      <mat-card class="total-card">
+        <div class="total-content">
+          <div class="total-info">
+            <mat-icon class="total-icon">summarize</mat-icon>
+            <div class="total-details">
+              <span class="total-label">TOTAL DE LA VENTE</span>
+              <span class="total-amount">{{getMontantTotal() | currency:'F':'symbol':'1.0-0'}}</span>
+            </div>
+          </div>
+          <div class="total-actions">
+            <button mat-flat-button color="accent" class="print-button" (click)="printPage()">
+              <mat-icon>print</mat-icon>
+              Imprimer
+            </button>
           </div>
         </div>
-        <div class="total-actions">
-          <button mat-flat-button color="accent" class="print-button" (click)="printPage()">
-            <mat-icon>print</mat-icon>
-            Imprimer
+      </mat-card>
+    </div>
+
+    <!-- Section supplémentaire pour les détails -->
+   <!-- Informations supplémentaires -->
+<div class="additional-section">
+  <div class="details-grid">
+    <!-- Commentaires -->
+    <mat-card class="detail-card">
+      <div class="card-header">
+        <h3><mat-icon>comment</mat-icon> Commentaires</h3>
+      </div>
+      <div class="card-content">
+        <p *ngIf="hasCommentaire(); else noComment">{{vente.commentaire}}</p>
+        <ng-template #noComment>
+          <p class="no-data">Aucun commentaire</p>
+        </ng-template>
+      </div>
+    </mat-card>
+
+    <!-- Informations client avec bouton d'édition -->
+    <mat-card class="detail-card">
+      <div class="card-header">
+        <div class="client-header">
+          <h3><mat-icon>info</mat-icon> Informations client</h3>
+          <!-- Bouton pour ajouter/modifier le client -->
+          <button mat-icon-button
+                  color="primary"
+                  (click)="toggleClientForm()"
+                  class="edit-client-btn"
+                  matTooltip="Modifier les informations client">
+            <mat-icon>{{showClientForm ? 'close' : 'edit'}}</mat-icon>
           </button>
         </div>
       </div>
-    </mat-card>
-  </div>
 
-  <!-- Section supplémentaire pour les détails -->
-  <div class="additional-section">
-    <div class="details-grid">
-      <!-- Commentaires -->
-      <mat-card class="detail-card">
-        <div class="card-header">
-          <h3><mat-icon>comment</mat-icon> Commentaires</h3>
-        </div>
-        <div class="card-content">
-          <p *ngIf="vente.commentaire; else noComment">{{vente.commentaire}}</p>
-          <ng-template #noComment>
-            <p class="no-data">Aucun commentaire</p>
-          </ng-template>
-        </div>
-      </mat-card>
-
-      <!-- Informations supplémentaires -->
-      <mat-card class="detail-card">
-        <div class="card-header">
-          <h3><mat-icon>info</mat-icon> Informations</h3>
-        </div>
-        <div class="card-content">
-          <div class="info-item">
+      <div class="card-content">
+        <!-- Affichage des informations client existantes -->
+        <div *ngIf="!showClientForm">
+          <!-- Nom et prénom du client -->
+          <div class="info-item" *ngIf="getClientName() !== 'Non spécifié'">
             <mat-icon class="info-icon">person</mat-icon>
             <div class="info-content">
               <span class="info-label">Client</span>
-              <span class="info-value">{{vente.ligneVentes || 'Non spécifié'}}</span>
+              <span class="info-value">{{getClientName()}}</span>
             </div>
           </div>
-          <!-- <div class="info-item">
+
+          <!-- Numéro de téléphone -->
+          <div class="info-item" *ngIf="vente?.numero">
             <mat-icon class="info-icon">phone</mat-icon>
             <div class="info-content">
               <span class="info-label">Téléphone</span>
-              <span class="info-value">{{vente.telephoneClient || 'Non spécifié'}}</span>
+              <span class="info-value">{{vente.numero}}</span>
             </div>
           </div>
-          <div class="info-item">
-            <mat-icon class="info-icon">email</mat-icon>
+
+          <!-- Adresse -->
+          <div class="info-item" *ngIf="vente?.adresse">
+            <mat-icon class="info-icon">location_on</mat-icon>
             <div class="info-content">
-              <span class="info-label">Email</span>
-              <span class="info-value">{{vente.emailClient || 'Non spécifié'}}</span>
+              <span class="info-label">Adresse</span>
+              <span class="info-value">{{vente.adresse}}</span>
             </div>
-          </div> -->
+          </div>
+
+          <!-- Message si pas d'info client -->
+          <div *ngIf="getClientName() === 'Non spécifié' && !vente?.numero && !vente?.adresse" class="no-client-info">
+            <p class="no-data">Aucune information client disponible</p>
+            <button mat-button color="primary" (click)="toggleClientForm()" class="add-client-btn">
+              <mat-icon>person_add</mat-icon>
+              Ajouter un client
+            </button>
+          </div>
         </div>
-      </mat-card>
+
+        <!-- Formulaire d'ajout/modification de client -->
+        <div *ngIf="showClientForm" class="client-form-container">
+          <form [formGroup]="clientForm" class="client-form">
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Nom *</mat-label>
+                <input matInput formControlName="nomClient" placeholder="Dupont">
+                <mat-error *ngIf="clientForm.get('nomClient')?.invalid">
+                  Le nom est requis
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Prénom</mat-label>
+                <input matInput formControlName="prenomClient" placeholder="Jean">
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Téléphone</mat-label>
+                <input matInput formControlName="telephone" placeholder="01 23 45 67 89">
+                <mat-icon matPrefix>phone</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Adresse</mat-label>
+                <input matInput formControlName="adresse" placeholder="Paris">
+                <mat-icon matPrefix>location_on</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="form-field email-field">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" placeholder="client@example.com" type="email">
+                <mat-icon matPrefix>email</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <div class="form-actions">
+              <button mat-button color="warn" (click)="cancelClientForm()" type="button">
+                Annuler
+              </button>
+              <button mat-raised-button
+                      color="primary"
+                      (click)="saveClientInfo()"
+                      [disabled]="clientForm.invalid"
+                      type="button">
+                <mat-icon>save</mat-icon>
+                Enregistrer
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>
+
+    <!-- Composant de détails des lignes de commande -->
+    <div class="details-section">
+      <app-details-lignes-commandes
+        [idCommande]="vente?.id"
+        [origin]="'ventes'">
+      </app-details-lignes-commandes>
     </div>
   </div>
 
-  <!-- Composant de détails des lignes de commande -->
-  <div class="details-section">
-    <app-details-lignes-commandes
-      [idCommande]="vente?.id"
-      [origin]="'ventes'">
-    </app-details-lignes-commandes>
+  <!-- State when no data -->
+  <div *ngIf="!isLoading && !vente" class="no-data-state">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <h3>Vente non trouvée</h3>
+    <p>Impossible de charger les détails de la vente</p>
+    <button mat-raised-button color="primary" routerLink="/workspace/dashboard/ventes">
+      <mat-icon>arrow_back</mat-icon>
+      Retour aux ventes
+    </button>
   </div>
 </div>

@@ -612,6 +612,153 @@ $shadow-color: rgba(0, 0, 0, 0.08);
   }
 }
 
+// Styles pour la section client
+.client-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  .edit-client-btn {
+    background: rgba($primary-color, 0.1);
+    color: $primary-color;
+    border-radius: 8px;
+    transition: all 0.3s;
+
+    &:hover {
+      background: rgba($primary-color, 0.2);
+      transform: scale(1.1);
+    }
+  }
+}
+
+.add-client-btn {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+}
+
+.client-form-container {
+  padding: 15px 0;
+}
+
+.client-form {
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+
+    .form-field {
+      flex: 1;
+      min-width: 200px;
+
+      &.email-field {
+        flex: 2;
+      }
+    }
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+
+      .form-field {
+        width: 100%;
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid $border-color;
+
+    button {
+      min-width: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      &:last-child {
+        background: $primary-color;
+        color: white;
+
+        &:hover {
+          background: $primary-dark;
+        }
+
+        &:disabled {
+          background: #ccc;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Animation pour le formulaire
+.client-form-container {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Style pour les champs requis
+::ng-deep .mat-form-field-required-marker {
+  color: $danger-color;
+}
+
+// Style pour les erreurs de formulaire
+::ng-deep .mat-form-field-invalid {
+  .mat-form-field-outline {
+    color: $danger-color !important;
+  }
+}
+
+// Style pour le bouton d'ajout de client
+.no-client-info {
+  text-align: center;
+  padding: 20px 0;
+
+  .add-client-btn {
+    background: $primary-color;
+    color: white;
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.3s;
+
+    &:hover {
+      background: $primary-dark;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+    }
+  }
+}
+
 .header-section, .summary-section, .articles-section, .total-section, .additional-section {
   animation: fadeIn 0.5s ease-out;
 }

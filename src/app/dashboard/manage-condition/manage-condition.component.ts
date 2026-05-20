@@ -6,7 +6,7 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { MatPaginator } from '@angular/material/paginator';
 import { GlobalConstants } from 'src/app/shared/GlobalConstants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
-import { ConditionsDeVentesService } from 'src/app/api';
+import { ConditionsDeVentesService, ConditionsImportService } from 'src/app/api';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { ConditionComponent } from '../dialog/condition/condition.component';
 
@@ -26,6 +26,7 @@ export class ManageConditionComponent implements AfterViewInit {
 
   constructor(
     private conditionService: ConditionsDeVentesService,
+    private conditionsImportService: ConditionsImportService,
     private ngxService: NgxUiLoaderService,
     private snackbarService: SnackbarService,
     private router: Router,
@@ -221,6 +222,60 @@ export class ManageConditionComponent implements AfterViewInit {
         this.snackbarService.openSnackbar(this.responseMessage, GlobalConstants.error);
       }
     );
+  }
+
+  onFileSelected(event: any): void {
+    const file: File = event.target.files[0];
+    if (file) {
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      this.ngxService.start();
+
+      if (fileExtension === 'csv') {
+        this.importCsvFile(file, event);
+      } else if (fileExtension === 'xlsx' || fileExtension === 'xls') {
+        //this.importExcelFile(file, event);
+        console.log("pas encore")
+      } else {
+        this.ngxService.stop();
+        this.snackbarService.openSnackbar(
+          'Format de fichier non supporté. Utilisez CSV ou Excel.',
+          GlobalConstants.error
+        );
+        event.target.value = '';
+      }
+    }
+  }
+
+
+
+  private importCsvFile(file: File, event: any): void {
+    this.conditionsImportService.importConditionCsv(file).subscribe(
+      (res: any) => {
+        this.ngxService.stop();
+        this.responseMessage = res?.message || 'Importation CSV réussie';
+        this.snackbarService.openSnackbar(this.responseMessage, "success");
+        this.tableData();
+        event.target.value = '';
+      },
+      (error: any) => {
+        this.ngxService.stop();
+        this.handleImportError(error);
+        event.target.value = '';
+      }
+    );
+  }
+
+  private handleImportError(error: any): void {
+    if (error.error?.message) {
+      this.responseMessage = error.error?.message;
+    } else if (error.status === 400) {
+      this.responseMessage = 'Format de fichier invalide';
+    } else if (error.status === 409) {
+      this.responseMessage = 'Certains articles existent déjà ou ont des doublons';
+    } else {
+      this.responseMessage = GlobalConstants.genericErrorMessage;
+    }
+    this.snackbarService.openSnackbar(this.responseMessage, GlobalConstants.error);
   }
 
   ngAfterViewInit(): void {

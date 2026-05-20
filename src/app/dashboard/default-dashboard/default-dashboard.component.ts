@@ -9,106 +9,154 @@ import { ArticlesService, CommandeClientsService, CommandeFournisseursService, M
   providers: [DatePipe]
 })
 export class DefaultDashboardComponent {
+  totalArticles: number = 0;
+  totalVentes: number = 0;
+  montantTotalVentes: number = 0;
+  totalComFournisseurs: number = 0;
+  montantTotalComFournisseurs: number = 0;
+  totalComClients: number = 0;
+  montantTotalComClients: number = 0;
 
-  totalArticles!: number;
-  totalVentes!: number;
-  montantTotalVentes!: number;
-  totalComFournisseurs!: number;
-  montantTotalComFournisseurs!: number;
-  totalComClients!: number;
-  montantTotalComClients!: number;
-
-  // Nouvelle variable pour la date
+  // Date actuelle
   currentDate: Date = new Date();
 
+  // État de chargement
+  isLoading: boolean = false;
+
   constructor(
-    private mvtStockService: MouvementsDeStockService,
-    private comClientService: CommandeClientsService,
-    private comFourClient: CommandeFournisseursService,
-    private venteService: VentesService,
     private articleService: ArticlesService,
+    private venteService: VentesService,
+    private comClientService: CommandeClientsService,
+    private comFournisseurService: CommandeFournisseursService,
     private datePipe: DatePipe
   ) { }
 
   ngOnInit(): void {
-    this.getArticles();
-    this.getVentes();
-    this.getComFournisseurs();
-    this.getComClients();
+    this.loadDashboardData();
   }
 
-  getVentes() {
-    this.venteService.getAllVentes().subscribe(
-      (res: any) => {
-        this.totalVentes = res.length;
-      },
-      err => {
-        console.log(err);
-      }
-    );
+  /**
+   * Charge toutes les données du dashboard
+   */
+  loadDashboardData(): void {
+    this.isLoading = true;
 
-    this.venteService.getMontantTotalVentes().subscribe(
-      (res: any) => {
-        console.log(res);
-        this.montantTotalVentes = res;
-      },
-      err => {
-        console.log(err);
-      }
-    );
+    // Charger les articles
+    this.loadArticles();
+
+    // Charger les ventes
+    this.loadVentes();
+
+    // Charger les commandes clients
+    this.loadCommandesClients();
+
+    // Charger les commandes fournisseurs
+    this.loadCommandesFournisseurs();
+
+    this.isLoading = false;
   }
 
-  getComFournisseurs() {
-    this.comFourClient.getAllCommandeFournisseurs().subscribe(
-      (res: any) => {
-        this.totalComFournisseurs = res.length;
+  /**
+   * Charge les données des articles
+   */
+  private loadArticles(): void {
+    this.articleService.getAllArticles().subscribe({
+      next: (res: any) => {
+        this.totalArticles = res?.length || 0;
       },
-      err => {
-        console.log(err);
+      error: (err: any) => {
+        console.error('Erreur lors du chargement des articles:', err);
+        this.totalArticles = 0;
       }
-    );
-
-    this.comFourClient.getMontantTotalComFournisseur().subscribe(
-      (res: any) => {
-        console.log(res);
-        this.montantTotalComFournisseurs = res;
-      },
-      err => {
-        console.log(err);
-      }
-    );
+    });
   }
 
-  getComClients() {
-    this.comClientService.getAllCommandeClients().subscribe(
-      (res: any) => {
-        this.totalComClients = res.length;
+  /**
+   * Charge les données des ventes
+   */
+  private loadVentes(): void {
+    // Nombre de ventes
+    this.venteService.getAllVentes().subscribe({
+      next: (res: any) => {
+        this.totalVentes = res?.length || 0;
       },
-      err => {
-        console.log(err);
+      error: (err: any) => {
+        console.error('Erreur lors du chargement des ventes:', err);
+        this.totalVentes = 0;
       }
-    );
+    });
 
-    this.comClientService.getMontantTotalComClient().subscribe(
-      (res: any) => {
-        console.log(res);
-        this.montantTotalComClients = res;
+    // Montant total des ventes
+    this.venteService.getMontantTotalVentes().subscribe({
+      next: (res: any) => {
+        this.montantTotalVentes = res || 0;
       },
-      err => {
-        console.log(err);
+      error: (err: any) => {
+        console.error('Erreur lors du chargement du montant total des ventes:', err);
+        this.montantTotalVentes = 0;
       }
-    );
+    });
   }
 
-  getArticles() {
-    this.articleService.getAllArticles().subscribe(
-      (res: any) => {
-        this.totalArticles = res.length;
+  /**
+   * Charge les données des commandes clients
+   */
+  private loadCommandesClients(): void {
+    // Nombre de commandes clients
+    this.comClientService.getAllCommandeClients().subscribe({
+      next: (res: any) => {
+        this.totalComClients = res?.length || 0;
       },
-      err => {
-        console.log(err);
+      error: (err: any) => {
+        console.error('Erreur lors du chargement des commandes clients:', err);
+        this.totalComClients = 0;
       }
-    );
+    });
+
+    // Montant total des commandes clients
+    this.comClientService.getMontantTotalComClient().subscribe({
+      next: (res: any) => {
+        this.montantTotalComClients = res || 0;
+      },
+      error: (err: any) => {
+        console.error('Erreur lors du chargement du montant total des commandes clients:', err);
+        this.montantTotalComClients = 0;
+      }
+    });
+  }
+
+  /**
+   * Charge les données des commandes fournisseurs
+   */
+  private loadCommandesFournisseurs(): void {
+    // Nombre de commandes fournisseurs
+    this.comFournisseurService.getAllCommandeFournisseurs().subscribe({
+      next: (res: any) => {
+        this.totalComFournisseurs = res?.length || 0;
+      },
+      error: (err: any) => {
+        console.error('Erreur lors du chargement des commandes fournisseurs:', err);
+        this.totalComFournisseurs = 0;
+      }
+    });
+
+    // Montant total des commandes fournisseurs
+    this.comFournisseurService.getMontantTotalComFournisseur().subscribe({
+      next: (res: any) => {
+        this.montantTotalComFournisseurs = res || 0;
+      },
+      error: (err: any) => {
+        console.error('Erreur lors du chargement du montant total des commandes fournisseurs:', err);
+        this.montantTotalComFournisseurs = 0;
+      }
+    });
+  }
+
+  /**
+   * Rafraîchir les données du dashboard
+   */
+  refreshDashboard(): void {
+    this.loadDashboardData();
   }
 
 }

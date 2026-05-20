@@ -26,11 +26,12 @@ export interface CommandeFournisseurDto {
     commandeLivree?: boolean;
 }
 export namespace CommandeFournisseurDto {
-    export type EtatCommandeEnum = 'EN_PREPARATION' | 'VALIDEE' | 'LIVREE';
+    export type EtatCommandeEnum = 'EN_PREPARATION' | 'VALIDEE' | 'LIVREE' | 'ANNULEE';
     export const EtatCommandeEnum = {
         EnPreparation: 'EN_PREPARATION' as EtatCommandeEnum,
         Validee: 'VALIDEE' as EtatCommandeEnum,
-        Livree: 'LIVREE' as EtatCommandeEnum
+        Livree: 'LIVREE' as EtatCommandeEnum,
+        Annulee: 'ANNULEE' as EtatCommandeEnum
     };
 }
 

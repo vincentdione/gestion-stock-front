@@ -4,7 +4,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { ClientsService, CommandeClientDto, CommandeClientsService, CommandeFournisseurDto, CommandeFournisseursService } from 'src/app/api';
+import { ClientsService, CommandeClientDto, CommandeClientSearchCriteria, CommandeClientsService, CommandeFournisseurDto, CommandeFournisseurSearchCriteria, CommandeFournisseursService } from 'src/app/api';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { GlobalConstants } from 'src/app/shared/GlobalConstants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
@@ -40,6 +40,8 @@ export class ManageCommandeClientsComponent {
   panelOpenState = false;
   filterForm:any = FormGroup;
 
+  isLoading: boolean = false;
+  hasActiveFilters: boolean = false;
 
   constructor(private clientService:ClientsService,
     private comClientService:CommandeClientsService,
@@ -52,10 +54,14 @@ export class ManageCommandeClientsComponent {
     this.ngxService.start()
 
     this.filterForm = this.formBuilder.group({
-      nom: [''], // Définissez les valeurs par défaut si nécessaire
+      nom: [''],
+      prenom: [''],
       email: [''],
       numTel: [''],
-      codeCommande: ['']
+      codeCommande: [''],
+      dateFrom: [''],
+      dateTo: [''],
+      etat: ['']
     });
     this.activatedRoute.data.subscribe(data => {
       this.origin = data['origin'];
@@ -84,8 +90,6 @@ export class ManageCommandeClientsComponent {
       this.radioDataExport = res
       this.dataSource = new MatTableDataSource(res)
       this.comClients = res
-      console.log("======= res ===")
-      console.log(res)
       // this.total = res.reduce((acc:number, val:any) => {
       //   return acc + parseInt(val.rad_prix);
       // }, 0);
@@ -225,44 +229,146 @@ export class ManageCommandeClientsComponent {
 
  }
 
- onSearch(){
-  const nomValue = this.filterForm.get('nom').value;
-  const emailValue = this.filterForm.get('email').value;
-  let telValue = this.filterForm.get('numTel').value;
-  let codeValue = this.filterForm.get('codeCommande').value;
+//  onSearch(){
+//   const nomValue = this.filterForm.get('nom').value;
+//   const emailValue = this.filterForm.get('email').value;
+//   let telValue = this.filterForm.get('numTel').value;
+//   let codeValue = this.filterForm.get('codeCommande').value;
 
-  let nom: string = '';
-  let prenom: string = '';
+//   let nom: string = '';
+//   let prenom: string = '';
 
-  if (nomValue && nomValue.includes(' ')) {
-    const parts = nomValue.split(' ', 2);
-    nom = parts[0];
-    prenom = parts[1];
-  } else {
-    nom = nomValue;
-  }
+//   if (nomValue && nomValue.includes(' ')) {
+//     const parts = nomValue.split(' ', 2);
+//     nom = parts[0];
+//     prenom = parts[1];
+//   } else {
+//     nom = nomValue;
+//   }
 
 
+
+//     if (this.origin === 'client') {
+//       this.comClientService.getCommandesByClient(nomValue,emailValue, codeValue).subscribe((res:any)=>{
+//         this.comClients = res;
+//         this.dataSource = new MatTableDataSource(res);
+//         console.log(res);
+//     }, (err:any)=>{
+
+//     });
+// } else {
+//   this.comFournisseurService.getCommandesByFournisseur(nomValue,emailValue, codeValue).subscribe((res:any)=>{
+//     this.comFournisseurs = res;
+//     this.dataSource = new MatTableDataSource(res);
+//     console.log(res);
+// }, (err:any)=>{
+
+// });
+// }
+
+//  }
+
+
+  // NOUVELLE MÉTHODE DE RECHERCHE AVANCÉE
+  onSearch(): void {
+    this.ngxService.start();
+    this.isLoading = true;
+
+    const nomValue = this.filterForm.get('nom')?.value?.trim();
+    const prenomValue = this.filterForm.get('prenom')?.value?.trim();
+    const emailValue = this.filterForm.get('email')?.value?.trim();
+    const numTelValue = this.filterForm.get('numTel')?.value?.trim();
+    const codeValue = this.filterForm.get('codeCommande')?.value?.trim();
+    const dateFromValue = this.filterForm.get('dateFrom')?.value;
+    const dateToValue = this.filterForm.get('dateTo')?.value;
+    const etatValue = this.filterForm.get('etat')?.value?.trim();
 
     if (this.origin === 'client') {
-      this.comClientService.getCommandesByClient(nomValue,emailValue, codeValue).subscribe((res:any)=>{
+      // Recherche avancée pour commandes clients
+      const criteria: CommandeClientSearchCriteria = {
+        nomClient: nomValue || undefined,
+        emailClient: emailValue || undefined,
+        numTelClient: numTelValue || undefined,
+        code: codeValue || undefined,
+        // dateFrom: dateFromValue ? new Date(dateFromValue) : undefined,
+        // dateTo: dateToValue ? new Date(dateToValue) : undefined,
+        etat: etatValue || undefined
+      };
+
+      this.comClientService.searchCommandesClientAvancee(criteria).subscribe(
+        (res: any) => {
+          this.handleSuccessResponse(res, 'client');
+          if (res.length === 0 && this.hasActiveFilters) {
+            this.snackbarService.openSnackbar('Aucune commande trouvée avec ces critères', 'info');
+          }
+        },
+        (error) => {
+          this.handleError(error);
+        }
+      );
+    } else {
+      // Recherche avancée pour commandes fournisseurs
+      const criteria: CommandeFournisseurSearchCriteria = {
+        nomFournisseur: nomValue || undefined,
+        emailFournisseur: emailValue || undefined,
+        numTelFournisseur: numTelValue || undefined,
+        code: codeValue || undefined,
+        // dateFrom: dateFromValue ? new Date(dateFromValue) : undefined,
+        // dateTo: dateToValue ? new Date(dateToValue) : undefined,
+        etat: etatValue || undefined
+      };
+
+      this.comFournisseurService.searchCommandesFournisseur(criteria).subscribe(
+        (res: any) => {
+          this.handleSuccessResponse(res, 'fournisseur');
+          if (res.length === 0 && this.hasActiveFilters) {
+            this.snackbarService.openSnackbar('Aucune commande trouvée avec ces critères', 'info');
+          }
+        },
+        (error) => {
+          this.handleError(error);
+        }
+      );
+    }
+  }
+
+    // Méthode helper pour gérer les réponses réussies
+    private handleSuccessResponse(res: any, type: 'client' | 'fournisseur'): void {
+      this.ngxService.stop();
+      this.isLoading = false;
+
+      if (type === 'client') {
         this.comClients = res;
-        this.dataSource = new MatTableDataSource(res);
-        console.log(res);
-    }, (err:any)=>{
+      } else {
+        this.comFournisseurs = res;
+      }
 
-    });
-} else {
-  this.comFournisseurService.getCommandesByFournisseur(nomValue,emailValue, codeValue).subscribe((res:any)=>{
-    this.comFournisseurs = res;
-    this.dataSource = new MatTableDataSource(res);
-    console.log(res);
-}, (err:any)=>{
+      this.dataSource.data = res;
+      this.radioDataExport = res;
+    }
 
-});
-}
+    // Méthode helper pour gérer les erreurs
+    private handleError(error: any): void {
+      this.ngxService.stop();
+      this.isLoading = false;
 
- }
+      if (error.error?.message) {
+        this.responseMessage = error.error?.message;
+      } else {
+        this.responseMessage = GlobalConstants.genericErrorMessage;
+      }
+
+      this.snackbarService.openSnackbar(this.responseMessage, GlobalConstants.error);
+    }
+
+    // Vérifier s'il y a des filtres actifs
+    hasFilters(): boolean {
+      const values = this.filterForm.value;
+      return Object.keys(values).some(key => {
+        const value = values[key];
+        return value !== null && value !== undefined && value !== '';
+      });
+    }
 
 
  handleView(el:any){
